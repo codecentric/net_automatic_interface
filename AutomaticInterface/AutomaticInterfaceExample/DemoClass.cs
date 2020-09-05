@@ -3,7 +3,7 @@
 namespace AutomaticInterfaceExample
 {
     [GenerateAutomaticInterface]
-    class DemoClass
+    class DemoClass: IDemoClass
     {
         public string Hello { get; set; }
     }

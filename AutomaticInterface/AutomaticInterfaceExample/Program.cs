@@ -6,8 +6,11 @@ namespace AutomaticInterfaceExample
     {
         static void Main(string[] args)
         {
+
+            DemoClass demo = new DemoClass();
+            IDemoClass demoInterface = demo;
+
             Console.WriteLine("Hello World!");
-            //HelloWorldGenerated.HelloWorld.SayHello();
         }
     }
 }

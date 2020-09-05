@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -49,15 +50,18 @@ namespace AutomaticInterface
 using System;
 namespace {namespaceName}
 {{
-    public Interface {interfaceName}
+    public interface {interfaceName}
     {{
          
 ");
                 addMembersToInterface(classSymbol, sourceBuilder);
 
                 sourceBuilder.Append(@"
-    }}
-}}");
+    }      
+}");
+                File.WriteAllText(@"C:\dev\net_automatic_interface\AutomaticInterface\bla.cs", sourceBuilder.ToString());
+                var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+                context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
                 // inject the created source into the users compilation
                 context.AddSource(nameof(AutomaticInterfaceGenerator), SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));
