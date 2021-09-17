@@ -10,13 +10,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 
 namespace AutomaticInterface
 {
     [Generator]
     public class AutomaticInterfaceGenerator: ISourceGenerator
     {
-        public void Execute(SourceGeneratorContext context)
+        public void Execute(GeneratorExecutionContext context)
         {
             // retreive the populated receiver 
             if (!(context.SyntaxReceiver is SyntaxReceiver receiver))
@@ -43,9 +46,13 @@ namespace AutomaticInterface
 
             foreach (var classSymbol in classSymbols)
             {
+
                 var sourceBuilder = new StringBuilder();
                 var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
                 var interfaceName = $"I{classSymbol.Name}";
+
+                var interfaceGenerator = new CodeGenerator(namespaceName, interfaceName);   
+              
                 sourceBuilder.Append($@"
 using System;
 namespace {namespaceName}
@@ -54,7 +61,7 @@ namespace {namespaceName}
     {{
          
 ");
-                addMembersToInterface(classSymbol, sourceBuilder);
+                addMembersToInterface(classSymbol, sourceBuilder, interfaceGenerator);
 
                 sourceBuilder.Append(@"
     }      
@@ -63,12 +70,14 @@ namespace {namespaceName}
                 var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Warning, isEnabledByDefault: true);
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
+                interfaceGenerator.SaveAssembly();
+
                 // inject the created source into the users compilation
                 context.AddSource(nameof(AutomaticInterfaceGenerator), SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));
             }
         }
 
-        private void addMembersToInterface(INamedTypeSymbol classSymbol, StringBuilder sourceBuilder)
+        private void addMembersToInterface(INamedTypeSymbol classSymbol, StringBuilder sourceBuilder, CodeGenerator codeGenerator)
         {
             foreach (var member in classSymbol.GetMembers())
             {
@@ -82,18 +91,38 @@ namespace {namespaceName}
                     var hasGet = prop.GetMethod != null;
                     var hasSet = prop.SetMethod != null;
                     sourceBuilder.Append($"{type} {name} {{ {(hasGet ? "get;" : "" )}{(hasSet ? "set;" : "")}}}"); // todo get / set?
+
+                    codeGenerator.AddMemberToInterface((face) =>
+                    {
+                        var member = new CodeMemberProperty
+                        {
+                            Name = prop.Name,
+                            Type =  new CodeTypeReference(prop.Type.ToString()),
+                            HasSet = hasSet,
+                            HasGet = hasGet
+                            
+                        };
+                        face.Members.Add(member);
+                });
+
                 }
                 // todo check that using are included as necessary (e.g. using xyz and then referencing the type
                 // todo all other cases.
             }
         }
 
-        public void Initialize(InitializationContext context)
+        public void Initialize(GeneratorInitializationContext context)
         {
             // Register a syntax receiver that will be created for each generation pass
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-            Debugger.Launch();
+#if DEBUGGENERATOR
+  if (!Debugger.IsAttached)
+  {
+    Debugger.Launch();
+  }
+#endif
         }
+   
     }
 
     /// <summary>

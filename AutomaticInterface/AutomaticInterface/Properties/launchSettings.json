@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AutomaticInterface": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\AutomaticInterfaceExample\\AutomaticInterfaceExample.csproj"
+    }
+  }
+}

@@ -38,10 +38,9 @@ namespace Tests
             }
 
             var generator = new AutomaticInterfaceGenerator();
-            var parseOptions = syntaxTree.Options as CSharpParseOptions;
-
-            GeneratorDriver driver = new CSharpGeneratorDriver(parseOptions, ImmutableArray.Create<ISourceGenerator>(generator), null,  ImmutableArray<AdditionalText>.Empty );
-            driver.RunFullGeneration(compilation, out var outputCompilation, out var generatorDiagnostics);
+            ISourceGenerator[] generators = { generator};            
+            var driver = CSharpGeneratorDriver.Create(generators, parseOptions: (CSharpParseOptions)compilation.SyntaxTrees.First().Options);
+            driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var generatorDiagnostics);
 
             return generatorDiagnostics;
         }
@@ -50,7 +49,7 @@ namespace Tests
         {
             return actual.Where(d => d.Severity == DiagnosticSeverity.Error)
                     .Select(d => d.Id.ToString())
-                    .All(id => expected.Contains(id)); ;
+                    .All(id => expected.Contains(id));
         }
     }
 }
