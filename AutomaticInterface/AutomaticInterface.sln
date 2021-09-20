@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30310.162
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31710.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomaticInterfaceExample", "AutomaticInterfaceExample\AutomaticInterfaceExample.csproj", "{AFDAB373-7268-4A1B-ABAF-EA076C3B2B4C}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomaticInterfaceAttribute", "AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj", "{ADEA885F-9F6F-443E-945A-512223AEFC11}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{E267C5B3-44DD-4D26-A2F7-5FDF92FF28D5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runner", "Runner\Runner.csproj", "{A9BA0701-C9D4-46FC-A0CC-476CA0BE92FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,12 +42,6 @@ Global
 		{E267C5B3-44DD-4D26-A2F7-5FDF92FF28D5}.DebugGenerator|Any CPU.Build.0 = DebugGenerator|Any CPU
 		{E267C5B3-44DD-4D26-A2F7-5FDF92FF28D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E267C5B3-44DD-4D26-A2F7-5FDF92FF28D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9BA0701-C9D4-46FC-A0CC-476CA0BE92FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9BA0701-C9D4-46FC-A0CC-476CA0BE92FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9BA0701-C9D4-46FC-A0CC-476CA0BE92FA}.DebugGenerator|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9BA0701-C9D4-46FC-A0CC-476CA0BE92FA}.DebugGenerator|Any CPU.Build.0 = Debug|Any CPU
-		{A9BA0701-C9D4-46FC-A0CC-476CA0BE92FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9BA0701-C9D4-46FC-A0CC-476CA0BE92FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

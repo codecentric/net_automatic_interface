@@ -1,5 +1,4 @@
-﻿using AutomaticInterfaceAttribute;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -22,7 +21,7 @@ namespace AutomaticInterface
         public void Execute(GeneratorExecutionContext context)
         {
             // retreive the populated receiver 
-            if (!(context.SyntaxReceiver is SyntaxReceiver receiver))
+            if (context.SyntaxReceiver is not SyntaxReceiver receiver)
             {
                 return;
             }

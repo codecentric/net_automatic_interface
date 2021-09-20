@@ -1,26 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <IsRoslynComponent>true</IsRoslynComponent>
+	  <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	  <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
     <Configurations>Debug;Release;DebugGenerator</Configurations>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <DevelopmentDependency>true</DevelopmentDependency>
+	<IncludeBuildOutput>false</IncludeBuildOutput>
+	<LangVersion>9.0</LangVersion>
+	   <Nullable>enable</Nullable>
+	  
   </PropertyGroup>
 
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<RestoreAdditionalProjectSources>https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json ;$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
-	</PropertyGroup>
+	</PropertyGroup>-->
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerator|AnyCPU'">
 	  <DefineConstants>TRACE;DEBUGGENERATOR</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.0.0-4.final" />
-    <PackageReference Include="System.CodeDom" Version="5.0.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.10.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0" PrivateAssets="all" />
 	</ItemGroup>
 
+
 	<ItemGroup>
-	  <ProjectReference Include="..\AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj" />
-	</ItemGroup>
-	
+		<PackageReference Include="System.CodeDom" Version="5.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+		
+		<None Include="$(PkgSystem_CodeDom)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>	
 </Project>
