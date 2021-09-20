@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AutomaticInterfaceExample
 {
-    public interface ITestInterFace
+    class test
     {
-        string MyProperty { get; set; }
-
-        Task<string> GetData();
     }
 }

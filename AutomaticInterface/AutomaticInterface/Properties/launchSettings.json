@@ -3,6 +3,9 @@
     "AutomaticInterface": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\AutomaticInterfaceExample\\AutomaticInterfaceExample.csproj"
+    },
+    "Profile 1": {
+      "commandName": "Project"
     }
   }
 }

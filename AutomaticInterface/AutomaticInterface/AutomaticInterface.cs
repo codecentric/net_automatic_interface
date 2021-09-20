@@ -4,14 +4,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System;
-using System.CodeDom;
-using System.CodeDom.Compiler;
 
 namespace AutomaticInterface
 {
@@ -28,86 +23,98 @@ namespace AutomaticInterface
 
             var compilation = context.Compilation;
 
-            INamedTypeSymbol attributeSymbol = compilation.GetTypeByMetadataName("AutomaticInterfaceAttribute.GenerateAutomaticInterfaceAttribute");
+            if (compilation == null)
+            {
+                return;
+            }
 
-            List<INamedTypeSymbol> classSymbols = new List<INamedTypeSymbol>();
+            var classSymbols = GetClassesToAddInterfaceFor(receiver, compilation);
+
+            CreateInterfaces(context, classSymbols);
+        }
+
+        private void CreateInterfaces(GeneratorExecutionContext context, List<ClassDeclarationSyntax> classes)
+        {
+            foreach (var classSyntax in classes)
+            {
+                if (classSyntax == null)
+                {
+                    continue;
+                }
+
+                var compilation = context.Compilation;
+                var classSemanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
+
+
+                if (classSemanticModel == null)
+                {
+                    continue;
+                }
+
+                var root = classSyntax.GetCompilationUnit();
+
+                var namespaceName = root.GetNamespace();
+                var interfaceName = $"I{classSyntax.GetClassName()}";
+
+                var interfaceGenerator = new CodeGenerator(namespaceName, interfaceName);
+
+                AddMembersToInterface(classSemanticModel.GetDeclaredSymbol(classSyntax), interfaceGenerator);
+
+                var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
+                context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
+
+                // inject the created source into the users compilation
+                context.AddSource(nameof(AutomaticInterfaceGenerator), SourceText.From(interfaceGenerator.BuildCode(), Encoding.UTF8));
+            }
+        }
+
+        private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(SyntaxReceiver receiver, Compilation compilation)
+        {
+            INamedTypeSymbol? attributeSymbol = compilation.GetTypeByMetadataName("AutomaticInterfaceAttribute.GenerateAutomaticInterfaceAttribute"); // todo reference this?
+
+            if (attributeSymbol is null)
+            {
+                throw new ArgumentNullException("AutomaticInterfaceAttribute.GenerateAutomaticInterfaceAttribute not referenced");
+            }
+
+            List<ClassDeclarationSyntax> classSymbols = new ();
             foreach (ClassDeclarationSyntax cls in receiver.CandidateClasses)
             {
                 var model = compilation.GetSemanticModel(cls.SyntaxTree);
 
                 var classSymbol = model.GetDeclaredSymbol(cls);
 
-                if (classSymbol.GetAttributes().Any(ad => ad.AttributeClass.Name == attributeSymbol.Name)) // todo, weird that  ad.AttributeClass.Equals(attributeSymbol, SymbolEqualityComparer.Default) always returns null - see https://github.com/dotnet/roslyn/issues/30248 maybe?
+                if (classSymbol is null)
                 {
-                    classSymbols.Add(classSymbol);
+                    continue;
+                }
+
+                if (classSymbol.GetAttributes().Any(ad => ad?.AttributeClass?.Name == attributeSymbol.Name)) // todo, weird that  ad.AttributeClass.Equals(attributeSymbol, SymbolEqualityComparer.Default) always returns null - see https://github.com/dotnet/roslyn/issues/30248 maybe?
+                {
+                    classSymbols.Add(cls);
                 }
             }
 
-            foreach (var classSymbol in classSymbols)
-            {
-
-                var sourceBuilder = new StringBuilder();
-                var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
-                var interfaceName = $"I{classSymbol.Name}";
-
-                var interfaceGenerator = new CodeGenerator(namespaceName, interfaceName);   
-              
-                sourceBuilder.Append($@"
-using System;
-namespace {namespaceName}
-{{
-    public interface {interfaceName}
-    {{
-         
-");
-                addMembersToInterface(classSymbol, sourceBuilder, interfaceGenerator);
-
-                sourceBuilder.Append(@"
-    }      
-}");
-                File.WriteAllText(@"C:\dev\net_automatic_interface\AutomaticInterface\bla.cs", sourceBuilder.ToString());
-                var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Warning, isEnabledByDefault: true);
-                context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
-
-                interfaceGenerator.SaveAssembly();
-
-                // inject the created source into the users compilation
-                context.AddSource(nameof(AutomaticInterfaceGenerator), SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));
-            }
+            return classSymbols;
         }
 
-        private void addMembersToInterface(INamedTypeSymbol classSymbol, StringBuilder sourceBuilder, CodeGenerator codeGenerator)
+        private void AddMembersToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator)
         {
-            foreach (var member in classSymbol.GetMembers())
-            {
-                // todo member.kind?
+            classSymbol.GetAllMembers()
+                .Where(x => x.Kind == SymbolKind.Property)
+                .OfType<IPropertySymbol>()
+                .Where(x => x.DeclaredAccessibility == Accessibility.Public)
+                .ToList()
+               .ForEach(prop =>
+               {
+                   var type = prop.Type;
+                   var name = prop.Name;
+                   var hasGet = prop.GetMethod != null;
+                   var hasSet = prop.SetMethod != null;
+                   // todo check if get set is public?
 
-                if (member is IPropertySymbol && member.DeclaredAccessibility == Accessibility.Public)
-                {
-                    var prop = member as IPropertySymbol;
-                    var type = prop.Type;
-                    var name = prop.Name;
-                    var hasGet = prop.GetMethod != null;
-                    var hasSet = prop.SetMethod != null;
-                    sourceBuilder.Append($"{type} {name} {{ {(hasGet ? "get;" : "" )}{(hasSet ? "set;" : "")}}}"); // todo get / set?
-
-                    codeGenerator.AddMemberToInterface((face) =>
-                    {
-                        var member = new CodeMemberProperty
-                        {
-                            Name = prop.Name,
-                            Type =  new CodeTypeReference(prop.Type.ToString()),
-                            HasSet = hasSet,
-                            HasGet = hasGet
-                            
-                        };
-                        face.Members.Add(member);
-                });
-
-                }
-                // todo check that using are included as necessary (e.g. using xyz and then referencing the type
-                // todo all other cases.
-            }
+                   codeGenerator.AddPropertyToInterface(name, type.ToDisplayString(), hasGet, hasSet);
+               });
         }
 
         public void Initialize(GeneratorInitializationContext context)
