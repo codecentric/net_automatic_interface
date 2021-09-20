@@ -58,7 +58,15 @@ namespace AutomaticInterface
 
                 var interfaceGenerator = new CodeGenerator(namespaceName, interfaceName);
 
-                AddMembersToInterface(classSemanticModel.GetDeclaredSymbol(classSyntax), interfaceGenerator);
+                INamedTypeSymbol? namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
+
+                if (namedType == null)
+                {
+                    continue;
+                }
+
+                interfaceGenerator.AddUsings(GetUsings(namedType));
+                AddMembersToInterface(namedType, interfaceGenerator);
 
                 var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
@@ -66,6 +74,27 @@ namespace AutomaticInterface
                 // inject the created source into the users compilation
                 context.AddSource(nameof(AutomaticInterfaceGenerator), SourceText.From(interfaceGenerator.BuildCode(), Encoding.UTF8));
             }
+        }
+
+        private HashSet<string> GetUsings(INamedTypeSymbol classSymbol)
+        {
+            SyntaxList<UsingDirectiveSyntax> allUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
+            foreach (var syntaxRef in classSymbol.DeclaringSyntaxReferences)
+            {
+                foreach (var parent in syntaxRef.GetSyntax().Ancestors(false))
+                {
+                    if (parent is NamespaceDeclarationSyntax ndsyntax)
+                    {
+                        allUsings = allUsings.AddRange(ndsyntax.Usings);
+                    }
+                    else if (parent is CompilationUnitSyntax cusyntax)
+                    {
+                        allUsings = allUsings.AddRange(cusyntax.Usings);
+                    }
+                }
+            }
+
+            return new HashSet<string>(allUsings.Select(x => x.ToString()));
         }
 
         private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(SyntaxReceiver receiver, Compilation compilation)

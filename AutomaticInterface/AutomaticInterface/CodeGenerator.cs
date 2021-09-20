@@ -1,4 +1,5 @@
-﻿using Scriban;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Scriban;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -18,7 +19,11 @@ namespace AutomaticInterface
     {
         private readonly string nameSpaceName;
         private readonly string interfaceName;
-        private readonly HashSet<string> usings = new() { "System.CodeDom.Compiler" };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly HashSet<string> usings = new() { "using System.CodeDom.Compiler;" };
         private readonly List<PropertyInfo> propertyInfos = new();
 
         public CodeGenerator(string nameSpaceName, string interfaceName){
@@ -58,6 +63,15 @@ namespace AutomaticInterface
             var result = template.Render(BuildModel(), member => member.Name);
 
             return result;
+        }
+
+        public void AddUsings(IEnumerable<string> usings)
+        {
+            foreach (var usg in usings)
+            {
+                this.usings.Add(usg);
+            }
+
         }
     }
 }
