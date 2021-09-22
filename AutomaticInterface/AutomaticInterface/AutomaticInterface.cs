@@ -75,6 +75,7 @@ namespace AutomaticInterface
 
                 interfaceGenerator.AddUsings(GetUsings(namedType));
                 AddMembersToInterface(namedType, interfaceGenerator);
+                AddMethodsToInterface(namedType, interfaceGenerator);
 
                 var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
@@ -85,6 +86,31 @@ namespace AutomaticInterface
 
                 logger.TryLogSourceCode(classSyntax, generatedCode);
             }
+        }
+
+        private void AddMethodsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator)
+        {
+            classSymbol.GetAllMembers()
+                 .Where(x => x.Kind == SymbolKind.Method)
+                 .OfType<IMethodSymbol>()
+                 .Where(x => x.DeclaredAccessibility == Accessibility.Public)
+                 .Where(x => x.MethodKind == MethodKind.Ordinary) // todo is this everything?
+                 .Where(x => x.ContainingType.Name != typeof(object).Name)
+                 .ToList()
+                .ForEach(method =>
+                {
+                    var test = method.DeclaringSyntaxReferences;
+                    var returnType = method.ReturnType;
+                    var name = method.Name;
+
+                    var paramResult = new HashSet<string>();
+                    method.Parameters
+                    .Select(x => x.ToDisplayString())
+                    .ToList()
+                    .ForEach(x => paramResult.Add(x));
+
+                   codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), paramResult);
+                });
         }
 
         private HashSet<string> GetUsings(INamedTypeSymbol classSymbol)

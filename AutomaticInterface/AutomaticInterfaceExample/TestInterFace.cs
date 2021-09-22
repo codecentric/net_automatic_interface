@@ -10,5 +10,7 @@ namespace AutomaticInterfaceExample
         string MyProperty { get; set; }
 
         Task<string> GetData();
+
+        string GetHello();
     }
 }

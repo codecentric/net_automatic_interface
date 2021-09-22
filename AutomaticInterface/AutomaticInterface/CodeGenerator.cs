@@ -11,9 +11,11 @@ namespace AutomaticInterface
 {
     public record PropertyInfo(string Name, string Ttype, bool HasGet, bool HasSet);
 
-    public record MethodDescription(string Name, string ReturnType, string ReturnTypeGenericArgument, List<string> arguments);
+    public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters);
 
-    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodDescription> Methods);
+    // public record MethodDescription(string Name, string ReturnType, string ReturnTypeGenericArgument, List<string> arguments);
+
+    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods);
 
     public class CodeGenerator
     {
@@ -25,6 +27,7 @@ namespace AutomaticInterface
         /// </summary>
         private readonly HashSet<string> usings = new() { "using System.CodeDom.Compiler;" };
         private readonly List<PropertyInfo> propertyInfos = new();
+        private readonly List<MethodInfo> methodInfos = new();
 
         public CodeGenerator(string nameSpaceName, string interfaceName){
             this.nameSpaceName = nameSpaceName;
@@ -33,13 +36,12 @@ namespace AutomaticInterface
 
         public void AddPropertyToInterface(string name, string ttype, bool hasGet, bool hasSet)
         {
-            // todo add necessary namespaces?
             propertyInfos.Add(new PropertyInfo(name, ttype, hasGet, hasSet));
         }
 
         private Model BuildModel()
         {
-            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, new());
+            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, methodInfos);
         }
 
         public string BuildCode()
@@ -72,6 +74,11 @@ namespace AutomaticInterface
                 this.usings.Add(usg);
             }
 
+        }
+
+        internal void AddMethodToInterface(string name, string returnType, HashSet<string> parameters)
+        {
+            methodInfos.Add(new MethodInfo(name, returnType, parameters));
         }
     }
 }
