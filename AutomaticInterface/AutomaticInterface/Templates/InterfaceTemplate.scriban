@@ -19,7 +19,10 @@ namespace {{Namespace}}
         {{prop.Ttype}} {{prop.Name}} { {{ if prop.HasGet }}get; {{ end }}{{ if prop.HasSet }}set; {{ end }}}
         {{ end ~}}
         {{ for method in Methods ~}}
-        {{method.ReturnType}} {{method.Name}}({{for param in method.Parameters ~}}{{param}}{{ end ~}});
+            {{~ method.ReturnType}} {{method.Name}}(
+            {{- for param in method.Parameters ~}}
+                {{- param}}{{ if !for.last }}, {{ end }}
+            {{- end ~}});
         {{ end ~}}
     }
 }
