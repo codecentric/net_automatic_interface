@@ -6,5 +6,7 @@ namespace AutomaticInterfaceExample
     class DemoClass: IDemoClass
     {
         public string Hello { get; set; }
+
+        public string OnlyGet { get; }
     }
 }

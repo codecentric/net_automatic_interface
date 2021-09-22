@@ -11,7 +11,10 @@
 	<IncludeBuildOutput>false</IncludeBuildOutput>
 	<LangVersion>preview</LangVersion>
 	   <Nullable>enable</Nullable>
-	  
+	  <SourceGenerator_EnableLogging>True</SourceGenerator_EnableLogging>
+	  <SourceGenerator_EnableDebug>False</SourceGenerator_EnableDebug>
+	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
+	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
   </PropertyGroup>
 
 	<!--<PropertyGroup>

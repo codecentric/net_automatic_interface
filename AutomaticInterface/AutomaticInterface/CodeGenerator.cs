@@ -57,7 +57,7 @@ namespace AutomaticInterface
             if (template.HasErrors)
             {
                 var errors = string.Join(" | ", template.Messages.Select(x => x.Message));
-                throw new InvalidOperationException($"Template parse error: {template.Messages}");
+                throw new InvalidOperationException($"Template parse error: {errors}");
             }
 
             var result = template.Render(BuildModel(), member => member.Name);

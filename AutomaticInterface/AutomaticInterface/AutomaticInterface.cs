@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -13,8 +14,15 @@ namespace AutomaticInterface
     [Generator]
     public class AutomaticInterfaceGenerator: ISourceGenerator
     {
+
         public void Execute(GeneratorExecutionContext context)
         {
+            var options = new LoggerOptions(Path.Combine(Environment.CurrentDirectory, "logs"), true, true, typeof(AutomaticInterfaceGenerator).Name);
+            using Logger logger = new(context, options) ;
+
+
+
+
             // retreive the populated receiver 
             if (context.SyntaxReceiver is not SyntaxReceiver receiver)
             {
@@ -30,10 +38,10 @@ namespace AutomaticInterface
 
             var classSymbols = GetClassesToAddInterfaceFor(receiver, compilation);
 
-            CreateInterfaces(context, classSymbols);
+            CreateInterfaces(context, classSymbols, logger);
         }
 
-        private void CreateInterfaces(GeneratorExecutionContext context, List<ClassDeclarationSyntax> classes)
+        private void CreateInterfaces(GeneratorExecutionContext context, List<ClassDeclarationSyntax> classes, Logger logger)
         {
             foreach (var classSyntax in classes)
             {
@@ -72,7 +80,10 @@ namespace AutomaticInterface
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
                 // inject the created source into the users compilation
-                context.AddSource(nameof(AutomaticInterfaceGenerator), SourceText.From(interfaceGenerator.BuildCode(), Encoding.UTF8));
+                string generatedCode = interfaceGenerator.BuildCode();
+                context.AddSource($"I{classSyntax.GetClassName()}", SourceText.From(generatedCode, Encoding.UTF8));
+
+                logger.TryLogSourceCode(classSyntax, generatedCode);
             }
         }
 
@@ -99,13 +110,6 @@ namespace AutomaticInterface
 
         private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(SyntaxReceiver receiver, Compilation compilation)
         {
-            INamedTypeSymbol? attributeSymbol = compilation.GetTypeByMetadataName("AutomaticInterfaceAttribute.GenerateAutomaticInterfaceAttribute"); // todo reference this?
-
-            if (attributeSymbol is null)
-            {
-                throw new ArgumentNullException("AutomaticInterfaceAttribute.GenerateAutomaticInterfaceAttribute not referenced");
-            }
-
             List<ClassDeclarationSyntax> classSymbols = new ();
             foreach (ClassDeclarationSyntax cls in receiver.CandidateClasses)
             {
@@ -118,7 +122,16 @@ namespace AutomaticInterface
                     continue;
                 }
 
-                if (classSymbol.GetAttributes().Any(ad => ad?.AttributeClass?.Name == attributeSymbol.Name)) // todo, weird that  ad.AttributeClass.Equals(attributeSymbol, SymbolEqualityComparer.Default) always returns null - see https://github.com/dotnet/roslyn/issues/30248 maybe?
+                if (classSymbol.GetAttributes().Any(ad =>
+                {
+                    var name = ad?.AttributeClass?.Name;
+
+                    if (name == null)
+                    {
+                        return false;
+                    }
+                    return name.StartsWith("GenerateAutomaticInterface");
+                }))
                 {
                     classSymbols.Add(cls);
                 }
@@ -151,13 +164,13 @@ namespace AutomaticInterface
             // Register a syntax receiver that will be created for each generation pass
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
 #if DEBUGGENERATOR
-  if (!Debugger.IsAttached)
-  {
-    Debugger.Launch();
-  }
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
 #endif
         }
-   
+
     }
 
     /// <summary>

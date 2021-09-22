@@ -4,9 +4,15 @@
 	  <OutputType>Exe</OutputType>
 	  <TargetFramework>netcoreapp5.0</TargetFramework>
 	  <Configurations>Debug;Release;DebugGenerator</Configurations>
+	  <SourceGenerator_EnableLogging>True</SourceGenerator_EnableLogging>
+	  <SourceGenerator_EnableDebug>True</SourceGenerator_EnableDebug>
+	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
+	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
+	  <SourceGenerator_LogPath>C:\tmp\log.txt</SourceGenerator_LogPath>
     </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dnf.SourceGenerators" Version="1.0.0" />
     <PackageReference Include="Scriban" Version="4.0.1" />
   </ItemGroup>
 
