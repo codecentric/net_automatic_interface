@@ -135,7 +135,7 @@ namespace AutomaticInterfaceExample
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
-                string Hello { get;  set;  }
+                string Hello { get; set; }
             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
@@ -175,7 +175,7 @@ namespace AutomaticInterfaceExample
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
-                string Hello {  set;  }
+                string Hello { set; }
             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
@@ -215,7 +215,7 @@ namespace AutomaticInterfaceExample
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
-                string Hello { get;   }
+                string Hello { get; }
             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
