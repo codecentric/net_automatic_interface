@@ -105,7 +105,7 @@ namespace AutomaticInterface
 
                     var paramResult = new HashSet<string>();
                     method.Parameters
-                    .Select(x => x.ToDisplayString())
+                    .Select(x => $"{x.ToDisplayString()} {x.Name}" )
                     .ToList()
                     .ForEach(x => paramResult.Add(x));
 

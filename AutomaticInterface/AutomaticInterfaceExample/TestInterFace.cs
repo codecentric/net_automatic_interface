@@ -11,6 +11,6 @@ namespace AutomaticInterfaceExample
 
         Task<string> GetData();
 
-        string GetHello();
+        string GetHello(string x);
     }
 }
