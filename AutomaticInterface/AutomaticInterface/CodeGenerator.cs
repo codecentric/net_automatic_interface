@@ -13,7 +13,7 @@ namespace AutomaticInterface
 
     public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters, string Documentation);
 
-    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods);
+    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods, string Documentation);
 
     public class CodeGenerator
     {
@@ -26,6 +26,7 @@ namespace AutomaticInterface
         private readonly HashSet<string> usings = new() { "using System.CodeDom.Compiler;" };
         private readonly List<PropertyInfo> propertyInfos = new();
         private readonly List<MethodInfo> methodInfos = new();
+        private string classDocumentation = string.Empty;
 
         public CodeGenerator(string nameSpaceName, string interfaceName){
             this.nameSpaceName = nameSpaceName;
@@ -39,7 +40,7 @@ namespace AutomaticInterface
 
         private Model BuildModel()
         {
-            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, methodInfos);
+            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, methodInfos, classDocumentation);
         }
 
         public string BuildCode()
@@ -63,6 +64,11 @@ namespace AutomaticInterface
             var result = template.Render(BuildModel(), member => member.Name);
 
             return result;
+        }
+
+        internal void AddClassDocumentation(string documentation)
+        {
+            this.classDocumentation = documentation;
         }
 
         public void AddUsings(IEnumerable<string> usings)

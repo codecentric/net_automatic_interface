@@ -75,6 +75,7 @@ namespace AutomaticInterface
                 }
 
                 interfaceGenerator.AddUsings(GetUsings(namedType));
+                interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
                 AddMembersToInterface(namedType, interfaceGenerator, classSyntax);
                 AddMethodsToInterface(namedType, interfaceGenerator, classSyntax);
 
@@ -160,6 +161,23 @@ namespace AutomaticInterface
             }
 
             var trivia = match.GetLeadingTrivia()
+                .Where(x => docSyntax.Contains(x.Kind()))
+                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
+
+            return trivia.ToFullString().Trim();
+        }
+
+        private string GetDocumentationForClass(ClassDeclarationSyntax classSyntax)
+        {
+            if (!classSyntax.HasLeadingTrivia)
+            {
+                // no documentation
+                return string.Empty;
+            }
+
+            SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
+
+            var trivia = classSyntax.GetLeadingTrivia()
                 .Where(x => docSyntax.Contains(x.Kind()))
                 .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 

@@ -95,6 +95,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -113,6 +114,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -134,6 +136,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -153,6 +156,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -175,6 +179,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -194,6 +199,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -216,6 +222,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -236,6 +243,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -258,6 +266,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -278,6 +287,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -301,6 +311,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -322,6 +333,7 @@ using System.Threading.Tasks;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -345,6 +357,7 @@ using System.Threading.Tasks;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -365,6 +378,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -388,6 +402,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -409,6 +424,7 @@ using System.Threading.Tasks;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -432,6 +448,7 @@ using System.Threading.Tasks;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -452,6 +469,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -474,6 +492,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -494,6 +513,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -517,6 +537,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -535,6 +556,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -562,6 +584,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -586,6 +609,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -612,6 +636,7 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -633,6 +658,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -654,6 +680,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -673,6 +700,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GenerateAutomaticInterface]
     class DemoClass
     {
@@ -697,6 +725,7 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
+
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
@@ -710,13 +739,59 @@ string Hello { get; }
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
+        [Fact]
+        public async Task CopiesDocumentationOfClassToInterface()
+        {
+            var code = @"
+using AutomaticInterfaceAttribute;
+
+namespace AutomaticInterfaceExample
+{
+        /// <summary>
+        /// Bla bla
+        /// </summary>
+    [GenerateAutomaticInterface]
+    class DemoClass
+    {
+        public string Hello { get; private set; }
+    }
+}
+";
+
+            var expected = @"﻿//--------------------------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.
+// </auto-generated>
+//--------------------------------------------------------------------------------------------------
+
+using System.CodeDom.Compiler;
+using AutomaticInterfaceAttribute;
+
+namespace AutomaticInterfaceExample
+{
+/// <summary>
+        /// Bla bla
+        /// </summary>
+    [GeneratedCode(""AutomaticInterface"", """")]
+    public interface IDemoClass
+    {
+                  
+string Hello { get; }
+                    }
+}";
+            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+        }
+
         // todo static methods?
         // todo sealed and other keywords?
         // todo generic interface?
         // todo check interface syntax for all possibiliities
-        // todo copy class doc
         // todo Indexers
         // todo Events
         // todo ctor
+        // todo report exceptions as diagnostic
     }
 }

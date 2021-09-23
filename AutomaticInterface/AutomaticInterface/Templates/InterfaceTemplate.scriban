@@ -12,6 +12,8 @@
 
 namespace {{Namespace}}
 {
+    {{~ if Documentation ~}} {{ Documentation ~}}
+    {{~ end }}
     [GeneratedCode("AutomaticInterface", "")]
     public interface {{InterfaceName}}
     {
