@@ -16,7 +16,9 @@ namespace {{Namespace}}
     public interface {{InterfaceName}}
     {
         {{ for prop in Properties ~}}
-        {{prop.Ttype}} {{prop.Name}} { {{ if prop.HasGet }}get; {{ end }}{{ if prop.HasSet }}set; {{ end }}}
+        {{ if prop.Documentation }} {{prop.Documentation}} 
+        {{~ end }}
+        {{- prop.Ttype}} {{prop.Name}} { {{ if prop.HasGet }}get; {{ end }}{{ if prop.HasSet }}set; {{ end }}}
         {{ end ~}}
         {{ for method in Methods -}}
             {{ if method.Documentation }} {{method.Documentation}} 

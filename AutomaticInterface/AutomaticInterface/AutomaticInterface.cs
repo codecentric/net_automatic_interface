@@ -75,7 +75,7 @@ namespace AutomaticInterface
                 }
 
                 interfaceGenerator.AddUsings(GetUsings(namedType));
-                AddMembersToInterface(namedType, interfaceGenerator);
+                AddMembersToInterface(namedType, interfaceGenerator, classSyntax);
                 AddMethodsToInterface(namedType, interfaceGenerator, classSyntax);
 
                 var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
@@ -120,6 +120,32 @@ namespace AutomaticInterface
 
             var match = classSyntax.DescendantNodes()
              .OfType<MethodDeclarationSyntax>()
+             .SingleOrDefault(x => x.Identifier.ValueText == method.Name);
+
+            if (match is null)
+            {
+                return string.Empty;
+            }
+
+            if (!match.HasLeadingTrivia)
+            {
+                // no documentation
+                return string.Empty;
+            }
+
+            var trivia = match.GetLeadingTrivia()
+                .Where(x => docSyntax.Contains(x.Kind()))
+                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
+
+            return trivia.ToFullString().Trim();
+        }
+
+        private string GetDocumentationForProperty(IPropertySymbol method, ClassDeclarationSyntax classSyntax)
+        {
+            SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
+
+            var match = classSyntax.DescendantNodes()
+             .OfType<PropertyDeclarationSyntax>()
              .SingleOrDefault(x => x.Identifier.ValueText == method.Name);
 
             if (match is null)
@@ -193,7 +219,7 @@ namespace AutomaticInterface
             return classSymbols;
         }
 
-        private void AddMembersToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator)
+        private void AddMembersToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                 .Where(x => x.Kind == SymbolKind.Property)
@@ -206,8 +232,9 @@ namespace AutomaticInterface
                    var name = prop.Name;
                    var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
                    var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
+                   var documentation = GetDocumentationForProperty(prop, classSyntax);
 
-                   codeGenerator.AddPropertyToInterface(name, type.ToDisplayString(), hasGet, hasSet);
+                   codeGenerator.AddPropertyToInterface(name, type.ToDisplayString(), hasGet, hasSet, documentation);
                });
         }
 
@@ -215,12 +242,6 @@ namespace AutomaticInterface
         {
             // Register a syntax receiver that will be created for each generation pass
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-#if DEBUGGENERATOR
-            if (!Debugger.IsAttached)
-            {
-                Debugger.Launch();
-            }
-#endif
         }
 
     }

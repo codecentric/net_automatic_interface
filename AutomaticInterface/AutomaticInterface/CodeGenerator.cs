@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace AutomaticInterface
 {
-    public record PropertyInfo(string Name, string Ttype, bool HasGet, bool HasSet);
+    public record PropertyInfo(string Name, string Ttype, bool HasGet, bool HasSet, string Documentation);
 
     public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters, string Documentation);
 
@@ -32,9 +32,9 @@ namespace AutomaticInterface
             this.interfaceName = interfaceName;
         }
 
-        public void AddPropertyToInterface(string name, string ttype, bool hasGet, bool hasSet)
+        public void AddPropertyToInterface(string name, string ttype, bool hasGet, bool hasSet, string documentation)
         {
-            propertyInfos.Add(new PropertyInfo(name, ttype, hasGet, hasSet));
+            propertyInfos.Add(new PropertyInfo(name, ttype, hasGet, hasSet, documentation));
         }
 
         private Model BuildModel()

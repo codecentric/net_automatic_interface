@@ -7,6 +7,9 @@ namespace AutomaticInterfaceExample
 {
     public interface ITestInterFace
     {
+        /// <summary>
+        /// Bla bla
+        /// </summary>
         string MyProperty { get; set; }
 
         /// <summary>
