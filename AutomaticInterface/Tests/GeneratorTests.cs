@@ -626,5 +626,7 @@ string Hello(string x);
         // todo check if get set is public?
         // todo do we need ctor?
         // todo generic interface?
+        // todo check interface syntax for all possibiliities
+        // todo copy class doc
     }
 }
