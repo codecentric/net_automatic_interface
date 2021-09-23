@@ -137,8 +137,6 @@ namespace AutomaticInterface
                 .Where(x => docSyntax.Contains(x.Kind()))
                 .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 
-
-
             return trivia.ToFullString().Trim();
         }
 
@@ -206,9 +204,8 @@ namespace AutomaticInterface
                {
                    var type = prop.Type;
                    var name = prop.Name;
-                   var hasGet = prop.GetMethod != null;
-                   var hasSet = prop.SetMethod != null;
-                   // todo check if get set is public?
+                   var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
+                   var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
 
                    codeGenerator.AddPropertyToInterface(name, type.ToDisplayString(), hasGet, hasSet);
                });

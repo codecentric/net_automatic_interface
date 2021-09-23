@@ -19,5 +19,6 @@ namespace AutomaticInterfaceExample
          * <summary>Hello World!</summary>
          */
         string GetHello(string x);
+
     }
 }
