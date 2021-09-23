@@ -11,9 +11,7 @@ namespace AutomaticInterface
 {
     public record PropertyInfo(string Name, string Ttype, bool HasGet, bool HasSet);
 
-    public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters);
-
-    // public record MethodDescription(string Name, string ReturnType, string ReturnTypeGenericArgument, List<string> arguments);
+    public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters, string Documentation);
 
     public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods);
 
@@ -76,9 +74,9 @@ namespace AutomaticInterface
 
         }
 
-        internal void AddMethodToInterface(string name, string returnType, HashSet<string> parameters)
+        internal void AddMethodToInterface(string name, string returnType, HashSet<string> parameters, string documentation)
         {
-            methodInfos.Add(new MethodInfo(name, returnType, parameters));
+            methodInfos.Add(new MethodInfo(name, returnType, parameters, documentation));
         }
     }
 }

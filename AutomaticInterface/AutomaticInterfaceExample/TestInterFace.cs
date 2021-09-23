@@ -9,8 +9,15 @@ namespace AutomaticInterfaceExample
     {
         string MyProperty { get; set; }
 
+        /// <summary>
+        /// test
+        /// </summary>
+        /// <returns></returns>
         Task<string> GetData();
 
+        /**
+         * <summary>Hello World!</summary>
+         */
         string GetHello(string x);
     }
 }

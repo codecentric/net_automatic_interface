@@ -18,8 +18,10 @@ namespace {{Namespace}}
         {{ for prop in Properties ~}}
         {{prop.Ttype}} {{prop.Name}} { {{ if prop.HasGet }}get; {{ end }}{{ if prop.HasSet }}set; {{ end }}}
         {{ end ~}}
-        {{ for method in Methods ~}}
-            {{~ method.ReturnType}} {{method.Name}}(
+        {{ for method in Methods -}}
+            {{ if method.Documentation }} {{method.Documentation}} 
+            {{~ end }}
+            {{- method.ReturnType}} {{method.Name}}(
             {{- for param in method.Parameters ~}}
                 {{- param}}{{ if !for.last }}, {{ end }}
             {{- end ~}});

@@ -66,6 +66,7 @@ namespace AutomaticInterface
 
                 var interfaceGenerator = new CodeGenerator(namespaceName, interfaceName);
 
+   
                 INamedTypeSymbol? namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
 
                 if (namedType == null)
@@ -75,7 +76,7 @@ namespace AutomaticInterface
 
                 interfaceGenerator.AddUsings(GetUsings(namedType));
                 AddMembersToInterface(namedType, interfaceGenerator);
-                AddMethodsToInterface(namedType, interfaceGenerator);
+                AddMethodsToInterface(namedType, interfaceGenerator, classSyntax);
 
                 var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
@@ -88,7 +89,7 @@ namespace AutomaticInterface
             }
         }
 
-        private void AddMethodsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator)
+        private void AddMethodsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                  .Where(x => x.Kind == SymbolKind.Method)
@@ -99,9 +100,9 @@ namespace AutomaticInterface
                  .ToList()
                 .ForEach(method =>
                 {
-                    var test = method.DeclaringSyntaxReferences;
                     var returnType = method.ReturnType;
                     var name = method.Name;
+                    var documentation = GetDocumentationFor(method, classSyntax);
 
                     var paramResult = new HashSet<string>();
                     method.Parameters
@@ -109,8 +110,36 @@ namespace AutomaticInterface
                     .ToList()
                     .ForEach(x => paramResult.Add(x));
 
-                   codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), paramResult);
+                   codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), paramResult, documentation);
                 });
+        }
+
+        private string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax)
+        {
+            SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
+
+            var match = classSyntax.DescendantNodes()
+             .OfType<MethodDeclarationSyntax>()
+             .SingleOrDefault(x => x.Identifier.ValueText == method.Name);
+
+            if (match is null)
+            {
+                return string.Empty;
+            }
+
+            if (!match.HasLeadingTrivia)
+            {
+                // no documentation
+                return string.Empty;
+            }
+
+            var trivia = match.GetLeadingTrivia()
+                .Where(x => docSyntax.Contains(x.Kind()))
+                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
+
+
+
+            return trivia.ToFullString().Trim();
         }
 
         private HashSet<string> GetUsings(INamedTypeSymbol classSymbol)
