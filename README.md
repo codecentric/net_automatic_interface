@@ -110,7 +110,7 @@ namespace AutomaticInterfaceExample
 
 ## How to use it?
 
-1. Install the nuget: <todo>
+1. Install the nuget: `dotnet add package AutomaticInterface`
 2. Create an Attribute with the Name `[GenerateAutomaticInterface]`. You can just copy the minimal code from this Repo (see the `AutomaticInterfaceAttribute` project). It's the easiest way to get that attribute because you cannot reference any code from the analyzer package.
 3. Let your class implement the interface, e.g. `SomeClass: ISomeClass`
 4. Build Solution, the Interface should now be available.
