@@ -29,5 +29,12 @@ namespace AutomaticInterfaceExample
         public event EventHandler ShapeChanged;  // included
 
         private event EventHandler ShapeChanged2; // ignored because not public
+
+        private int[] arr = new int[100];
+        public int this[int index] // currently ignored
+        {
+            get => arr[index];
+            set => arr[index] = value;
+        }
     }
 }

@@ -78,7 +78,7 @@ namespace AutomaticInterface
                 interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
                 interfaceGenerator.AddGeneric(GetGeneric(namedType, classSyntax));
 
-                AddMembersToInterface(namedType, interfaceGenerator, classSyntax);
+                AddPropertiesToInterface(namedType, interfaceGenerator, classSyntax);
                 AddMethodsToInterface(namedType, interfaceGenerator, classSyntax);
                 AddEventsToInterface(namedType, interfaceGenerator, classSyntax);
 
@@ -297,17 +297,19 @@ namespace AutomaticInterface
             return classSymbols;
         }
 
-        private void AddMembersToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        private void AddPropertiesToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                 .Where(x => x.Kind == SymbolKind.Property)
                 .OfType<IPropertySymbol>()
                 .Where(x => x.DeclaredAccessibility == Accessibility.Public)
                 .Where(x => !x.IsStatic)
+                .Where(x => !x.IsIndexer)
                 .ToList()
                .ForEach(prop =>
                {
                    var type = prop.Type;
+   
                    var name = prop.Name;
                    var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
                    var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
