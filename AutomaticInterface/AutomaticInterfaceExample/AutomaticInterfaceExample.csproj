@@ -2,9 +2,18 @@
 
   <PropertyGroup>
 	  <OutputType>Exe</OutputType>
-	  <TargetFramework>netcoreapp3.1</TargetFramework>
-	  <LangVersion>preview</LangVersion>
+	  <TargetFramework>netcoreapp5.0</TargetFramework>
+	  <Configurations>Debug;Release;DebugGenerator</Configurations>
+	  <SourceGenerator_EnableLogging>True</SourceGenerator_EnableLogging>
+	  <SourceGenerator_EnableDebug>True</SourceGenerator_EnableDebug>
+	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
+	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
+	  <SourceGenerator_LogPath>C:\tmp\log.txt</SourceGenerator_LogPath>
     </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Scriban" Version="4.0.1.0" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj" />

@@ -1,21 +1,61 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
+    <IsRoslynComponent>true</IsRoslynComponent>
+	  <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	  <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+    <Configurations>Debug;Release;DebugGenerator</Configurations>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <DevelopmentDependency>true</DevelopmentDependency>
+	<IncludeBuildOutput>false</IncludeBuildOutput>
+	<LangVersion>preview</LangVersion>
+	   <Nullable>enable</Nullable>
+	  <SourceGenerator_EnableLogging>True</SourceGenerator_EnableLogging>
+	  <SourceGenerator_EnableDebug>False</SourceGenerator_EnableDebug>
+	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
+	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
+	  <Company>codecentric</Company>
+	  <Copyright>(c) codecentric</Copyright>
+	  <PackageProjectUrl>https://github.com/codecentric/net_automatic_interface</PackageProjectUrl>
+	  <Description>Source Generator to create an Interface from a class definition</Description>
+	  <RepositoryUrl>https://github.com/codecentric/net_automatic_interface.git</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageTags>interface; class; Source Generator</PackageTags>
+	  <PackageLicenseExpression> MIT</PackageLicenseExpression>
+	  <EnableNETAnalyzers>True</EnableNETAnalyzers>
+	  <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>
 
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<RestoreAdditionalProjectSources>https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json ;$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
+	</PropertyGroup>-->
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerator|AnyCPU'">
+	  <DefineConstants>TRACE;DEBUGGENERATOR</DefineConstants>
+	  <NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <NoWarn>1701;1702</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0-2.final" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.10.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0" PrivateAssets="all" />
+		    <PackageReference Include="Scriban" Version="4.0.1" PrivateAssets="all" LocalSourceGenerators="true" />		
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj" />
-	</ItemGroup>
-	
+
+	<ItemGroup>		
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />		
+	</ItemGroup>	
 </Project>

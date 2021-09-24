@@ -2,14 +2,20 @@
 
 namespace AutomaticInterfaceExample
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
 
             DemoClass demo = new DemoClass();
-            IDemoClass demoInterface = demo;
+            Console.WriteLine(DemoClass.StaticMethod());
 
+            Console.WriteLine(DemoClass.StaticProperty);
+
+            Console.WriteLine(demo.AMethod("A", "B"));
+
+            IDemoClass demoInterface = demo;
+            Console.WriteLine(demoInterface.AMethod("A", "B"));
             Console.WriteLine("Hello World!");
         }
     }
