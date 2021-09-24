@@ -12,13 +12,13 @@ using System.Text;
 namespace AutomaticInterface
 {
     [Generator]
-    public class AutomaticInterfaceGenerator: ISourceGenerator
+    public class AutomaticInterfaceGenerator : ISourceGenerator
     {
 
         public void Execute(GeneratorExecutionContext context)
         {
             var options = new LoggerOptions(Path.Combine(Environment.CurrentDirectory, "logs"), true, true, typeof(AutomaticInterfaceGenerator).Name);
-            using Logger logger = new(context, options) ;
+            using Logger logger = new(context, options);
 
 
 
@@ -66,7 +66,7 @@ namespace AutomaticInterface
 
                 var interfaceGenerator = new CodeGenerator(namespaceName, interfaceName);
 
-   
+
                 INamedTypeSymbol? namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
 
                 if (namedType == null)
@@ -77,8 +77,10 @@ namespace AutomaticInterface
                 interfaceGenerator.AddUsings(GetUsings(namedType));
                 interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
                 interfaceGenerator.AddGeneric(GetGeneric(namedType, classSyntax));
+
                 AddMembersToInterface(namedType, interfaceGenerator, classSyntax);
                 AddMethodsToInterface(namedType, interfaceGenerator, classSyntax);
+                AddEventsToInterface(namedType, interfaceGenerator, classSyntax);
 
                 var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
@@ -90,6 +92,25 @@ namespace AutomaticInterface
                 logger.TryLogSourceCode(classSyntax, generatedCode);
             }
         }
+
+        private void AddEventsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        {
+            classSymbol.GetAllMembers()
+                 .Where(x => x.Kind == SymbolKind.Event)
+                 .OfType<IEventSymbol>()
+                 .Where(x => x.DeclaredAccessibility == Accessibility.Public)
+                 .Where(x => !x.IsStatic)
+                 .ToList()
+                .ForEach(evt =>
+                {
+                    var type = evt.Type;
+                    var name = evt.Name;
+                    var documentation = GetDocumentationForEvent(evt, classSyntax);
+
+                   codeGenerator.AddEventToInterface(name, type.ToDisplayString(), documentation);
+                });
+        }
+        
 
         private string GetGeneric(INamedTypeSymbol classSymbol, ClassDeclarationSyntax cls)
         {
@@ -120,11 +141,11 @@ namespace AutomaticInterface
 
                     var paramResult = new HashSet<string>();
                     method.Parameters
-                    .Select(x => $"{x.ToDisplayString()} {x.Name}" )
+                    .Select(x => $"{x.ToDisplayString()} {x.Name}")
                     .ToList()
                     .ForEach(x => paramResult.Add(x));
 
-                   codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), paramResult, documentation);
+                    codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), paramResult, documentation);
                 });
         }
 
@@ -161,6 +182,32 @@ namespace AutomaticInterface
             var match = classSyntax.DescendantNodes()
              .OfType<PropertyDeclarationSyntax>()
              .SingleOrDefault(x => x.Identifier.ValueText == method.Name);
+
+            if (match is null)
+            {
+                return string.Empty;
+            }
+
+            if (!match.HasLeadingTrivia)
+            {
+                // no documentation
+                return string.Empty;
+            }
+
+            var trivia = match.GetLeadingTrivia()
+                .Where(x => docSyntax.Contains(x.Kind()))
+                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
+
+            return trivia.ToFullString().Trim();
+        }
+
+        private string GetDocumentationForEvent(IEventSymbol method, ClassDeclarationSyntax classSyntax)
+        {
+            SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
+
+            var match = classSyntax.DescendantNodes()
+             .OfType<EventFieldDeclarationSyntax>()
+             .SingleOrDefault(x => x.Declaration.Variables.Any(x => x.Identifier.ValueText == method.Name));
 
             if (match is null)
             {
@@ -220,7 +267,7 @@ namespace AutomaticInterface
 
         private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(SyntaxReceiver receiver, Compilation compilation)
         {
-            List<ClassDeclarationSyntax> classSymbols = new ();
+            List<ClassDeclarationSyntax> classSymbols = new();
             foreach (ClassDeclarationSyntax cls in receiver.CandidateClasses)
             {
                 var model = compilation.GetSemanticModel(cls.SyntaxTree);

@@ -30,5 +30,10 @@ namespace {{Namespace}}
                 {{- param}}{{ if !for.last }}, {{ end }}
             {{- end ~}});
         {{ end ~}}
+         {{ for event in Events -}}
+            {{ if event.Documentation }} {{event.Documentation}} 
+            {{~ end }}
+            event {{ event.Type}} {{event.Name}};
+        {{ end ~}}
     }
 }

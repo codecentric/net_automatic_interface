@@ -13,7 +13,9 @@ namespace AutomaticInterface
 
     public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters, string Documentation);
 
-    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods, string Documentation, string GenericType);
+    public record EventInfo(string Name, string Type, string Documentation);
+
+    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods, string Documentation, string GenericType, List<EventInfo> Events);
 
     public class CodeGenerator
     {
@@ -26,6 +28,7 @@ namespace AutomaticInterface
         private readonly HashSet<string> usings = new() { "using System.CodeDom.Compiler;" };
         private readonly List<PropertyInfo> propertyInfos = new();
         private readonly List<MethodInfo> methodInfos = new();
+        private readonly List<EventInfo> events = new();
         private string classDocumentation = string.Empty;
         private string genericType;
 
@@ -41,7 +44,7 @@ namespace AutomaticInterface
 
         private Model BuildModel()
         {
-            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, methodInfos, classDocumentation, genericType);
+            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, methodInfos, classDocumentation, genericType, events);
         }
 
         public string BuildCode()
@@ -89,6 +92,11 @@ namespace AutomaticInterface
         internal void AddMethodToInterface(string name, string returnType, HashSet<string> parameters, string documentation)
         {
             methodInfos.Add(new MethodInfo(name, returnType, parameters, documentation));
+        }
+
+        internal void AddEventToInterface(string name, string type, string documentation)
+        {
+            events.Add(new EventInfo( name, type, documentation));
         }
     }
 }

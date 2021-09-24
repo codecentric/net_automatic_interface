@@ -1,9 +1,10 @@
 ﻿using AutomaticInterfaceAttribute;
+using System;
 
 namespace AutomaticInterfaceExample
 {
     [GenerateAutomaticInterface]
-    class DemoClass: IDemoClass
+    class DemoClass: IDemoClass // Generics, including constraints are allowed, too.
     {
         public string Hello { get; set; }  // included, get and set are copied to the interface when public
 
@@ -24,5 +25,9 @@ namespace AutomaticInterfaceExample
         {
             return "static";
        }
+
+        public event EventHandler ShapeChanged;  // included
+
+        private event EventHandler ShapeChanged2; // ignored because not public
     }
 }

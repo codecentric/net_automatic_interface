@@ -78,7 +78,7 @@ namespace AutomaticInterfaceExample
     [GenerateAutomaticInterface]
     class DemoClass
     {
-    }
+                     }
 }
 ";
 
@@ -99,7 +99,7 @@ namespace AutomaticInterfaceExample
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
-                    }
+                             }
 }";
 
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
@@ -142,7 +142,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello { get; set; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -185,7 +185,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello { set; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -228,7 +228,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello { get; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -248,7 +248,7 @@ namespace AutomaticInterfaceExample
     class DemoClass
     {
         public DirectoryInfo Hello { get; set; }
-    }
+                     }
 }
 ";
 
@@ -272,7 +272,7 @@ namespace AutomaticInterfaceExample
     {
                   
 System.IO.DirectoryInfo Hello { get; set; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -317,7 +317,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello();
-            }
+                     }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -363,7 +363,7 @@ namespace AutomaticInterfaceExample
     {
                   
 System.Threading.Tasks.Task<string> Hello();
-            }
+                     }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -408,7 +408,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello(string x);
-            }
+                     }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -454,7 +454,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello(System.Threading.Tasks.Task<string> x);
-            }
+                     }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -498,7 +498,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello(string x, int y, double z);
-            }
+                     }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -541,7 +541,7 @@ namespace AutomaticInterfaceExample
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -593,7 +593,7 @@ namespace AutomaticInterfaceExample
         /// </summary>
         /// <returns></returns> 
 string Hello(string x);
-            }
+                     }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -644,7 +644,7 @@ namespace AutomaticInterfaceExample
          * <summary>Hello World!</summary>
          */ 
 string Hello(string x);
-            }
+                     }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -686,7 +686,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello { get; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -708,7 +708,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary>
         public string Hello { get; private set; }
-    }
+                     }
 }
 ";
 
@@ -733,7 +733,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary> 
 string Hello { get; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -779,7 +779,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello { get; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -830,7 +830,7 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello { get; }
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -879,7 +879,7 @@ namespace AutomaticInterfaceExample
     [GeneratedCode(""AutomaticInterface"", """")]
     public interface IDemoClass
     {
-                    }
+                             }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
@@ -925,14 +925,70 @@ namespace AutomaticInterfaceExample
     {
                   
 string Hello { get; }
-                    }
+                             }
+}";
+            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+        }
+
+        [Fact]
+        public async Task CopiesEventsToInterface()
+        {
+            var code = @"
+using AutomaticInterfaceAttribute;
+using System;
+
+namespace AutomaticInterfaceExample
+{
+        /// <summary>
+        /// Bla bla
+        /// </summary>
+    [GenerateAutomaticInterface]
+    class DemoClass
+    {
+
+        /// <summary>
+        /// Bla bla
+        /// </summary>
+        public event EventHandler ShapeChanged;  // included
+
+        private event EventHandler ShapeChanged2; // ignored because not public
+    }
+}
+";
+
+            var expected = @"//--------------------------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.
+// </auto-generated>
+//--------------------------------------------------------------------------------------------------
+
+using System.CodeDom.Compiler;
+using AutomaticInterfaceAttribute;
+using System;
+
+namespace AutomaticInterfaceExample
+{
+/// <summary>
+        /// Bla bla
+        /// </summary>
+    [GeneratedCode(""AutomaticInterface"", """")]
+    public interface IDemoClass
+    {
+                          /// <summary>
+        /// Bla bla
+        /// </summary> 
+
+            event System.EventHandler ShapeChanged;
+            }
 }";
             await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
         // todo Indexers
-        // todo Events
         // todo report exceptions as diagnostic
         // todo make interface partial
         // todo clean up generated source code
