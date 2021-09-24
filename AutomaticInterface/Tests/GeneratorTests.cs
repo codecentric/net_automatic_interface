@@ -1044,8 +1044,6 @@ namespace AutomaticInterfaceExample
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
-
-        // todo report exceptions as diagnostic
         // todo clean up generated source code
     }
 }

@@ -20,9 +20,6 @@ namespace AutomaticInterface
             var options = new LoggerOptions(Path.Combine(Environment.CurrentDirectory, "logs"), true, true, typeof(AutomaticInterfaceGenerator).Name);
             using Logger logger = new(context, options);
 
-
-
-
             // retreive the populated receiver 
             if (context.SyntaxReceiver is not SyntaxReceiver receiver)
             {
@@ -35,10 +32,20 @@ namespace AutomaticInterface
             {
                 return;
             }
+            try
+            {
+                var classSymbols = GetClassesToAddInterfaceFor(receiver, compilation);
 
-            var classSymbols = GetClassesToAddInterfaceFor(receiver, compilation);
+                CreateInterfaces(context, classSymbols, logger);
+            }
+            catch (Exception e)
+            {
+                var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Error", $"{nameof(AutomaticInterfaceGenerator)} failed to generate Interface due to an error. Please inform the author. Error: {e}", "Compilation", DiagnosticSeverity.Error, isEnabledByDefault: true);
+                context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
-            CreateInterfaces(context, classSymbols, logger);
+                throw;
+            }
+
         }
 
         private void CreateInterfaces(GeneratorExecutionContext context, List<ClassDeclarationSyntax> classes, Logger logger)
