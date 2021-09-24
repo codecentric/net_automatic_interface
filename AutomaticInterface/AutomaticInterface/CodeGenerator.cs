@@ -13,7 +13,7 @@ namespace AutomaticInterface
 
     public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters, string Documentation);
 
-    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods, string Documentation);
+    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods, string Documentation, string GenericType);
 
     public class CodeGenerator
     {
@@ -27,6 +27,7 @@ namespace AutomaticInterface
         private readonly List<PropertyInfo> propertyInfos = new();
         private readonly List<MethodInfo> methodInfos = new();
         private string classDocumentation = string.Empty;
+        private string genericType;
 
         public CodeGenerator(string nameSpaceName, string interfaceName){
             this.nameSpaceName = nameSpaceName;
@@ -40,7 +41,7 @@ namespace AutomaticInterface
 
         private Model BuildModel()
         {
-            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, methodInfos, classDocumentation);
+            return new Model(interfaceName, nameSpaceName, usings, propertyInfos, methodInfos, classDocumentation, genericType);
         }
 
         public string BuildCode()
@@ -64,6 +65,11 @@ namespace AutomaticInterface
             var result = template.Render(BuildModel(), member => member.Name);
 
             return result;
+        }
+
+        internal void AddGeneric(string v)
+        {
+            this.genericType = v;
         }
 
         internal void AddClassDocumentation(string documentation)

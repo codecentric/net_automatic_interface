@@ -76,6 +76,7 @@ namespace AutomaticInterface
 
                 interfaceGenerator.AddUsings(GetUsings(namedType));
                 interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
+                interfaceGenerator.AddGeneric(GetGeneric(namedType, classSyntax));
                 AddMembersToInterface(namedType, interfaceGenerator, classSyntax);
                 AddMethodsToInterface(namedType, interfaceGenerator, classSyntax);
 
@@ -88,6 +89,17 @@ namespace AutomaticInterface
 
                 logger.TryLogSourceCode(classSyntax, generatedCode);
             }
+        }
+
+        private string GetGeneric(INamedTypeSymbol classSymbol, ClassDeclarationSyntax cls)
+        {
+            if (classSymbol.IsGenericType)
+            {
+                var formattedGeneric = $"{cls.TypeParameterList?.ToFullString().Trim()} {cls.ConstraintClauses}";
+                return formattedGeneric;
+            }
+
+            return string.Empty;
         }
 
         private void AddMethodsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
