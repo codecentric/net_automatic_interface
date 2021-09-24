@@ -1046,7 +1046,6 @@ namespace AutomaticInterfaceExample
 
 
         // todo report exceptions as diagnostic
-        // todo make interface partial
         // todo clean up generated source code
     }
 }
