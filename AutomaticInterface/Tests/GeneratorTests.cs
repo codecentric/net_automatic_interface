@@ -97,7 +97,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                              }
 }";
@@ -138,7 +138,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello { get; set; }
@@ -181,7 +181,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello { set; }
@@ -224,7 +224,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello { get; }
@@ -268,7 +268,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 System.IO.DirectoryInfo Hello { get; set; }
@@ -313,7 +313,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello();
@@ -359,7 +359,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 System.Threading.Tasks.Task<string> Hello();
@@ -404,7 +404,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello(string x);
@@ -450,7 +450,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello(System.Threading.Tasks.Task<string> x);
@@ -494,7 +494,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello(string x, int y, double z);
@@ -539,7 +539,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                              }
 }";
@@ -586,7 +586,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                  /// <summary>
         /// TEST
@@ -638,7 +638,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                  /**
          * <summary>Hello World!</summary>
@@ -682,7 +682,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello { get; }
@@ -727,7 +727,7 @@ namespace AutomaticInterfaceExample
 {
 
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                  /// <summary>
         /// Bla bla
@@ -775,7 +775,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello { get; }
@@ -826,7 +826,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                   
 string Hello { get; }
@@ -877,7 +877,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                              }
 }";
@@ -921,7 +921,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass<T,U> where T:class
+    public partial interface IDemoClass<T,U> where T:class
     {
                   
 string Hello { get; }
@@ -975,7 +975,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                           /// <summary>
         /// Bla bla
@@ -1036,7 +1036,7 @@ namespace AutomaticInterfaceExample
         /// Bla bla
         /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public interface IDemoClass
+    public partial interface IDemoClass
     {
                              }
 }";

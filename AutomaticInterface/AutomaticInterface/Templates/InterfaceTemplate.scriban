@@ -15,7 +15,7 @@ namespace {{Namespace}}
     {{~ if Documentation ~}} {{ Documentation ~}}
     {{~ end }}
     [GeneratedCode("AutomaticInterface", "")]
-    public interface {{InterfaceName}} {{~ if GenericType ~}} {{~ GenericType ~}} {{~ end }}
+    public partial interface {{InterfaceName}} {{~ if GenericType ~}} {{~ GenericType ~}} {{~ end }}
     {
         {{ for prop in Properties ~}}
         {{ if prop.Documentation }} {{prop.Documentation}} 
