@@ -49,7 +49,7 @@ namespace AutomaticInterface
                    classSyntax.AttributeLists.SelectMany(al => al.Attributes
                            .Where(a =>
                            {
-                               return (a?.Name as IdentifierNameSyntax)?.Identifier?.Text == attributeName;
+                               return (a?.Name as IdentifierNameSyntax)?.Identifier.Text == attributeName;
                            }))
                        .Any();
         }

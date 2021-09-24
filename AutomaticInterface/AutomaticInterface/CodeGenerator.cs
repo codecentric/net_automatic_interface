@@ -27,6 +27,7 @@ namespace AutomaticInterface
         private readonly List<MethodInfo> methodInfos = new();
         private readonly List<EventInfo> events = new();
         private string classDocumentation = string.Empty;
+        private string genericType = string.Empty;
 
         public CodeGenerator(string nameSpaceName, string interfaceName){
             this.nameSpaceName = nameSpaceName;
