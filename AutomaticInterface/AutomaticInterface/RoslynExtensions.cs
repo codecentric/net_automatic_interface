@@ -47,7 +47,10 @@ namespace AutomaticInterface
         {
             return classSyntax.AttributeLists.Count > 0 &&
                    classSyntax.AttributeLists.SelectMany(al => al.Attributes
-                           .Where(a => (a?.Name as IdentifierNameSyntax).Identifier.Text == attributeName))
+                           .Where(a =>
+                           {
+                               return (a?.Name as IdentifierNameSyntax)?.Identifier?.Text == attributeName;
+                           }))
                        .Any();
         }
 

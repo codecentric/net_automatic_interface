@@ -136,7 +136,7 @@ namespace AutomaticInterface
                  .Where(x => x.Kind == SymbolKind.Method)
                  .OfType<IMethodSymbol>()
                  .Where(x => x.DeclaredAccessibility == Accessibility.Public)
-                 .Where(x => x.MethodKind == MethodKind.Ordinary) // todo is this everything?
+                 .Where(x => x.MethodKind == MethodKind.Ordinary)
                  .Where(x => !x.IsStatic)
                  .Where(x => x.ContainingType.Name != typeof(object).Name)
                  .ToList()

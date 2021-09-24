@@ -22,15 +22,11 @@ namespace AutomaticInterface
         private readonly string nameSpaceName;
         private readonly string interfaceName;
 
-        /// <summary>
-        /// 
-        /// </summary>
         private readonly HashSet<string> usings = new() { "using System.CodeDom.Compiler;" };
         private readonly List<PropertyInfo> propertyInfos = new();
         private readonly List<MethodInfo> methodInfos = new();
         private readonly List<EventInfo> events = new();
         private string classDocumentation = string.Empty;
-        private string genericType;
 
         public CodeGenerator(string nameSpaceName, string interfaceName){
             this.nameSpaceName = nameSpaceName;

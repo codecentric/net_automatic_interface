@@ -7,6 +7,7 @@ namespace AutomaticInterfaceExample
     /// Class Documentation will be copied
     /// </summary>
     [GenerateAutomaticInterface]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1144:Unused private types or members should be removed", Justification = "Demo class")]
     class DemoClass: IDemoClass // Generics, including constraints are allowed, too.
     {
         /// <summary>
@@ -30,19 +31,27 @@ namespace AutomaticInterfaceExample
         }
 
         public static string StaticProperty => "abc"; // static property, ignored
+
         public static string StaticMethod()  // static method, ignored
         {
-            return "static";
+            return "static" + DateTime.Now;
         }
 
         /// <summary>
         /// event Documentation will be copied
         /// </summary>
+#pragma warning disable S3264 // Events should be invoked
         public event EventHandler ShapeChanged;  // included
+#pragma warning restore S3264 // Events should be invoked
 
+#pragma warning disable S3264 // Events should be invoked
+#pragma warning disable IDE0051 // Remove unused private members
         private event EventHandler ShapeChanged2; // ignored because not public
+#pragma warning restore IDE0051 // Remove unused private members
+#pragma warning restore S3264 // Events should be invoked
 
-        private int[] arr = new int[100];
+        private readonly int[] arr = new int[100];
+
         public int this[int index] // currently ignored
         {
             get => arr[index];
