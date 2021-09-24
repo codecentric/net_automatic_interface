@@ -25,6 +25,7 @@
 	  <PackageLicenseExpression> MIT</PackageLicenseExpression>
 	  <EnableNETAnalyzers>True</EnableNETAnalyzers>
 	  <AnalysisLevel>5.0</AnalysisLevel>
+	  <Version>1.1.0</Version>
   </PropertyGroup>
 
 	<!--<PropertyGroup>
