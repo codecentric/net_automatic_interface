@@ -26,7 +26,19 @@ namespace AutomaticInterface
             loggerStopwatch = new Stopwatch();
             loggerStopwatch.Start();
 
-            Directory.CreateDirectory(options.LogPath);
+            try
+            {
+                Directory.CreateDirectory(options.LogPath);
+            }
+            catch (Exception)
+            {
+                var errorDescriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Error", $"{nameof(AutomaticInterfaceGenerator)} cannot store logs at {options.LogPath}", "Compilation", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+                generatorExecutionContext.ReportDiagnostic(Diagnostic.Create(errorDescriptor, null));
+            }
+
+            var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Info", $"{nameof(AutomaticInterfaceGenerator)} stores logs at {options.LogPath}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
+            generatorExecutionContext.ReportDiagnostic(Diagnostic.Create(descriptor, null));
+
 
             logFile = Path.Combine(options.LogPath, $"{options.name}_log.txt");
 
@@ -105,7 +117,15 @@ namespace AutomaticInterface
 
         private void WriteLog(string logtext)
         {
-            File.AppendAllText(logFile, $"{logtext}{Environment.NewLine}");
+            try
+            {
+                File.AppendAllText(logFile, $"{logtext}{Environment.NewLine}");
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+
         }
 
         private string GetTextWithLine(string context)

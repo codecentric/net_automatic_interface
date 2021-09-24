@@ -15,6 +15,16 @@
 	  <SourceGenerator_EnableDebug>False</SourceGenerator_EnableDebug>
 	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
 	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
+	  <Company>codecentric</Company>
+	  <Copyright>(c) codecentric</Copyright>
+	  <PackageProjectUrl>https://github.com/codecentric/net_automatic_interface</PackageProjectUrl>
+	  <Description>Source Generator to create an Interface from a class definition</Description>
+	  <RepositoryUrl>https://github.com/codecentric/net_automatic_interface.git</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageTags>interface; class; Source Generator</PackageTags>
+	  <PackageLicenseExpression> MIT</PackageLicenseExpression>
+	  <EnableNETAnalyzers>True</EnableNETAnalyzers>
+	  <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>
 
 	<!--<PropertyGroup>
@@ -46,6 +56,6 @@
 
 
 	<ItemGroup>		
-		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />		
 	</ItemGroup>	
 </Project>

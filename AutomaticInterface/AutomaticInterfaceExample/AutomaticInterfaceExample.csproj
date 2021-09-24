@@ -12,17 +12,12 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dnf.SourceGenerators" Version="1.0.0" />
-    <PackageReference Include="Scriban" Version="4.0.1" />
+    <PackageReference Include="Scriban" Version="4.0.1.0" />
   </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj" />
 		<ProjectReference Include="..\AutomaticInterface\AutomaticInterface.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="logs\" />
 	</ItemGroup>
 
 </Project>

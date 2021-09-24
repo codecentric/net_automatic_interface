@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +16,7 @@ namespace AutomaticInterface
 
         public void Execute(GeneratorExecutionContext context)
         {
-            var options = new LoggerOptions(Path.Combine(Environment.CurrentDirectory, "logs"), true, true, typeof(AutomaticInterfaceGenerator).Name);
+            var options = new LoggerOptions(GetLogPath(), true, true, typeof(AutomaticInterfaceGenerator).Name);
             using Logger logger = new(context, options);
 
             // retreive the populated receiver 
@@ -46,6 +45,17 @@ namespace AutomaticInterface
                 throw;
             }
 
+            static string GetLogPath()
+            {
+                string logDir = Environment.CurrentDirectory;
+
+                if (logDir.Contains("MSBuild"))
+                {
+                    // MSBuild is often in Program Files and cannot be written
+                    logDir = Path.GetTempPath();
+                }
+                return Path.Combine(logDir, "logs");
+            }
         }
 
         private void CreateInterfaces(GeneratorExecutionContext context, List<ClassDeclarationSyntax> classes, Logger logger)
@@ -100,7 +110,7 @@ namespace AutomaticInterface
             }
         }
 
-        private void AddEventsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        private static void AddEventsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                  .Where(x => x.Kind == SymbolKind.Event)
@@ -114,12 +124,12 @@ namespace AutomaticInterface
                     var name = evt.Name;
                     var documentation = GetDocumentationForEvent(evt, classSyntax);
 
-                   codeGenerator.AddEventToInterface(name, type.ToDisplayString(), documentation);
+                    codeGenerator.AddEventToInterface(name, type.ToDisplayString(), documentation);
                 });
         }
-        
 
-        private string GetGeneric(INamedTypeSymbol classSymbol, ClassDeclarationSyntax cls)
+
+        private static string GetGeneric(INamedTypeSymbol classSymbol, ClassDeclarationSyntax cls)
         {
             if (classSymbol.IsGenericType)
             {
@@ -130,7 +140,7 @@ namespace AutomaticInterface
             return string.Empty;
         }
 
-        private void AddMethodsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                  .Where(x => x.Kind == SymbolKind.Method)
@@ -156,7 +166,7 @@ namespace AutomaticInterface
                 });
         }
 
-        private string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax)
+        private static string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax)
         {
             SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
 
@@ -182,7 +192,7 @@ namespace AutomaticInterface
             return trivia.ToFullString().Trim();
         }
 
-        private string GetDocumentationForProperty(IPropertySymbol method, ClassDeclarationSyntax classSyntax)
+        private static string GetDocumentationForProperty(IPropertySymbol method, ClassDeclarationSyntax classSyntax)
         {
             SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
 
@@ -208,7 +218,7 @@ namespace AutomaticInterface
             return trivia.ToFullString().Trim();
         }
 
-        private string GetDocumentationForEvent(IEventSymbol method, ClassDeclarationSyntax classSyntax)
+        private static string GetDocumentationForEvent(IEventSymbol method, ClassDeclarationSyntax classSyntax)
         {
             SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
 
@@ -234,7 +244,7 @@ namespace AutomaticInterface
             return trivia.ToFullString().Trim();
         }
 
-        private string GetDocumentationForClass(ClassDeclarationSyntax classSyntax)
+        private static string GetDocumentationForClass(ClassDeclarationSyntax classSyntax)
         {
             if (!classSyntax.HasLeadingTrivia)
             {
@@ -251,7 +261,7 @@ namespace AutomaticInterface
             return trivia.ToFullString().Trim();
         }
 
-        private HashSet<string> GetUsings(INamedTypeSymbol classSymbol)
+        private static HashSet<string> GetUsings(INamedTypeSymbol classSymbol)
         {
             SyntaxList<UsingDirectiveSyntax> allUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
             foreach (var syntaxRef in classSymbol.DeclaringSyntaxReferences)
@@ -304,7 +314,7 @@ namespace AutomaticInterface
             return classSymbols;
         }
 
-        private void AddPropertiesToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        private static void AddPropertiesToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                 .Where(x => x.Kind == SymbolKind.Property)
@@ -316,7 +326,7 @@ namespace AutomaticInterface
                .ForEach(prop =>
                {
                    var type = prop.Type;
-   
+
                    var name = prop.Name;
                    var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
                    var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
