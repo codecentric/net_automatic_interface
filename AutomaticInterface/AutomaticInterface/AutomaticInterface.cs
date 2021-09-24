@@ -97,6 +97,7 @@ namespace AutomaticInterface
                  .OfType<IMethodSymbol>()
                  .Where(x => x.DeclaredAccessibility == Accessibility.Public)
                  .Where(x => x.MethodKind == MethodKind.Ordinary) // todo is this everything?
+                 .Where(x => !x.IsStatic)
                  .Where(x => x.ContainingType.Name != typeof(object).Name)
                  .ToList()
                 .ForEach(method =>
@@ -243,6 +244,7 @@ namespace AutomaticInterface
                 .Where(x => x.Kind == SymbolKind.Property)
                 .OfType<IPropertySymbol>()
                 .Where(x => x.DeclaredAccessibility == Accessibility.Public)
+                .Where(x => !x.IsStatic)
                 .ToList()
                .ForEach(prop =>
                {
