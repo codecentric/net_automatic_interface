@@ -21,10 +21,7 @@ namespace Tests
                        .Select(assembly => assembly.Location)
             .ToImmutableArray();
 
-
-        
-
-        private async Task RunTestAsync(string code, string expectedResult, List<DiagnosticResult> expectedDiagnostics)
+        private async Task RunTestAsync(string code, string expectedResult)
         {
             var tester = new VerifyCS.Test
             {
@@ -42,7 +39,7 @@ namespace Tests
             tester.ReferenceAssemblies.AddAssemblies(references);
             tester.TestState.AdditionalReferences.Add(typeof(GenerateAutomaticInterfaceAttribute).Assembly);
 
-            tester.ExpectedDiagnostics.AddRange(expectedDiagnostics);
+            tester.ExpectedDiagnostics.AddRange(new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info), new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
 
             await tester.RunAsync();
 
@@ -61,8 +58,10 @@ class C { }
                 TestState =
                 {
                     Sources = { code },
-                },
-            }.RunAsync();
+                    ExpectedDiagnostics = { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) }
+        },
+
+        }.RunAsync();
 
         }
 
@@ -95,14 +94,14 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                             }
-}";
+    }
+}
+";
 
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -136,15 +135,15 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello { get; set; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello { get; set; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -179,15 +178,15 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello { set; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello { set; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -222,15 +221,15 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello { get; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello { get; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -266,15 +265,15 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-System.IO.DirectoryInfo Hello { get; set; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        System.IO.DirectoryInfo Hello { get; set; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -311,15 +310,15 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello();
-                     }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello();
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -357,15 +356,15 @@ using System.Threading.Tasks;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-System.Threading.Tasks.Task<string> Hello();
-                     }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        System.Threading.Tasks.Task<string> Hello();
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -402,15 +401,15 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello(string x);
-                     }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello(string x);
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -448,15 +447,15 @@ using System.Threading.Tasks;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello(System.Threading.Tasks.Task<string> x);
-                     }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello(System.Threading.Tasks.Task<string> x);
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -492,15 +491,15 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello(string x, int y, double z);
-                     }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello(string x, int y, double z);
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -537,13 +536,13 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -584,18 +583,19 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                 /// <summary>
+        /// <summary>
         /// TEST
         /// </summary>
-        /// <returns></returns> 
-string Hello(string x);
-                     }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        /// <returns></returns>
+        string Hello(string x);
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -636,17 +636,18 @@ using System.IO;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                 /**
-         * <summary>Hello World!</summary>
-         */ 
-string Hello(string x);
-                     }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        /**
+        * <summary>Hello World!</summary>
+        */
+        string Hello(string x);
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -680,15 +681,15 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello { get; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello { get; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -725,17 +726,18 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                 /// <summary>
+        /// <summary>
         /// Bla bla
-        /// </summary> 
-string Hello { get; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        /// </summary>
+        string Hello { get; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -771,17 +773,18 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-/// <summary>
-        /// Bla bla
-        /// </summary>
+    /// <summary>
+    /// Bla bla
+    /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello { get; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello { get; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -822,17 +825,18 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-/// <summary>
-        /// Bla bla
-        /// </summary>
+    /// <summary>
+    /// Bla bla
+    /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                  
-string Hello { get; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello { get; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -873,15 +877,16 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-/// <summary>
-        /// Bla bla
-        /// </summary>
+    /// <summary>
+    /// Bla bla
+    /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -917,17 +922,18 @@ using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
 {
-/// <summary>
-        /// Bla bla
-        /// </summary>
+    /// <summary>
+    /// Bla bla
+    /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass<T,U> where T:class
     {
-                  
-string Hello { get; }
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        string Hello { get; }
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -971,20 +977,21 @@ using System;
 
 namespace AutomaticInterfaceExample
 {
-/// <summary>
-        /// Bla bla
-        /// </summary>
+    /// <summary>
+    /// Bla bla
+    /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                          /// <summary>
+        /// <summary>
         /// Bla bla
-        /// </summary> 
-
-            event System.EventHandler ShapeChanged;
-            }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        /// </summary>
+        event System.EventHandler ShapeChanged;
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -1032,15 +1039,16 @@ using System;
 
 namespace AutomaticInterfaceExample
 {
-/// <summary>
-        /// Bla bla
-        /// </summary>
+    /// <summary>
+    /// Bla bla
+    /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                             }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
@@ -1119,30 +1127,33 @@ using System;
 
 namespace AutomaticInterfaceExample
 {
-/// <summary>
-        /// Bla bla
-        /// </summary>
+    /// <summary>
+    /// Bla bla
+    /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
     public partial interface IDemoClass
     {
-                 /// <summary>
+        /// <summary>
         /// Property Documentation will be copied
-        /// </summary> 
-string Hello { get; set; }
-                  
-string OnlyGet { get; }
-                 /// <summary>
+        /// </summary>
+        string Hello { get; set; }
+        
+        string OnlyGet { get; }
+        
+        /// <summary>
         /// Method Documentation will be copied
-        /// </summary> 
-string AMethod(string x, string y);
-                  /// <summary>
+        /// </summary>
+        string AMethod(string x, string y);
+        
+        /// <summary>
         /// event Documentation will be copied
-        /// </summary> 
-
-            event System.EventHandler ShapeChanged;
-            }
-}";
-            await RunTestAsync(code, expected, new List<DiagnosticResult>() { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) });
+        /// </summary>
+        event System.EventHandler ShapeChanged;
+        
+    }
+}
+";
+            await RunTestAsync(code, expected);
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
         // todo clean up generated source code

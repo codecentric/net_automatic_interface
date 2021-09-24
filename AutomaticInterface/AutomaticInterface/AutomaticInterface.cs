@@ -70,7 +70,6 @@ namespace AutomaticInterface
                 var compilation = context.Compilation;
                 var classSemanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
 
-
                 if (classSemanticModel == null)
                 {
                     continue;
@@ -81,7 +80,7 @@ namespace AutomaticInterface
                 var namespaceName = root.GetNamespace();
                 var interfaceName = $"I{classSyntax.GetClassName()}";
 
-                var interfaceGenerator = new CodeGenerator(namespaceName, interfaceName);
+                var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
 
 
                 INamedTypeSymbol? namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
@@ -103,14 +102,14 @@ namespace AutomaticInterface
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
                 // inject the created source into the users compilation
-                string generatedCode = interfaceGenerator.BuildCode();
+                string generatedCode = interfaceGenerator.Build();
                 context.AddSource($"I{classSyntax.GetClassName()}", SourceText.From(generatedCode, Encoding.UTF8));
 
                 logger.TryLogSourceCode(classSyntax, generatedCode);
             }
         }
 
-        private static void AddEventsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        private static void AddEventsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                  .Where(x => x.Kind == SymbolKind.Event)
@@ -140,7 +139,7 @@ namespace AutomaticInterface
             return string.Empty;
         }
 
-        private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                  .Where(x => x.Kind == SymbolKind.Method)
@@ -314,7 +313,7 @@ namespace AutomaticInterface
             return classSymbols;
         }
 
-        private static void AddPropertiesToInterface(INamedTypeSymbol classSymbol, CodeGenerator codeGenerator, ClassDeclarationSyntax classSyntax)
+        private static void AddPropertiesToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator, ClassDeclarationSyntax classSyntax)
         {
             classSymbol.GetAllMembers()
                 .Where(x => x.Kind == SymbolKind.Property)
