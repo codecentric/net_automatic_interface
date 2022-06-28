@@ -58,7 +58,7 @@ namespace AutomaticInterface
         public static string GetNamespace(this CompilationUnitSyntax root)
         {
             return root.ChildNodes()
-                .OfType<NamespaceDeclarationSyntax>()
+                .OfType<BaseNamespaceDeclarationSyntax>()
                 .FirstOrDefault()
                 .Name
                 .ToString();
