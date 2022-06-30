@@ -8,7 +8,7 @@ namespace AutomaticInterfaceExample
     /// </summary>
     [GenerateAutomaticInterface]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1144:Unused private types or members should be removed", Justification = "Demo class")]
-    class DemoClass: IDemoClass // Generics, including constraints are allowed, too.
+    public class DemoClass: IDemoClass // Generics, including constraints are allowed, too.
     {
         /// <summary>
         /// Property Documentation will be copied
@@ -28,6 +28,15 @@ namespace AutomaticInterfaceExample
         private string BMethod(string x, string y) // ignored because not public
         {
             return x + y;
+        }
+
+        public string CMethod<T, T1, T2, T3, T4>(string x, string y) // included
+            where T : class
+            where T1 : struct
+            where T3 : DemoClass
+            where T4 : IDemoClass
+        {
+            return "Ok";
         }
 
         public static string StaticProperty => "abc"; // static property, ignored
