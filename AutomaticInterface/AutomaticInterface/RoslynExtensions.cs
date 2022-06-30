@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
@@ -76,23 +77,21 @@ namespace AutomaticInterface
         /// <returns></returns>
         public static string GetWhereStatement(this ITypeParameterSymbol typeParameterSymbol)
         {
-            string result = "where " + typeParameterSymbol.Name + " : ";
+            var result = $"where {typeParameterSymbol.Name} : ";
 
-            string constraints = "";
+            var constraints = "";
 
-            bool isFirstConstraint = true;
+            var isFirstConstraint = true;
 
             if (typeParameterSymbol.HasReferenceTypeConstraint)
             {
                 constraints += "class";
-
                 isFirstConstraint = false;
             }
 
             if (typeParameterSymbol.HasValueTypeConstraint)
             {
                 constraints += "struct";
-
                 isFirstConstraint = false;
             }
 
@@ -100,13 +99,9 @@ namespace AutomaticInterface
             {
                 // if not first constraint prepend with comma
                 if (!isFirstConstraint)
-                {
                     constraints += ", ";
-                }
                 else
-                {
                     isFirstConstraint = false;
-                }
 
                 constraints += constraintType.GetFullTypeString();
             }
@@ -121,63 +116,37 @@ namespace AutomaticInterface
 
         public static string GetFullTypeString(this ITypeSymbol type)
         {
-            string result =
-                type.Name +
-                type.GetTypeArgsStr(symbol => ((INamedTypeSymbol)symbol).TypeArguments);
-
-            return result;
+            return type.Name + type.GetTypeArgsStr(symbol => ((INamedTypeSymbol)symbol).TypeArguments);
         }
 
-        static string GetTypeArgsStr
-        (
-            this ISymbol symbol,
-            Func<ISymbol, IEnumerable<ITypeSymbol>> typeArgGetter
-        )
+        private static string GetTypeArgsStr(this ISymbol symbol, Func<ISymbol, ImmutableArray<ITypeSymbol>> typeArgGetter)
         {
-            IEnumerable<ITypeSymbol> typeArgs = typeArgGetter(symbol).ToList();
+            var typeArgs = typeArgGetter(symbol);
 
-            string result = "";
-
-            if (typeArgs.Any())
+            if (!typeArgs.Any())
+                return string.Empty;
+            
+            var stringsToAdd = new List<string>();
+            foreach (var arg in typeArgs)
             {
-                result += "<";
+                string strToAdd;
 
-                bool isFirstIteration = true;
-                foreach (ITypeSymbol typeArg in typeArgs)
+                if (arg is ITypeParameterSymbol typeParameterSymbol)
                 {
-                    // insert comma if not first iteration                    
-                    if (isFirstIteration)
-                    {
-                        isFirstIteration = false;
-                    }
-                    else
-                    {
-                        result += ", ";
-                    }
-
-                    ITypeParameterSymbol typeParameterSymbol =
-                        typeArg as ITypeParameterSymbol;
-
-                    string strToAdd = null;
-                    if (typeParameterSymbol != null)
-                    {
-                        // this is a generic argument
-                        strToAdd = typeParameterSymbol.Name;
-                    }
-                    else
-                    {
-                        // this is a generic argument value. 
-                        INamedTypeSymbol namedTypeSymbol =
-                            typeArg as INamedTypeSymbol;
-
-                        strToAdd = namedTypeSymbol.GetFullTypeString();
-                    }
-
-                    result += strToAdd;
+                    // this is a generic argument
+                    strToAdd = typeParameterSymbol.Name;
+                }
+                else
+                {
+                    // this is a generic argument value. 
+                    var namedTypeSymbol = arg as INamedTypeSymbol;
+                    strToAdd = namedTypeSymbol.GetFullTypeString();
                 }
 
-                result += ">";
+                stringsToAdd.Add(strToAdd);
             }
+
+            var result = $"<{string.Join(", " ,stringsToAdd)}>";
 
             return result;
         }
