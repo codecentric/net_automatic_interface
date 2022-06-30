@@ -11,7 +11,7 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode("AutomaticInterface", "")]
-    public partial interface InterfaceExample
+    public partial interface InterfaceExample // would be IDemoClass normally, changed to avoid naming problems
     {
         /// <summary>
         /// Property Documentation will be copied
