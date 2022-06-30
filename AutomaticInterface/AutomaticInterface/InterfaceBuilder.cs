@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AutomaticInterface
 {
     public record PropertyInfo(string Name, string Ttype, bool HasGet, bool HasSet, string Documentation);
 
-    public record MethodInfo(string Name, string ReturnType, HashSet<string> Parameters, string Documentation);
+    public record MethodInfo(string Name, string ReturnType, string Documentation, HashSet<string> Parameters, List<(string Arg, string WhereConstraint)> GenericArgs);
 
     public record EventInfo(string Name, string Type, string Documentation);
 
@@ -64,9 +65,9 @@ namespace AutomaticInterface
 
         }
 
-        public void AddMethodToInterface(string name, string returnType, HashSet<string> parameters, string documentation)
+        public void AddMethodToInterface(string name, string returnType, string documentation, HashSet<string> parameters, List<(string, string)> genericArgs)
         {
-            methodInfos.Add(new MethodInfo(name, returnType, parameters, documentation));
+            methodInfos.Add(new MethodInfo(name, returnType, documentation, parameters, genericArgs));
         }
 
         public void AddEventToInterface(string name, string type, string documentation)
@@ -112,7 +113,24 @@ namespace AutomaticInterface
             foreach (var method in methodInfos)
             {
                 cb.AppendAndNormalizeMultipleLines(method.Documentation);
-                cb.AppendLine($"{method.ReturnType} {method.Name}({string.Join(", ", method.Parameters)});");
+
+                cb.AppendIndented($"{method.ReturnType} {method.Name}");
+
+                if (method.GenericArgs.Any())
+                    cb.Append($"<{string.Join(", ", method.GenericArgs.Select(a => a.Arg))}>");
+
+                cb.Append($"({string.Join(", ", method.Parameters)})");
+
+                if (method.GenericArgs.Any())
+                {
+                    var constraints = method.GenericArgs
+                        .Where(a => !string.IsNullOrWhiteSpace(a.WhereConstraint))
+                        .Select(a => a.WhereConstraint);
+                    cb.Append($" {string.Join(" ", constraints)}");
+                }
+
+                cb.Append(";");
+                cb.BreakLine();
                 cb.AppendLine("");
             }
 
@@ -161,6 +179,17 @@ namespace AutomaticInterface
         {
             indent -= 4;
             currentIndent = new string(' ', indent);
+        }
+
+        public void BreakLine()
+        {
+            sb.AppendLine();
+        }
+
+        public void AppendIndented(string str)
+        {
+            sb.Append(' ', indent);
+            sb.Append(str);
         }
 
         public void AppendLine(string str)
