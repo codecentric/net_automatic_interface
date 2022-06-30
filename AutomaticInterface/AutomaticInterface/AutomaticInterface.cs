@@ -45,9 +45,12 @@ namespace AutomaticInterface
                 throw;
             }
 
-            static string GetLogPath()
+            string GetLogPath()
             {
-                string logDir = Environment.CurrentDirectory;
+                var mainSyntaxTree = context.Compilation.SyntaxTrees
+                    .First(x => x.HasCompilationUnitRoot);
+
+                string logDir = Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
 
                 if (logDir.Contains("MSBuild"))
                 {
