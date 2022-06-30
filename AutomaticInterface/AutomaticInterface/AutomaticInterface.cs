@@ -161,7 +161,6 @@ namespace AutomaticInterface
                     .ToList()
                     .ForEach(x => paramResult.Add(x));
 
-
                     var typedArgs = method.TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement())).ToList();
                     codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), documentation, paramResult, typedArgs);
                 });
