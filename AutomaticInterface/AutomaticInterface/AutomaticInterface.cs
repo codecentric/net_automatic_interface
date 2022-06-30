@@ -83,7 +83,10 @@ namespace AutomaticInterface
                 var namespaceName = root.GetNamespace();
                 var interfaceName = $"I{classSyntax.GetClassName()}";
 
-                var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
+                //Checking globally enabled context. Probably in future we should check for every generated line
+                var nullableContext = classSemanticModel.GetNullableContext(0);
+                
+                var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, nullableContext.AnnotationsEnabled());
 
 
                 INamedTypeSymbol? namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
