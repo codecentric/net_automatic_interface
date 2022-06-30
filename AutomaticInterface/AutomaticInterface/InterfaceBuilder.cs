@@ -111,28 +111,7 @@ namespace AutomaticInterface
 
             cb.Indent();
             foreach (var method in methodInfos)
-            {
-                cb.AppendAndNormalizeMultipleLines(method.Documentation);
-
-                cb.AppendIndented($"{method.ReturnType} {method.Name}");
-
-                if (method.GenericArgs.Any())
-                    cb.Append($"<{string.Join(", ", method.GenericArgs.Select(a => a.Arg))}>");
-
-                cb.Append($"({string.Join(", ", method.Parameters)})");
-
-                if (method.GenericArgs.Any())
-                {
-                    var constraints = method.GenericArgs
-                        .Where(a => !string.IsNullOrWhiteSpace(a.WhereConstraint))
-                        .Select(a => a.WhereConstraint);
-                    cb.Append($" {string.Join(" ", constraints)}");
-                }
-
-                cb.Append(";");
-                cb.BreakLine();
-                cb.AppendLine("");
-            }
+                BuildMethod(cb, method);
 
             cb.Dedent();
 
@@ -150,6 +129,30 @@ namespace AutomaticInterface
             cb.AppendLine("}");
 
             return cb.Build();
+        }
+
+        private static void BuildMethod(CodeBuilder cb, MethodInfo method)
+        {
+            cb.AppendAndNormalizeMultipleLines(method.Documentation);
+
+            cb.AppendIndented($"{method.ReturnType} {method.Name}");
+
+            if (method.GenericArgs.Any())
+                cb.Append($"<{string.Join(", ", method.GenericArgs.Select(a => a.Arg))}>");
+
+            cb.Append($"({string.Join(", ", method.Parameters)})");
+
+            if (method.GenericArgs.Any())
+            {
+                var constraints = method.GenericArgs
+                    .Where(a => !string.IsNullOrWhiteSpace(a.WhereConstraint))
+                    .Select(a => a.WhereConstraint);
+                cb.Append($" {string.Join(" ", constraints)}");
+            }
+
+            cb.Append(";");
+            cb.BreakLine();
+            cb.AppendLine("");
         }
 
         public override string ToString()
