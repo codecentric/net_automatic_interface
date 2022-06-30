@@ -13,15 +13,17 @@ namespace Tests
     {
         public class Test : CSharpSourceGeneratorTest<TSourceGenerator, XUnitVerifier>
         {
-            public Test()
-            {
-            }
+            public NullableContextOptions NullableContextOptions { get; init; }
 
             protected override CompilationOptions CreateCompilationOptions()
             {
-                var compilationOptions = base.CreateCompilationOptions();
+                var compilationOptions = new CSharpCompilationOptions(
+                    OutputKind.DynamicallyLinkedLibrary,
+                    allowUnsafe: true,
+                    nullableContextOptions: NullableContextOptions);
+
                 return compilationOptions.WithSpecificDiagnosticOptions(
-                     compilationOptions.SpecificDiagnosticOptions.SetItems(GetNullableWarningsFromCompiler()));
+                    compilationOptions.SpecificDiagnosticOptions.SetItems(GetNullableWarningsFromCompiler()));
             }
 
             public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Default;
