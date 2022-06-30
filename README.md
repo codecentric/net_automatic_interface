@@ -44,6 +44,15 @@ namespace AutomaticInterfaceExample
         {
             return x + y;
         }
+		
+		public string CMethod<T, T1, T2, T3, T4>(string x, string y) // included
+            where T : class
+            where T1 : struct
+            where T3 : DemoClass
+            where T4 : IDemoClass
+        {
+            return "Ok";
+        }
 
         public static string StaticProperty => "abc"; // static property, ignored
 
@@ -91,20 +100,23 @@ namespace AutomaticInterfaceExample
     {
         /// <summary>
         /// Property Documentation will be copied
-        /// </summary> 
+        /// </summary>
         string Hello { get; set; }
 
         string OnlyGet { get; }
 
         /// <summary>
         /// Method Documentation will be copied
-        /// </summary> 
+        /// </summary>
         string AMethod(string x, string y);
+
+        string CMethod<T, T1, T2, T3, T4>(string x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
 
         /// <summary>
         /// event Documentation will be copied
-        /// </summary> 
+        /// </summary>
         event System.EventHandler ShapeChanged;
+
     }
 }
 ```
