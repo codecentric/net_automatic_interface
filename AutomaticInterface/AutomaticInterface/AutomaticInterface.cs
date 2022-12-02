@@ -160,13 +160,32 @@ namespace AutomaticInterface
 
                     var paramResult = new HashSet<string>();
                     method.Parameters
-                    .Select(x => $"{x.ToDisplayString()} {x.Name}")
+                    .Select(GetMethodSignature)
                     .ToList()
                     .ForEach(x => paramResult.Add(x));
 
                     var typedArgs = method.TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement())).ToList();
                     codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), documentation, paramResult, typedArgs);
                 });
+        }
+
+        private static string GetMethodSignature(IParameterSymbol x)
+        {
+            var optionalValue = string.Empty;
+            if (!x.HasExplicitDefaultValue)
+            {
+                return $"{x.ToDisplayString()} {x.Name}{optionalValue}";
+            }
+
+            optionalValue = x.ExplicitDefaultValue switch
+            {
+                string => $" = \"{x.ExplicitDefaultValue}\"",
+                // struct
+                null when x.Type.IsValueType => $" = default({x.Type})",
+                null => " = null",
+                _ => $" = {x.ExplicitDefaultValue}"
+            };
+            return $"{x.ToDisplayString()} {x.Name}{optionalValue}";
         }
 
         private static string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax)
