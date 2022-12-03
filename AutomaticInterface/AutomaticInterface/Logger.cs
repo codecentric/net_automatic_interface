@@ -28,7 +28,10 @@ namespace AutomaticInterface
 
             try
             {
-                Directory.CreateDirectory(options.LogPath);
+                if (options.EnableLogging)
+                {
+                    Directory.CreateDirectory(options.LogPath);
+                }
             }
             catch (Exception)
             {
@@ -38,11 +41,9 @@ namespace AutomaticInterface
 
             var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Info", $"{nameof(AutomaticInterfaceGenerator)} stores logs at {options.LogPath}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
             generatorExecutionContext.ReportDiagnostic(Diagnostic.Create(descriptor, null));
-
-
+            
             logFile = Path.Combine(options.LogPath, $"{options.Name}_log.txt");
-
-
+            
             if (options.EnableLogging)
             {
                 WriteHeader();
