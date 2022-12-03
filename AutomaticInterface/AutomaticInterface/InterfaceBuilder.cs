@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -10,9 +9,7 @@ namespace AutomaticInterface
     public record MethodInfo(string Name, string ReturnType, string Documentation, HashSet<string> Parameters, List<(string Arg, string WhereConstraint)> GenericArgs);
 
     public record EventInfo(string Name, string Type, string Documentation);
-
-    public record Model(string InterfaceName, string Namespace, HashSet<string> Usings, List<PropertyInfo> Properties, List<MethodInfo> Methods, string Documentation, string GenericType, List<EventInfo> Events);
-
+    
     public class InterfaceBuilder
     {
         private readonly string nameSpaceName;
@@ -56,11 +53,11 @@ namespace AutomaticInterface
             classDocumentation = documentation;
         }
 
-        public void AddUsings(IEnumerable<string> usings)
+        public void AddUsings(IEnumerable<string> additionalUsings)
         {
-            foreach (var usg in usings)
+            foreach (var usg in additionalUsings)
             {
-                this.usings.Add(usg);
+                usings.Add(usg);
             }
 
         }
@@ -163,13 +160,13 @@ namespace AutomaticInterface
 
     public class CodeBuilder
     {
-        private StringBuilder sb;
+        private readonly StringBuilder sb;
         private int indent;
         private string currentIndent = string.Empty;
 
         public CodeBuilder() {
-            this.sb = new StringBuilder();
-            this.indent = 0;
+            sb = new StringBuilder();
+            indent = 0;
         }
 
         public void Indent() 
@@ -208,16 +205,18 @@ namespace AutomaticInterface
 
         public void AppendAndNormalizeMultipleLines(string doc)
         {
-            if (!string.IsNullOrWhiteSpace(doc))
+            if (string.IsNullOrWhiteSpace(doc))
             {
-                foreach (var line in doc.SplitToLines())
-                {
-                    sb.AppendLine(indentStr(line));
-                }
+                return;
+            }
+            
+            foreach (var line in doc.SplitToLines())
+            {
+                sb.AppendLine(IndentStr(line));
             }
         }
 
-        private string indentStr(string str)
+        private string IndentStr(string str)
         {
             return str.TrimStart().Insert(0, currentIndent);
         }

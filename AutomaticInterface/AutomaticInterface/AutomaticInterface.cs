@@ -16,7 +16,7 @@ namespace AutomaticInterface
 
         public void Execute(GeneratorExecutionContext context)
         {
-            var options = new LoggerOptions(GetLogPath(), true, true, typeof(AutomaticInterfaceGenerator).Name);
+            var options = new LoggerOptions(GetLogPath(), true, nameof(AutomaticInterfaceGenerator));
             using Logger logger = new(context, options);
 
             // retrieve the populated receiver 
@@ -27,10 +27,6 @@ namespace AutomaticInterface
 
             var compilation = context.Compilation;
             
-            if (compilation == null)
-            {
-                return;
-            }
             try
             {
                 var classSymbols = GetClassesToAddInterfaceFor(receiver, compilation);
@@ -50,7 +46,7 @@ namespace AutomaticInterface
                 var mainSyntaxTree = context.Compilation.SyntaxTrees
                     .First(x => x.HasCompilationUnitRoot);
 
-                string logDir = Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
+                var logDir = Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
 
                 if (logDir.Contains("MSBuild"))
                 {
@@ -72,12 +68,7 @@ namespace AutomaticInterface
 
                 var compilation = context.Compilation;
                 var classSemanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
-
-                if (classSemanticModel == null)
-                {
-                    continue;
-                }
-
+                
                 var root = classSyntax.GetCompilationUnit();
 
                 var namespaceName = root.GetNamespace();
@@ -86,7 +77,7 @@ namespace AutomaticInterface
                 var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
 
 
-                INamedTypeSymbol? namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
+                var namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
 
                 if (namedType == null)
                 {
@@ -105,7 +96,7 @@ namespace AutomaticInterface
                 context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
                 // inject the created source into the users compilation
-                string generatedCode = interfaceGenerator.Build();
+                var generatedCode = interfaceGenerator.Build();
                 context.AddSource($"I{classSyntax.GetClassName()}", SourceText.From(generatedCode, Encoding.UTF8));
 
                 logger.TryLogSourceCode(classSyntax, generatedCode);
@@ -133,13 +124,14 @@ namespace AutomaticInterface
 
         private static string GetGeneric(INamedTypeSymbol classSymbol, ClassDeclarationSyntax cls)
         {
-            if (classSymbol.IsGenericType)
+            if (!classSymbol.IsGenericType)
             {
-                var formattedGeneric = $"{cls.TypeParameterList?.ToFullString().Trim()} {cls.ConstraintClauses}";
-                return formattedGeneric;
+                return string.Empty;
             }
+            
+            var formattedGeneric = $"{cls.TypeParameterList?.ToFullString().Trim()} {cls.ConstraintClauses}";
+            return formattedGeneric;
 
-            return string.Empty;
         }
 
         private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator,
@@ -151,7 +143,7 @@ namespace AutomaticInterface
                  .Where(x => x.DeclaredAccessibility == Accessibility.Public)
                  .Where(x => x.MethodKind == MethodKind.Ordinary)
                  .Where(x => !x.IsStatic)
-                 .Where(x => x.ContainingType.Name != typeof(object).Name)
+                 .Where(x => x.ContainingType.Name != nameof(Object))
                  .ToList()
                 .ForEach(method =>
                 {
@@ -197,7 +189,7 @@ namespace AutomaticInterface
             var match = classSyntax
                 .DescendantNodes()
                 .OfType<MethodDeclarationSyntax>()
-                .SingleOrDefault(x => isSameMethod(method, x, classSemanticModel));
+                .SingleOrDefault(x => IsSameMethod(method, x, classSemanticModel));
 
             if (match is null)
             {
@@ -217,7 +209,7 @@ namespace AutomaticInterface
             return trivia.ToFullString().Trim();
         }
 
-        private static bool isSameMethod(IMethodSymbol method, MethodDeclarationSyntax x,
+        private static bool IsSameMethod(IMethodSymbol method, MethodDeclarationSyntax x,
             SemanticModel classSemanticModel)
         {
             if (x.Identifier.ValueText != method.Name)
@@ -240,8 +232,16 @@ namespace AutomaticInterface
                 var methodSymbol = methodParams[i];
                 var xParam = xParams[i];
                 
-                var typeSymbol = classSemanticModel.GetSymbolInfo(xParam.Type).Symbol;
+                var typeSymbol = classSemanticModel.GetSymbolInfo(xParam.Type!).Symbol;
+
+                if (typeSymbol == null)
+                {
+                    return false;
+                }
+                
+#pragma warning disable RS1024
                 var matches = typeSymbol.Equals(methodSymbol.Type);
+#pragma warning restore RS1024
 
                 if (!matches)
                 {
@@ -284,7 +284,7 @@ namespace AutomaticInterface
 
             var match = classSyntax.DescendantNodes()
              .OfType<EventFieldDeclarationSyntax>()
-             .SingleOrDefault(x => x.Declaration.Variables.Any(x => x.Identifier.ValueText == method.Name));
+             .SingleOrDefault(x => x.Declaration.Variables.Any(y => y.Identifier.ValueText == method.Name));
 
             if (match is null)
             {
@@ -321,21 +321,19 @@ namespace AutomaticInterface
             return trivia.ToFullString().Trim();
         }
 
-        private static HashSet<string> GetUsings(INamedTypeSymbol classSymbol)
+        private static IEnumerable<string> GetUsings(ISymbol classSymbol)
         {
-            SyntaxList<UsingDirectiveSyntax> allUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
+            var allUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
             foreach (var syntaxRef in classSymbol.DeclaringSyntaxReferences)
             {
                 foreach (var parent in syntaxRef.GetSyntax().Ancestors(false))
                 {
-                    if (parent is NamespaceDeclarationSyntax ndsyntax)
+                    allUsings = parent switch
                     {
-                        allUsings = allUsings.AddRange(ndsyntax.Usings);
-                    }
-                    else if (parent is CompilationUnitSyntax cusyntax)
-                    {
-                        allUsings = allUsings.AddRange(cusyntax.Usings);
-                    }
+                        NamespaceDeclarationSyntax ndSyntax => allUsings.AddRange(ndSyntax.Usings),
+                        CompilationUnitSyntax cuSyntax => allUsings.AddRange(cuSyntax.Usings),
+                        _ => allUsings
+                    };
                 }
             }
 
@@ -407,9 +405,9 @@ namespace AutomaticInterface
     /// <summary>
     /// Created on demand before each generation pass
     /// </summary>
-    class SyntaxReceiver : ISyntaxReceiver
+    internal class SyntaxReceiver : ISyntaxReceiver
     {
-        public List<ClassDeclarationSyntax> CandidateClasses { get; } = new List<ClassDeclarationSyntax>();
+        public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
 
         /// <summary>
         /// Called for every syntax node in the compilation, we can inspect the nodes and save any information useful for generation
@@ -417,8 +415,7 @@ namespace AutomaticInterface
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
             // any field with at least one attribute is a candidate for property generation
-            if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax
-                && classDeclarationSyntax.AttributeLists.Count > 0)
+            if (syntaxNode is ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax)
             {
                 CandidateClasses.Add(classDeclarationSyntax);
             }

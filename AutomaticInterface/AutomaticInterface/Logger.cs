@@ -1,26 +1,26 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 
 namespace AutomaticInterface
 {
-    public record LoggerOptions(string LogPath, bool EnableLogging, bool DetailedLogging, string name);
-    internal class Logger : IDisposable
+    public record LoggerOptions(string LogPath, bool EnableLogging, string Name);
+    
+    internal sealed class Logger : IDisposable
     {
-        private const int LineSurfixLenght = 20;
+        private const int LineSuffixLength = 20;
         private const int LineLenght = 100;
-        private readonly GeneratorExecutionContext _executionContext;
+        private readonly GeneratorExecutionContext executionContext;
         private readonly LoggerOptions options;
         private readonly Stopwatch loggerStopwatch;
         private readonly string logFile;
   
         public Logger(GeneratorExecutionContext generatorExecutionContext, LoggerOptions options)
         {
-            _executionContext = generatorExecutionContext;
+            executionContext = generatorExecutionContext;
             this.options = options;
 
             loggerStopwatch = new Stopwatch();
@@ -40,7 +40,7 @@ namespace AutomaticInterface
             generatorExecutionContext.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
 
-            logFile = Path.Combine(options.LogPath, $"{options.name}_log.txt");
+            logFile = Path.Combine(options.LogPath, $"{options.Name}_log.txt");
 
 
             if (options.EnableLogging)
@@ -51,19 +51,22 @@ namespace AutomaticInterface
 
         public void Dispose()
         {
-            Dispose(true);
+            DisposeFinal();
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void DisposeFinal()
         {
                loggerStopwatch.Stop();
 
-            if (options.EnableLogging) {
-                var summary = GetTextWithLine($"END [{options.name} | {loggerStopwatch.Elapsed:g}] ");
+               if (!options.EnableLogging)
+               {
+                   return;
+               }
+               
+               var summary = GetTextWithLine($"END [{options.Name} | {loggerStopwatch.Elapsed:g}] ");
 
-                WriteLog(summary);
-            }
+            WriteLog(summary);
         }
 
         public void TryLogSourceCode(ClassDeclarationSyntax classDeclaration, string generatedSource)
@@ -101,25 +104,25 @@ namespace AutomaticInterface
         private void WriteHeader()
         {
             var sb = new StringBuilder();
-            var header = GetTextWithLine($" [{options.name} | {DateTime.Now:g}] ");
+            var header = GetTextWithLine($" [{options.Name} | {DateTime.Now:g}] ");
 
             sb.AppendLine(header);
             sb.AppendLine();
 
-            sb.AppendLine($"-> Language: {_executionContext.ParseOptions.Language}");
-            sb.AppendLine($"-> Kind: {_executionContext.ParseOptions.Kind}");
+            sb.AppendLine($"-> Language: {executionContext.ParseOptions.Language}");
+            sb.AppendLine($"-> Kind: {executionContext.ParseOptions.Kind}");
 
-            foreach (var additionalFile in _executionContext.AdditionalFiles) sb.AppendLine(additionalFile.Path);
+            foreach (var additionalFile in executionContext.AdditionalFiles) sb.AppendLine(additionalFile.Path);
 
             WriteLog(sb.ToString());
         }
 
 
-        private void WriteLog(string logtext)
+        private void WriteLog(string logText)
         {
             try
             {
-                File.AppendAllText(logFile, $"{logtext}{Environment.NewLine}");
+                File.AppendAllText(logFile, $"{logText}{Environment.NewLine}");
             }
             catch (Exception)
             {
@@ -128,10 +131,10 @@ namespace AutomaticInterface
 
         }
 
-        private string GetTextWithLine(string context)
+        private static string GetTextWithLine(string context)
         {
-            return new string('-', LineSurfixLenght) + context +
-                   new string('-', LineLenght - LineSurfixLenght - context.Length);
+            return new string('-', LineSuffixLength) + context +
+                   new string('-', LineLenght - LineSuffixLength - context.Length);
         }
     }
 }
