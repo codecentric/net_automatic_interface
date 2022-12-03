@@ -48,9 +48,10 @@ namespace AutomaticInterface
 
                 var logDir = Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
 
-                if (logDir.Contains("MSBuild"))
+                if (logDir.Contains("MSBuild") || logDir.StartsWith("/0/"))
                 {
                     // MSBuild is often in Program Files and cannot be written
+                    // /0/ happens in github pipeline
                     logDir = Path.GetTempPath();
                 }
                 return Path.Combine(logDir, "logs");
