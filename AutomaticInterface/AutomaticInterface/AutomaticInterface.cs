@@ -16,7 +16,7 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     public void Execute(GeneratorExecutionContext context)
     {
         var logPath = GetLogPath();
-        var options = new LoggerOptions(logPath, canWriteToLogPath(logPath), nameof(AutomaticInterfaceGenerator));
+        var options = new LoggerOptions(logPath, false, nameof(AutomaticInterfaceGenerator)); // todo use env variable for logging?
         using Logger logger = new(context, options);
 
         // retrieve the populated receiver 
@@ -52,28 +52,6 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
                 // /0/ happens in github pipeline
                 logDir = Path.GetTempPath();
             return Path.Combine(logDir, "logs");
-        }
-    }
-
-    private static bool canWriteToLogPath(string logPath)
-    {
-        try
-        {
-            using (File.Create(
-                       Path.Combine(
-                           logPath,
-                           Path.GetRandomFileName()
-                       ),
-                       1,
-                       FileOptions.DeleteOnClose))
-            {
-            }
-
-            return true;
-        }
-        catch
-        {
-            return false;
         }
     }
 
