@@ -19,14 +19,14 @@ namespace AutomaticInterface
             var options = new LoggerOptions(GetLogPath(), true, true, typeof(AutomaticInterfaceGenerator).Name);
             using Logger logger = new(context, options);
 
-            // retreive the populated receiver 
+            // retrieve the populated receiver 
             if (context.SyntaxReceiver is not SyntaxReceiver receiver)
             {
                 return;
             }
 
             var compilation = context.Compilation;
-
+            
             if (compilation == null)
             {
                 return;
@@ -98,7 +98,7 @@ namespace AutomaticInterface
                 interfaceGenerator.AddGeneric(GetGeneric(namedType, classSyntax));
 
                 AddPropertiesToInterface(namedType, interfaceGenerator, classSyntax);
-                AddMethodsToInterface(namedType, interfaceGenerator, classSyntax);
+                AddMethodsToInterface(namedType, interfaceGenerator, classSyntax, classSemanticModel);
                 AddEventsToInterface(namedType, interfaceGenerator, classSyntax);
 
                 var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result", $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, isEnabledByDefault: true);
@@ -142,7 +142,8 @@ namespace AutomaticInterface
             return string.Empty;
         }
 
-        private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator, ClassDeclarationSyntax classSyntax)
+        private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator,
+            ClassDeclarationSyntax classSyntax, SemanticModel classSemanticModel)
         {
             classSymbol.GetAllMembers()
                  .Where(x => x.Kind == SymbolKind.Method)
@@ -156,7 +157,7 @@ namespace AutomaticInterface
                 {
                     var returnType = method.ReturnType;
                     var name = method.Name;
-                    var documentation = GetDocumentationFor(method, classSyntax);
+                    var documentation = GetDocumentationFor(method, classSyntax, classSemanticModel);
 
                     var paramResult = new HashSet<string>();
                     method.Parameters
@@ -188,13 +189,15 @@ namespace AutomaticInterface
             return $"{x.ToDisplayString()} {x.Name}{optionalValue}";
         }
 
-        private static string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax)
+        private static string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax,
+            SemanticModel classSemanticModel)
         {
             SyntaxKind[] docSyntax = { SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken, SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia };
 
-            var match = classSyntax.DescendantNodes()
-             .OfType<MethodDeclarationSyntax>()
-             .SingleOrDefault(x => x.Identifier.ValueText == method.Name);
+            var match = classSyntax
+                .DescendantNodes()
+                .OfType<MethodDeclarationSyntax>()
+                .SingleOrDefault(x => isSameMethod(method, x, classSemanticModel));
 
             if (match is null)
             {
@@ -212,6 +215,41 @@ namespace AutomaticInterface
                 .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 
             return trivia.ToFullString().Trim();
+        }
+
+        private static bool isSameMethod(IMethodSymbol method, MethodDeclarationSyntax x,
+            SemanticModel classSemanticModel)
+        {
+            if (x.Identifier.ValueText != method.Name)
+            {
+                return false;
+            }
+            
+            // ok name is matching, now we have to see if overloads match
+            
+            var xParams = x.ParameterList.Parameters;
+            var methodParams = method.Parameters;
+
+            if (xParams.Count != methodParams.Length)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < xParams.Count; i++)
+            {
+                var methodSymbol = methodParams[i];
+                var xParam = xParams[i];
+                
+                var typeSymbol = classSemanticModel.GetSymbolInfo(xParam.Type).Symbol;
+                var matches = typeSymbol.Equals(methodSymbol.Type);
+
+                if (!matches)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static string GetDocumentationForProperty(IPropertySymbol method, ClassDeclarationSyntax classSyntax)
