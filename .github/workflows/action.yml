@@ -22,4 +22,4 @@ jobs:
         working-directory: AutomaticInterface
       - name: Nuget
         if: startsWith(github.ref, 'refs/heads/master')
-        run: nuget push **\release\**\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+        run: nuget push **\release\**\AutomaticInterface.*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
