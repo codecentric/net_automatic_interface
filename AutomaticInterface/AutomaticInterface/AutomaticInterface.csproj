@@ -24,8 +24,8 @@
 	  <PackageTags>interface; class; Source Generator</PackageTags>
 	  <PackageLicenseExpression> MIT</PackageLicenseExpression>
 	  <EnableNETAnalyzers>True</EnableNETAnalyzers>
-	  <AnalysisLevel>5.0</AnalysisLevel>
-	  <Version>1.3.0</Version>
+	  <AnalysisLevel>latest-Recommended</AnalysisLevel>
+	  <Version>1.4.0</Version>
   </PropertyGroup>
 
 	<!--<PropertyGroup>
