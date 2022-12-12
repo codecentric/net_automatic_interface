@@ -16,7 +16,7 @@ namespace AutomaticInterfaceExample
         /// <summary>
         /// Property Documentation will be copied
         /// </summary>
-        string Hello { get; set; }
+        string? Hello { get; set; }
 
         string OnlyGet { get; }
 

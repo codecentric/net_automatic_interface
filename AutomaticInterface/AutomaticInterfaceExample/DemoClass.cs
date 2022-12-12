@@ -13,7 +13,7 @@ namespace AutomaticInterfaceExample
         /// <summary>
         /// Property Documentation will be copied
         /// </summary>
-        public string Hello { get; set; }  // included, get and set are copied to the interface when public
+        public string? Hello { get; set; }  // included, get and set are copied to the interface when public
 
         public string OnlyGet { get; } // included, get and set are copied to the interface when public
 

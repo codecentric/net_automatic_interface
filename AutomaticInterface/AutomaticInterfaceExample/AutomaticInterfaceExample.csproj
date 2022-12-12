@@ -9,6 +9,7 @@
 	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
 	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
 	  <SourceGenerator_LogPath>C:\tmp\log.txt</SourceGenerator_LogPath>
+	  <Nullable>enable</Nullable>
     </PropertyGroup>
 
 	<ItemGroup>
