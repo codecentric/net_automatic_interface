@@ -43,8 +43,7 @@ namespace Tests
 
             tester.ExpectedDiagnostics.AddRange(new List<DiagnosticResult>()
             {
-                new("AutomaticInterface", DiagnosticSeverity.Info),
-                new("AutomaticInterface", DiagnosticSeverity.Info)
+                new("AutomaticInterface", DiagnosticSeverity.Info), new("AutomaticInterface", DiagnosticSeverity.Info)
             });
 
             await tester.RunAsync();
