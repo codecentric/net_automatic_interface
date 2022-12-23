@@ -4,17 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 
-/// <summary>
-/// Source: https://github.com/dominikjeske/Samples/blob/main/SourceGenerators/HomeCenter.SourceGenerators/Extensions/RoslynExtensions.cs
-/// </summary>
 
 namespace AutomaticInterface
 {
+    /// <summary>
+    /// Source: https://github.com/dominikjeske/Samples/blob/main/SourceGenerators/HomeCenter.SourceGenerators/Extensions/RoslynExtensions.cs
+    /// </summary>
     public static class RoslynExtensions
     {
-        public static IEnumerable<ITypeSymbol> GetBaseTypesAndThis(this ITypeSymbol type)
+        private static IEnumerable<ITypeSymbol> GetBaseTypesAndThis(this ITypeSymbol type)
         {
             var current = type;
             while (current != null)
@@ -29,7 +28,7 @@ namespace AutomaticInterface
             return type.GetBaseTypesAndThis().SelectMany(n => n.GetMembers());
         }
 
-        public static CompilationUnitSyntax GetCompilationUnit(this SyntaxNode syntaxNode)
+        public static CompilationUnitSyntax? GetCompilationUnit(this SyntaxNode syntaxNode)
         {
             return syntaxNode.Ancestors().OfType<CompilationUnitSyntax>().FirstOrDefault();
         }
@@ -55,9 +54,10 @@ namespace AutomaticInterface
 
         public static string GetNamespace(this CompilationUnitSyntax root)
         {
-            return root.ChildNodes()
+            return root
+                .ChildNodes()
                 .OfType<BaseNamespaceDeclarationSyntax>()
-                .FirstOrDefault()
+                .First()
                 .Name
                 .ToString();
         }
@@ -75,7 +75,7 @@ namespace AutomaticInterface
         /// </summary>
         /// <param name="typeParameterSymbol"></param>
         /// <returns></returns>
-        public static string GetWhereStatement(this ITypeParameterSymbol typeParameterSymbol)
+        public static string? GetWhereStatement(this ITypeParameterSymbol typeParameterSymbol)
         {
             var result = $"where {typeParameterSymbol.Name} : ";
 
@@ -114,7 +114,7 @@ namespace AutomaticInterface
             return result;
         }
 
-        public static string GetFullTypeString(this ITypeSymbol type)
+        private static string GetFullTypeString(this ISymbol type)
         {
             return type.Name + type.GetTypeArgsStr(symbol => ((INamedTypeSymbol)symbol).TypeArguments);
         }
@@ -140,7 +140,7 @@ namespace AutomaticInterface
                 {
                     // this is a generic argument value. 
                     var namedTypeSymbol = arg as INamedTypeSymbol;
-                    strToAdd = namedTypeSymbol.GetFullTypeString();
+                    strToAdd = namedTypeSymbol!.GetFullTypeString();
                 }
 
                 stringsToAdd.Add(strToAdd);
