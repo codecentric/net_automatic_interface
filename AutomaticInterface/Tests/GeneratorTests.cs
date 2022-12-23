@@ -1487,9 +1487,11 @@ public class DemoClass
 //     Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.
 // </auto-generated>
 //--------------------------------------------------------------------------------------------------
+
 #nullable enable
 using System.CodeDom.Compiler;
 using AutomaticInterfaceAttribute;
+
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
