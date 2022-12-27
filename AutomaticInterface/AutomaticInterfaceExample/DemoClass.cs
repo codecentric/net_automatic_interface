@@ -30,7 +30,7 @@ namespace AutomaticInterfaceExample
             return x + y;
         }
 
-        public string CMethod<T, T1, T2, T3, T4>(string x, string y) // included
+        public string CMethod<T, T1, T2, T3, T4>(string? x, string y) // included
             where T : class
             where T1 : struct
             where T3 : DemoClass

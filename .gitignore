@@ -36,3 +36,6 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+#Generator logs
+AutomaticInterfaceGenerator_log.txt

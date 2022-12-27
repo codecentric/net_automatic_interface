@@ -1,4 +1,5 @@
-﻿using System.CodeDom.Compiler;
+﻿#nullable enable
+using System.CodeDom.Compiler;
 using AutomaticInterfaceAttribute;
 using System;
 
@@ -25,7 +26,7 @@ namespace AutomaticInterfaceExample
         /// </summary>
         string AMethod(string x, string y);
 
-        string CMethod<T, T1, T2, T3, T4>(string x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
+        string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
 
         /// <summary>
         /// event Documentation will be copied
@@ -34,3 +35,4 @@ namespace AutomaticInterfaceExample
 
     }
 }
+#nullable restore
