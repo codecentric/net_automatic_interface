@@ -157,6 +157,10 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 1.5.0
+ - Add support nullable context
+
+
 ### 1.4.0
  - Add support for overloaded methods.
  - Add support for optional parameters in method `void test(string x = null)` should now work.
