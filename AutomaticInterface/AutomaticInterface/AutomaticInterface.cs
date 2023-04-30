@@ -160,10 +160,9 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
     private static string GetMethodSignature(IParameterSymbol x)
     {
-        var optionalValue = string.Empty;
-        if (!x.HasExplicitDefaultValue) return $"{x.ToDisplayString()} {x.Name}{optionalValue}";
+        if (!x.HasExplicitDefaultValue) return $"{x.Type.ToDisplayString()} {x.Name}";
 
-        optionalValue = x.ExplicitDefaultValue switch
+        string optionalValue = x.ExplicitDefaultValue switch
         {
             string => $" = \"{x.ExplicitDefaultValue}\"",
             // struct
@@ -171,7 +170,7 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}"
         };
-        return $"{x.ToDisplayString()} {x.Name}{optionalValue}";
+        return $"{x.Type.ToDisplayString()} {x.Name}{optionalValue}";
     }
 
     private static string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax,
