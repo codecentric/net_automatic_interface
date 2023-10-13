@@ -46,6 +46,12 @@ namespace AutomaticInterfaceExample
             return "static" + DateTime.Now;
         }
 
+    // Make sure implementation includes the parameter name @ symbols
+#pragma warning disable CA1822, IDE0060 // Mark members as static, unused params
+    public void SomeMethodWithAtSignParameter1(string @class) { }
+    public void @SomeMethodWithAtSignParameter2(string @value) { }
+#pragma warning restore CA1822, IDE0060
+
         /// <summary>
         /// event Documentation will be copied
         /// </summary>

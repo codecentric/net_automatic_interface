@@ -160,7 +160,22 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
     private static string GetMethodSignature(IParameterSymbol x)
     {
-        if (!x.HasExplicitDefaultValue) return $"{x.Type.ToDisplayString()} {x.Name}";
+        // Roslyn strips out the @ sign on x.Name so we need to check
+        // if it had one by examining the parameter's identifier syntax node
+        bool wasVerbatim = x.DeclaringSyntaxReferences
+          .Select(reference => reference.GetSyntax())
+          .OfType<ParameterSyntax>()
+          .Any(param =>
+          {
+              string text = param.Identifier.Text;
+              return text.Length > 0 && text[0] == '@';
+          });
+
+        string name = wasVerbatim ? $"@{x.Name}" : x.Name;
+
+        if (!x.HasExplicitDefaultValue) {
+          return $"{x.Type.ToDisplayString()} {name}";
+        }
 
         string optionalValue = x.ExplicitDefaultValue switch
         {
@@ -170,7 +185,8 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}"
         };
-        return $"{x.Type.ToDisplayString()} {x.Name}{optionalValue}";
+
+        return $"{x.Type.ToDisplayString()} {name}{optionalValue}";
     }
 
     private static string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax,
