@@ -1,4 +1,4 @@
-﻿using AutomaticInterfaceAttribute;
+﻿using AutomaticInterface;
 using System;
 
 namespace AutomaticInterfaceExample
@@ -29,6 +29,8 @@ namespace AutomaticInterfaceExample
         {
             return x + y;
         }
+
+        public void MethodWithBool(bool x = true) { }
 
         public string CMethod<T, T1, T2, T3, T4>(string? x, string y) // included
             where T : class

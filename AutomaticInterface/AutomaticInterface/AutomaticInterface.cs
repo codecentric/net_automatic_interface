@@ -24,6 +24,24 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
         var compilation = context.Compilation;
 
+        // inject attribute directly into user's project
+        context.AddSource
+        (
+          "GenerateAutomaticInterfaceAttribute.cs",
+          SourceText.From
+          (@"
+using System;
+
+namespace AutomaticInterface
+{
+    [AttributeUsage(AttributeTargets.Class)]
+    public class GenerateAutomaticInterfaceAttribute : Attribute
+    {
+    }
+}
+", Encoding.UTF8)
+        );
+
         try
         {
             var classSymbols = GetClassesToAddInterfaceFor(receiver, compilation);
@@ -131,13 +149,16 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator,
         ClassDeclarationSyntax classSyntax, SemanticModel classSemanticModel)
     {
-        classSymbol.GetAllMembers()
+    classSymbol.GetAllMembers()
             .Where(x => x.Kind == SymbolKind.Method)
             .OfType<IMethodSymbol>()
-            .Where(x => x.DeclaredAccessibility == Accessibility.Public)
-            .Where(x => x.MethodKind == MethodKind.Ordinary)
-            .Where(x => !x.IsStatic)
-            .Where(x => x.ContainingType.Name != nameof(Object))
+            .Where(
+              x => x.DeclaredAccessibility == Accessibility.Public
+                  && x.MethodKind == MethodKind.Ordinary
+                  && !x.IsStatic
+                  && !x.IsOverride
+                  && x.ContainingType.Name != nameof(Object)
+            )
             .ToList()
             .ForEach(method =>
             {
@@ -171,10 +192,21 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
               return text.Length > 0 && text[0] == '@';
           });
 
-        string name = wasVerbatim ? $"@{x.Name}" : x.Name;
+        bool isReservedWord =
+          SyntaxFacts.GetKeywordKind(x.Name) != SyntaxKind.None ||
+          SyntaxFacts.GetContextualKeywordKind(x.Name) != SyntaxKind.None;
+
+        string name = isReservedWord || wasVerbatim ? $"@{x.Name}" : x.Name;
 
         if (!x.HasExplicitDefaultValue) {
           return $"{x.Type.ToDisplayString()} {name}";
+        }
+
+        // bool is a special case that doesn't match the pattern because
+        // the explicit default value gets coerced to a string
+        if (x.Type.SpecialType == SpecialType.System_Boolean) {
+          var defaultValue = x.ExplicitDefaultValue is bool boolean && boolean ? "true" : "false";
+          return $"{x.Type.ToDisplayString()} {name} = {defaultValue}";
         }
 
         string optionalValue = x.ExplicitDefaultValue switch

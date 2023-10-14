@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using System.CodeDom.Compiler;
-using AutomaticInterfaceAttribute;
 using System;
 
 /// <summary>
