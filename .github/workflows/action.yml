@@ -1,8 +1,17 @@
+$schema: https://json.schemastore.org/github-workflow.json
 name: dotnet package
 
 on: [push]
 
 jobs:
+  check_formatting:
+    runs-on: ubuntu-latest
+    name: Check Formatting
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          dotnet tool restore
+          dotnet csharpier --check .
   build:
     runs-on: ubuntu-latest
     steps:
