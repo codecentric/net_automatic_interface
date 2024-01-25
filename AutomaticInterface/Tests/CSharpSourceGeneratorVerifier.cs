@@ -23,9 +23,9 @@ namespace Tests
                 );
 
                 return compilationOptions.WithSpecificDiagnosticOptions(
-                    compilationOptions
-                        .SpecificDiagnosticOptions
-                        .SetItems(GetNullableWarningsFromCompiler())
+                    compilationOptions.SpecificDiagnosticOptions.SetItems(
+                        GetNullableWarningsFromCompiler()
+                    )
                 );
             }
 
@@ -37,13 +37,11 @@ namespace Tests
             > GetNullableWarningsFromCompiler()
             {
                 string[] args = { "/warnaserror:nullable" };
-                var commandLineArguments = CSharpCommandLineParser
-                    .Default
-                    .Parse(
-                        args,
-                        baseDirectory: Environment.CurrentDirectory,
-                        sdkDirectory: Environment.CurrentDirectory
-                    );
+                var commandLineArguments = CSharpCommandLineParser.Default.Parse(
+                    args,
+                    baseDirectory: Environment.CurrentDirectory,
+                    sdkDirectory: Environment.CurrentDirectory
+                );
                 var nullableWarnings = commandLineArguments
                     .CompilationOptions
                     .SpecificDiagnosticOptions;

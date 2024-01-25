@@ -17,8 +17,7 @@ namespace Tests
     public class GeneratorTests
     {
         private readonly ImmutableArray<string> references = AppDomain
-            .CurrentDomain
-            .GetAssemblies()
+            .CurrentDomain.GetAssemblies()
             .Where(assembly => !assembly.IsDynamic)
             .Select(assembly => assembly.Location)
             .ToImmutableArray();
@@ -48,20 +47,17 @@ namespace Tests
             };
 
             tester.ReferenceAssemblies.AddAssemblies(references);
-            tester
-                .TestState
-                .AdditionalReferences
-                .Add(typeof(GenerateAutomaticInterfaceAttribute).Assembly);
+            tester.TestState.AdditionalReferences.Add(
+                typeof(GenerateAutomaticInterfaceAttribute).Assembly
+            );
 
-            tester
-                .ExpectedDiagnostics
-                .AddRange(
-                    new List<DiagnosticResult>()
-                    {
-                        new("AutomaticInterface", DiagnosticSeverity.Info),
-                        new("AutomaticInterface", DiagnosticSeverity.Info)
-                    }
-                );
+            tester.ExpectedDiagnostics.AddRange(
+                new List<DiagnosticResult>()
+                {
+                    new("AutomaticInterface", DiagnosticSeverity.Info),
+                    new("AutomaticInterface", DiagnosticSeverity.Info)
+                }
+            );
 
             await tester.RunAsync();
         }

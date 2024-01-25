@@ -52,10 +52,9 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
         string GetLogPath()
         {
-            var mainSyntaxTree = context
-                .Compilation
-                .SyntaxTrees
-                .First(x => x.HasCompilationUnitRoot);
+            var mainSyntaxTree = context.Compilation.SyntaxTrees.First(x =>
+                x.HasCompilationUnitRoot
+            );
 
             var logDir =
                 Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
@@ -200,14 +199,12 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
                 var paramResult = new HashSet<string>();
                 method
-                    .Parameters
-                    .Select(GetMethodSignature)
+                    .Parameters.Select(GetMethodSignature)
                     .ToList()
                     .ForEach(x => paramResult.Add(x));
 
                 var typedArgs = method
-                    .TypeParameters
-                    .Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
+                    .TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
                     .ToList();
                 codeGenerator.AddMethodToInterface(
                     name,
@@ -356,8 +353,8 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         var match = classSyntax
             .DescendantNodes()
             .OfType<EventFieldDeclarationSyntax>()
-            .SingleOrDefault(
-                x => x.Declaration.Variables.Any(y => y.Identifier.ValueText == method.Name)
+            .SingleOrDefault(x =>
+                x.Declaration.Variables.Any(y => y.Identifier.ValueText == method.Name)
             );
 
         if (match is null)
@@ -420,7 +417,7 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
                 );
         }
 
-        return [ ..allUsings.Select(x => x.ToString()) ];
+        return [..allUsings.Select(x => x.ToString())];
     }
 
     private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(
@@ -428,7 +425,7 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         Compilation compilation
     )
     {
-        List<ClassDeclarationSyntax> classSymbols =  [ ];
+        List<ClassDeclarationSyntax> classSymbols = [];
         foreach (var cls in receiver.CandidateClasses)
         {
             var model = compilation.GetSemanticModel(cls.SyntaxTree);

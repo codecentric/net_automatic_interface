@@ -49,14 +49,12 @@ namespace AutomaticInterface
         {
             return classSyntax.AttributeLists.Count > 0
                 && classSyntax
-                    .AttributeLists
-                    .SelectMany(
-                        al =>
-                            al.Attributes.Where(a =>
-                            {
-                                return (a?.Name as IdentifierNameSyntax)?.Identifier.Text
-                                    == attributeName;
-                            })
+                    .AttributeLists.SelectMany(al =>
+                        al.Attributes.Where(a =>
+                        {
+                            return (a?.Name as IdentifierNameSyntax)?.Identifier.Text
+                                == attributeName;
+                        })
                     )
                     .Any();
         }
@@ -66,8 +64,7 @@ namespace AutomaticInterface
             return root.ChildNodes()
                 .OfType<BaseNamespaceDeclarationSyntax>()
                 .First()
-                .Name
-                .ToString();
+                .Name.ToString();
         }
 
         public static List<string> GetUsings(this CompilationUnitSyntax root)
