@@ -1,6 +1,11 @@
-name: dotnet package
+name: build
 
-on: [push]
+on:
+  workflow_dispatch:
+  push:
+        branches:
+          - main
+  pull_request:
 
 jobs:
   check_formatting:
@@ -11,7 +16,7 @@ jobs:
       - run: |
           dotnet tool restore
           dotnet csharpier --check .
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,6 +33,21 @@ jobs:
       - name: Test
         run: dotnet test --no-restore --verbosity normal
         working-directory: AutomaticInterface
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: success() && startsWith(github.ref, 'refs/heads/master')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        working-directory: AutomaticInterface
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: AutomaticInterface
       - name: Nuget
-        if: startsWith(github.ref, 'refs/heads/master')
         run: nuget push **\release\**\AutomaticInterface.*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
