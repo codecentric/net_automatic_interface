@@ -219,9 +219,11 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     private static string GetMethodSignature(IParameterSymbol x)
     {
         if (!x.HasExplicitDefaultValue)
+        {
             return $"{x.Type.ToDisplayString()} {x.Name}";
+        }
 
-        string optionalValue = x.ExplicitDefaultValue switch
+        var optionalValue = x.ExplicitDefaultValue switch
         {
             string => $" = \"{x.ExplicitDefaultValue}\"",
             // struct
@@ -239,12 +241,12 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     )
     {
         SyntaxKind[] docSyntax =
-        {
+        [
             SyntaxKind.DocumentationCommentExteriorTrivia,
             SyntaxKind.EndOfDocumentationCommentToken,
             SyntaxKind.MultiLineDocumentationCommentTrivia,
             SyntaxKind.SingleLineDocumentationCommentTrivia
-        };
+        ];
 
         var match = classSyntax
             .DescendantNodes()
@@ -310,12 +312,12 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     )
     {
         SyntaxKind[] docSyntax =
-        {
+        [
             SyntaxKind.DocumentationCommentExteriorTrivia,
             SyntaxKind.EndOfDocumentationCommentToken,
             SyntaxKind.MultiLineDocumentationCommentTrivia,
             SyntaxKind.SingleLineDocumentationCommentTrivia
-        };
+        ];
 
         var match = classSyntax
             .DescendantNodes()
@@ -343,12 +345,12 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     )
     {
         SyntaxKind[] docSyntax =
-        {
+        [
             SyntaxKind.DocumentationCommentExteriorTrivia,
             SyntaxKind.EndOfDocumentationCommentToken,
             SyntaxKind.MultiLineDocumentationCommentTrivia,
             SyntaxKind.SingleLineDocumentationCommentTrivia
-        };
+        ];
 
         var match = classSyntax
             .DescendantNodes()
@@ -500,7 +502,7 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 /// </summary>
 internal sealed class SyntaxReceiver : ISyntaxReceiver
 {
-    public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
+    public List<ClassDeclarationSyntax> CandidateClasses { get; } = [];
 
     /// <summary>
     /// Called for every syntax node in the compilation, we can inspect the nodes and save any information useful for generation
