@@ -19,8 +19,11 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         var options = new LoggerOptions(logPath, false, nameof(AutomaticInterfaceGenerator)); // todo use env variable for logging?
         using Logger logger = new(context, options);
 
-        // retrieve the populated receiver 
-        if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
+        // retrieve the populated receiver
+        if (context.SyntaxReceiver is not SyntaxReceiver receiver)
+        {
+            return;
+        }
 
         var compilation = context.Compilation;
 
@@ -40,6 +43,8 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
             throw;
         }
 
+        return;
+
         string GetLogPath()
         {
             var mainSyntaxTree = context.Compilation.SyntaxTrees
@@ -47,10 +52,11 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
             var logDir = Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
 
-            if (logDir.Contains("MSBuild") || logDir.StartsWith("/0/"))
-                // MSBuild is often in Program Files and cannot be written
+            if (logDir.Contains("MSBuild") || logDir.StartsWith("/0/", StringComparison.InvariantCultureIgnoreCase))
+            {     // MSBuild is often in Program Files and cannot be written
                 // /0/ happens in github pipeline
                 logDir = Path.GetTempPath();
+            }
             return Path.Combine(logDir, "logs");
         }
     }
@@ -60,19 +66,29 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     {
         foreach (var classSyntax in classes)
         {
-            if (classSyntax == null) continue;
+            if (classSyntax == null)
+            {
+                logger.LogMessage($"No classSyntax");
+                continue;
+            }
 
             var compilation = context.Compilation;
             var classSemanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
 
             var root = classSyntax.GetCompilationUnit();
 
+            if (root == null)
+            {
+                logger.LogMessage($"No root for {classSyntax.Identifier}");
+                continue;
+            }
+
             var namespaceName = root.GetNamespace();
             var interfaceName = $"I{classSyntax.GetClassName()}";
 
             //Checking globally enabled context. Probably in future we should check for every generated line
             var nullableContext = classSemanticModel.GetNullableContext(0);
-                
+
             var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, nullableContext.AnnotationsEnabled());
 
 
@@ -284,14 +300,16 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
     private static string GetDocumentationForClass(ClassDeclarationSyntax classSyntax)
     {
         if (!classSyntax.HasLeadingTrivia)
+        {
             // no documentation
             return string.Empty;
+        }
 
         SyntaxKind[] docSyntax =
-        {
+        [
             SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken,
             SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia
-        };
+        ];
 
         var trivia = classSyntax.GetLeadingTrivia()
             .Where(x => docSyntax.Contains(x.Kind()))
@@ -300,25 +318,28 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         return trivia.ToFullString().Trim();
     }
 
-    private static IEnumerable<string> GetUsings(ISymbol classSymbol)
+    private static HashSet<string> GetUsings(ISymbol classSymbol)
     {
         var allUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
         foreach (var syntaxRef in classSymbol.DeclaringSyntaxReferences)
-        foreach (var parent in syntaxRef.GetSyntax().Ancestors(false))
-            allUsings = parent switch
-            {
-                NamespaceDeclarationSyntax ndSyntax => allUsings.AddRange(ndSyntax.Usings),
-                CompilationUnitSyntax cuSyntax => allUsings.AddRange(cuSyntax.Usings),
-                _ => allUsings
-            };
+        {
+            allUsings = syntaxRef.GetSyntax()
+                                 .Ancestors(false)
+                                 .Aggregate(allUsings, (current, parent) => parent switch
+                                 {
+                                     NamespaceDeclarationSyntax ndSyntax => current.AddRange(ndSyntax.Usings),
+                                     CompilationUnitSyntax cuSyntax => current.AddRange(cuSyntax.Usings),
+                                     _ => current
+                                 });
+        }
 
-        return new HashSet<string>(allUsings.Select(x => x.ToString()));
+        return [..allUsings.Select(x => x.ToString())];
     }
 
     private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(SyntaxReceiver receiver,
         Compilation compilation)
     {
-        List<ClassDeclarationSyntax> classSymbols = new();
+        List<ClassDeclarationSyntax> classSymbols = [];
         foreach (var cls in receiver.CandidateClasses)
         {
             var model = compilation.GetSemanticModel(cls.SyntaxTree);
@@ -331,8 +352,7 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
                 {
                     var name = ad?.AttributeClass?.Name;
 
-                    if (name == null) return false;
-                    return name.StartsWith("GenerateAutomaticInterface");
+                    return name != null && name.StartsWith("GenerateAutomaticInterface", StringComparison.InvariantCultureIgnoreCase);
                 }))
                 classSymbols.Add(cls);
         }
@@ -373,7 +393,7 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 /// <summary>
 /// Created on demand before each generation pass
 /// </summary>
-internal class SyntaxReceiver : ISyntaxReceiver
+internal sealed class SyntaxReceiver : ISyntaxReceiver
 {
     public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
 

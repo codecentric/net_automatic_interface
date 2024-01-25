@@ -9,7 +9,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <DevelopmentDependency>true</DevelopmentDependency>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <LangVersion>preview</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <SourceGenerator_EnableLogging>True</SourceGenerator_EnableLogging>
         <SourceGenerator_EnableDebug>False</SourceGenerator_EnableDebug>
@@ -25,21 +25,15 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-Recommended</AnalysisLevel>
-        <Version>1.6.0</Version>
+        <Version>1.6.1</Version>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <NoWarn>1701;1702;NU5128</NoWarn>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerator|AnyCPU'">
         <DefineConstants>TRACE;DEBUGGENERATOR</DefineConstants>
-        <NoWarn>1701;1702</NoWarn>
-    </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <NoWarn>1701;1702</NoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <NoWarn>1701;1702</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -50,7 +44,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" PrivateAssets="all"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="../../README.md" Pack="true" PackagePath="\"/>

@@ -75,7 +75,7 @@ namespace AutomaticInterface
         /// </summary>
         /// <param name="typeParameterSymbol"></param>
         /// <returns></returns>
-        public static string? GetWhereStatement(this ITypeParameterSymbol typeParameterSymbol)
+        public static string GetWhereStatement(this ITypeParameterSymbol typeParameterSymbol)
         {
             var result = $"where {typeParameterSymbol.Name} : ";
 
@@ -99,15 +99,21 @@ namespace AutomaticInterface
             {
                 // if not first constraint prepend with comma
                 if (!isFirstConstraint)
+                {
                     constraints += ", ";
+                }
                 else
+                {
                     isFirstConstraint = false;
+                }
 
                 constraints += constraintType.GetFullTypeString();
             }
 
             if (string.IsNullOrEmpty(constraints))
-                return null;
+            {
+                return "";
+            }
 
             result += constraints;
 
@@ -125,7 +131,7 @@ namespace AutomaticInterface
 
             if (!typeArgs.Any())
                 return string.Empty;
-            
+
             var stringsToAdd = new List<string>();
             foreach (var arg in typeArgs)
             {
@@ -138,7 +144,7 @@ namespace AutomaticInterface
                 }
                 else
                 {
-                    // this is a generic argument value. 
+                    // this is a generic argument value.
                     var namedTypeSymbol = arg as INamedTypeSymbol;
                     strToAdd = namedTypeSymbol!.GetFullTypeString();
                 }
