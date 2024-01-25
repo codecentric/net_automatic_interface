@@ -3,7 +3,5 @@
 namespace AutomaticInterfaceAttribute
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class GenerateAutomaticInterfaceAttribute : Attribute
-    {
-    }
+    public class GenerateAutomaticInterfaceAttribute : Attribute { }
 }

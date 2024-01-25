@@ -11,7 +11,6 @@ namespace TestNuget
             ITest test = new Test();
 
             Console.WriteLine(test.GetString());
-
         }
     }
 }

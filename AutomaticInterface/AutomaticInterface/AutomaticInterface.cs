@@ -1,12 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace AutomaticInterface;
 
@@ -35,9 +35,14 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         }
         catch (Exception e)
         {
-            var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Error",
+            var descriptor = new DiagnosticDescriptor(
+                nameof(AutomaticInterface),
+                "Error",
                 $"{nameof(AutomaticInterfaceGenerator)} failed to generate Interface due to an error. Please inform the author. Error: {e}",
-                "Compilation", DiagnosticSeverity.Error, true);
+                "Compilation",
+                DiagnosticSeverity.Error,
+                true
+            );
             context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
             throw;
@@ -47,13 +52,19 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
         string GetLogPath()
         {
-            var mainSyntaxTree = context.Compilation.SyntaxTrees
+            var mainSyntaxTree = context
+                .Compilation
+                .SyntaxTrees
                 .First(x => x.HasCompilationUnitRoot);
 
-            var logDir = Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
+            var logDir =
+                Path.GetDirectoryName(mainSyntaxTree.FilePath) ?? Environment.CurrentDirectory;
 
-            if (logDir.Contains("MSBuild") || logDir.StartsWith("/0/", StringComparison.InvariantCultureIgnoreCase))
-            {     // MSBuild is often in Program Files and cannot be written
+            if (
+                logDir.Contains("MSBuild")
+                || logDir.StartsWith("/0/", StringComparison.InvariantCultureIgnoreCase)
+            )
+            { // MSBuild is often in Program Files and cannot be written
                 // /0/ happens in github pipeline
                 logDir = Path.GetTempPath();
             }
@@ -61,8 +72,11 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         }
     }
 
-    private void CreateInterfaces(GeneratorExecutionContext context, List<ClassDeclarationSyntax> classes,
-        Logger logger)
+    private void CreateInterfaces(
+        GeneratorExecutionContext context,
+        List<ClassDeclarationSyntax> classes,
+        Logger logger
+    )
     {
         foreach (var classSyntax in classes)
         {
@@ -89,12 +103,16 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
             //Checking globally enabled context. Probably in future we should check for every generated line
             var nullableContext = classSemanticModel.GetNullableContext(0);
 
-            var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, nullableContext.AnnotationsEnabled());
-
+            var interfaceGenerator = new InterfaceBuilder(
+                namespaceName,
+                interfaceName,
+                nullableContext.AnnotationsEnabled()
+            );
 
             var namedType = classSemanticModel.GetDeclaredSymbol(classSyntax);
 
-            if (namedType == null) continue;
+            if (namedType == null)
+                continue;
 
             interfaceGenerator.AddUsings(GetUsings(namedType));
             interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
@@ -104,22 +122,35 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
             AddMethodsToInterface(namedType, interfaceGenerator, classSyntax, classSemanticModel);
             AddEventsToInterface(namedType, interfaceGenerator, classSyntax);
 
-            var descriptor = new DiagnosticDescriptor(nameof(AutomaticInterface), "Result",
-                $"Finished compilation for {interfaceName}", "Compilation", DiagnosticSeverity.Info, true);
+            var descriptor = new DiagnosticDescriptor(
+                nameof(AutomaticInterface),
+                "Result",
+                $"Finished compilation for {interfaceName}",
+                "Compilation",
+                DiagnosticSeverity.Info,
+                true
+            );
             context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
 
             // inject the created source into the users compilation
             var generatedCode = interfaceGenerator.Build();
-            context.AddSource($"I{classSyntax.GetClassName()}", SourceText.From(generatedCode, Encoding.UTF8));
+            context.AddSource(
+                $"I{classSyntax.GetClassName()}",
+                SourceText.From(generatedCode, Encoding.UTF8)
+            );
 
             logger.TryLogSourceCode(classSyntax, generatedCode);
         }
     }
 
-    private static void AddEventsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator,
-        ClassDeclarationSyntax classSyntax)
+    private static void AddEventsToInterface(
+        INamedTypeSymbol classSymbol,
+        InterfaceBuilder codeGenerator,
+        ClassDeclarationSyntax classSyntax
+    )
     {
-        classSymbol.GetAllMembers()
+        classSymbol
+            .GetAllMembers()
             .Where(x => x.Kind == SymbolKind.Event)
             .OfType<IEventSymbol>()
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
@@ -135,19 +166,25 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
             });
     }
 
-
     private static string GetGeneric(INamedTypeSymbol classSymbol, ClassDeclarationSyntax cls)
     {
-        if (!classSymbol.IsGenericType) return string.Empty;
+        if (!classSymbol.IsGenericType)
+            return string.Empty;
 
-        var formattedGeneric = $"{cls.TypeParameterList?.ToFullString().Trim()} {cls.ConstraintClauses}";
+        var formattedGeneric =
+            $"{cls.TypeParameterList?.ToFullString().Trim()} {cls.ConstraintClauses}";
         return formattedGeneric;
     }
 
-    private static void AddMethodsToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator,
-        ClassDeclarationSyntax classSyntax, SemanticModel classSemanticModel)
+    private static void AddMethodsToInterface(
+        INamedTypeSymbol classSymbol,
+        InterfaceBuilder codeGenerator,
+        ClassDeclarationSyntax classSyntax,
+        SemanticModel classSemanticModel
+    )
     {
-        classSymbol.GetAllMembers()
+        classSymbol
+            .GetAllMembers()
             .Where(x => x.Kind == SymbolKind.Method)
             .OfType<IMethodSymbol>()
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
@@ -162,21 +199,30 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
                 var documentation = GetDocumentationFor(method, classSyntax, classSemanticModel);
 
                 var paramResult = new HashSet<string>();
-                method.Parameters
+                method
+                    .Parameters
                     .Select(GetMethodSignature)
                     .ToList()
                     .ForEach(x => paramResult.Add(x));
 
-                var typedArgs = method.TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
+                var typedArgs = method
+                    .TypeParameters
+                    .Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
                     .ToList();
-                codeGenerator.AddMethodToInterface(name, returnType.ToDisplayString(), documentation, paramResult,
-                    typedArgs);
+                codeGenerator.AddMethodToInterface(
+                    name,
+                    returnType.ToDisplayString(),
+                    documentation,
+                    paramResult,
+                    typedArgs
+                );
             });
     }
 
     private static string GetMethodSignature(IParameterSymbol x)
     {
-        if (!x.HasExplicitDefaultValue) return $"{x.Type.ToDisplayString()} {x.Name}";
+        if (!x.HasExplicitDefaultValue)
+            return $"{x.Type.ToDisplayString()} {x.Name}";
 
         string optionalValue = x.ExplicitDefaultValue switch
         {
@@ -189,13 +235,18 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         return $"{x.Type.ToDisplayString()} {x.Name}{optionalValue}";
     }
 
-    private static string GetDocumentationFor(IMethodSymbol method, ClassDeclarationSyntax classSyntax,
-        SemanticModel classSemanticModel)
+    private static string GetDocumentationFor(
+        IMethodSymbol method,
+        ClassDeclarationSyntax classSyntax,
+        SemanticModel classSemanticModel
+    )
     {
         SyntaxKind[] docSyntax =
         {
-            SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken,
-            SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia
+            SyntaxKind.DocumentationCommentExteriorTrivia,
+            SyntaxKind.EndOfDocumentationCommentToken,
+            SyntaxKind.MultiLineDocumentationCommentTrivia,
+            SyntaxKind.SingleLineDocumentationCommentTrivia
         };
 
         var match = classSyntax
@@ -203,30 +254,37 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
             .OfType<MethodDeclarationSyntax>()
             .SingleOrDefault(x => IsSameMethod(method, x, classSemanticModel));
 
-        if (match is null) return string.Empty;
+        if (match is null)
+            return string.Empty;
 
         if (!match.HasLeadingTrivia)
             // no documentation
             return string.Empty;
 
-        var trivia = match.GetLeadingTrivia()
+        var trivia = match
+            .GetLeadingTrivia()
             .Where(x => docSyntax.Contains(x.Kind()))
             .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 
         return trivia.ToFullString().Trim();
     }
 
-    private static bool IsSameMethod(IMethodSymbol method, MethodDeclarationSyntax x,
-        SemanticModel classSemanticModel)
+    private static bool IsSameMethod(
+        IMethodSymbol method,
+        MethodDeclarationSyntax x,
+        SemanticModel classSemanticModel
+    )
     {
-        if (x.Identifier.ValueText != method.Name) return false;
+        if (x.Identifier.ValueText != method.Name)
+            return false;
 
         // ok name is matching, now we have to see if overloads match
 
         var xParams = x.ParameterList.Parameters;
         var methodParams = method.Parameters;
 
-        if (xParams.Count != methodParams.Length) return false;
+        if (xParams.Count != methodParams.Length)
+            return false;
 
         for (var i = 0; i < xParams.Count; i++)
         {
@@ -235,62 +293,82 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
             var typeSymbol = classSemanticModel.GetSymbolInfo(xParam.Type!).Symbol;
 
-            if (typeSymbol == null) return false;
+            if (typeSymbol == null)
+                return false;
 
 #pragma warning disable RS1024
             var matches = typeSymbol.Equals(methodSymbol.Type);
 #pragma warning restore RS1024
 
-            if (!matches) return false;
+            if (!matches)
+                return false;
         }
 
         return true;
     }
 
-    private static string GetDocumentationForProperty(IPropertySymbol method, ClassDeclarationSyntax classSyntax)
+    private static string GetDocumentationForProperty(
+        IPropertySymbol method,
+        ClassDeclarationSyntax classSyntax
+    )
     {
         SyntaxKind[] docSyntax =
         {
-            SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken,
-            SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia
+            SyntaxKind.DocumentationCommentExteriorTrivia,
+            SyntaxKind.EndOfDocumentationCommentToken,
+            SyntaxKind.MultiLineDocumentationCommentTrivia,
+            SyntaxKind.SingleLineDocumentationCommentTrivia
         };
 
-        var match = classSyntax.DescendantNodes()
+        var match = classSyntax
+            .DescendantNodes()
             .OfType<PropertyDeclarationSyntax>()
             .SingleOrDefault(x => x.Identifier.ValueText == method.Name);
 
-        if (match is null) return string.Empty;
+        if (match is null)
+            return string.Empty;
 
         if (!match.HasLeadingTrivia)
             // no documentation
             return string.Empty;
 
-        var trivia = match.GetLeadingTrivia()
+        var trivia = match
+            .GetLeadingTrivia()
             .Where(x => docSyntax.Contains(x.Kind()))
             .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 
         return trivia.ToFullString().Trim();
     }
 
-    private static string GetDocumentationForEvent(IEventSymbol method, ClassDeclarationSyntax classSyntax)
+    private static string GetDocumentationForEvent(
+        IEventSymbol method,
+        ClassDeclarationSyntax classSyntax
+    )
     {
         SyntaxKind[] docSyntax =
         {
-            SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken,
-            SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia
+            SyntaxKind.DocumentationCommentExteriorTrivia,
+            SyntaxKind.EndOfDocumentationCommentToken,
+            SyntaxKind.MultiLineDocumentationCommentTrivia,
+            SyntaxKind.SingleLineDocumentationCommentTrivia
         };
 
-        var match = classSyntax.DescendantNodes()
+        var match = classSyntax
+            .DescendantNodes()
             .OfType<EventFieldDeclarationSyntax>()
-            .SingleOrDefault(x => x.Declaration.Variables.Any(y => y.Identifier.ValueText == method.Name));
+            .SingleOrDefault(
+                x => x.Declaration.Variables.Any(y => y.Identifier.ValueText == method.Name)
+            );
 
-        if (match is null) return string.Empty;
+        if (match is null)
+            return string.Empty;
 
         if (!match.HasLeadingTrivia)
             // no documentation
             return string.Empty;
 
-        var trivia = match.GetLeadingTrivia()
+        var trivia = match
+            .GetLeadingTrivia()
             .Where(x => docSyntax.Contains(x.Kind()))
             .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 
@@ -307,11 +385,14 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
 
         SyntaxKind[] docSyntax =
         [
-            SyntaxKind.DocumentationCommentExteriorTrivia, SyntaxKind.EndOfDocumentationCommentToken,
-            SyntaxKind.MultiLineDocumentationCommentTrivia, SyntaxKind.SingleLineDocumentationCommentTrivia
+            SyntaxKind.DocumentationCommentExteriorTrivia,
+            SyntaxKind.EndOfDocumentationCommentToken,
+            SyntaxKind.MultiLineDocumentationCommentTrivia,
+            SyntaxKind.SingleLineDocumentationCommentTrivia
         ];
 
-        var trivia = classSyntax.GetLeadingTrivia()
+        var trivia = classSyntax
+            .GetLeadingTrivia()
             .Where(x => docSyntax.Contains(x.Kind()))
             .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 
@@ -323,47 +404,68 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
         var allUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
         foreach (var syntaxRef in classSymbol.DeclaringSyntaxReferences)
         {
-            allUsings = syntaxRef.GetSyntax()
-                                 .Ancestors(false)
-                                 .Aggregate(allUsings, (current, parent) => parent switch
-                                 {
-                                     NamespaceDeclarationSyntax ndSyntax => current.AddRange(ndSyntax.Usings),
-                                     CompilationUnitSyntax cuSyntax => current.AddRange(cuSyntax.Usings),
-                                     _ => current
-                                 });
+            allUsings = syntaxRef
+                .GetSyntax()
+                .Ancestors(false)
+                .Aggregate(
+                    allUsings,
+                    (current, parent) =>
+                        parent switch
+                        {
+                            NamespaceDeclarationSyntax ndSyntax
+                                => current.AddRange(ndSyntax.Usings),
+                            CompilationUnitSyntax cuSyntax => current.AddRange(cuSyntax.Usings),
+                            _ => current
+                        }
+                );
         }
 
-        return [..allUsings.Select(x => x.ToString())];
+        return [ ..allUsings.Select(x => x.ToString()) ];
     }
 
-    private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(SyntaxReceiver receiver,
-        Compilation compilation)
+    private static List<ClassDeclarationSyntax> GetClassesToAddInterfaceFor(
+        SyntaxReceiver receiver,
+        Compilation compilation
+    )
     {
-        List<ClassDeclarationSyntax> classSymbols = [];
+        List<ClassDeclarationSyntax> classSymbols =  [ ];
         foreach (var cls in receiver.CandidateClasses)
         {
             var model = compilation.GetSemanticModel(cls.SyntaxTree);
 
             var classSymbol = model.GetDeclaredSymbol(cls);
 
-            if (classSymbol is null) continue;
+            if (classSymbol is null)
+                continue;
 
-            if (classSymbol.GetAttributes().Any(ad =>
-                {
-                    var name = ad?.AttributeClass?.Name;
+            if (
+                classSymbol
+                    .GetAttributes()
+                    .Any(ad =>
+                    {
+                        var name = ad?.AttributeClass?.Name;
 
-                    return name != null && name.StartsWith("GenerateAutomaticInterface", StringComparison.InvariantCultureIgnoreCase);
-                }))
+                        return name != null
+                            && name.StartsWith(
+                                "GenerateAutomaticInterface",
+                                StringComparison.InvariantCultureIgnoreCase
+                            );
+                    })
+            )
                 classSymbols.Add(cls);
         }
 
         return classSymbols;
     }
 
-    private static void AddPropertiesToInterface(INamedTypeSymbol classSymbol, InterfaceBuilder codeGenerator,
-        ClassDeclarationSyntax classSyntax)
+    private static void AddPropertiesToInterface(
+        INamedTypeSymbol classSymbol,
+        InterfaceBuilder codeGenerator,
+        ClassDeclarationSyntax classSyntax
+    )
     {
-        classSymbol.GetAllMembers()
+        classSymbol
+            .GetAllMembers()
             .Where(x => x.Kind == SymbolKind.Property)
             .OfType<IPropertySymbol>()
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
@@ -379,7 +481,13 @@ public class AutomaticInterfaceGenerator : ISourceGenerator
                 var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
                 var documentation = GetDocumentationForProperty(prop, classSyntax);
 
-                codeGenerator.AddPropertyToInterface(name, type.ToDisplayString(), hasGet, hasSet, documentation);
+                codeGenerator.AddPropertyToInterface(
+                    name,
+                    type.ToDisplayString(),
+                    hasGet,
+                    hasSet,
+                    documentation
+                );
             });
     }
 
@@ -403,7 +511,12 @@ internal sealed class SyntaxReceiver : ISyntaxReceiver
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
         // any field with at least one attribute is a candidate for property generation
-        if (syntaxNode is ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax)
+        if (
+            syntaxNode is ClassDeclarationSyntax
+            {
+                AttributeLists.Count: > 0
+            } classDeclarationSyntax
+        )
             CandidateClasses.Add(classDeclarationSyntax);
     }
 }

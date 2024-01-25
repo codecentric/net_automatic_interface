@@ -6,7 +6,6 @@ namespace AutomaticInterfaceExample
     {
         static void Main(string[] args)
         {
-
             DemoClass demo = new DemoClass();
             Console.WriteLine(DemoClass.StaticMethod());
 

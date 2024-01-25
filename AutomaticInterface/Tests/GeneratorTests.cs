@@ -1,28 +1,33 @@
-﻿using AutomaticInterface;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
+using AutomaticInterface;
 using AutomaticInterfaceAttribute;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Text;
+using Xunit;
 using VerifyCS = Tests.CSharpSourceGeneratorVerifier<AutomaticInterface.AutomaticInterfaceGenerator>;
 
 namespace Tests
 {
     public class GeneratorTests
     {
-        private readonly ImmutableArray<string> references = AppDomain.CurrentDomain
+        private readonly ImmutableArray<string> references = AppDomain
+            .CurrentDomain
             .GetAssemblies()
             .Where(assembly => !assembly.IsDynamic)
             .Select(assembly => assembly.Location)
             .ToImmutableArray();
 
-        private async Task RunTestAsync(string code, string expectedResult, NullableContextOptions nullableContextOptions = NullableContextOptions.Disable)
+        private async Task RunTestAsync(
+            string code,
+            string expectedResult,
+            NullableContextOptions nullableContextOptions = NullableContextOptions.Disable
+        )
         {
             var tester = new VerifyCS.Test
             {
@@ -32,20 +37,31 @@ namespace Tests
                     Sources = { code },
                     GeneratedSources =
                     {
-                        (typeof(AutomaticInterfaceGenerator), "IDemoClass.cs",
-                            SourceText.From(expectedResult, Encoding.UTF8))
+                        (
+                            typeof(AutomaticInterfaceGenerator),
+                            "IDemoClass.cs",
+                            SourceText.From(expectedResult, Encoding.UTF8)
+                        )
                     }
                 },
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net60
             };
 
             tester.ReferenceAssemblies.AddAssemblies(references);
-            tester.TestState.AdditionalReferences.Add(typeof(GenerateAutomaticInterfaceAttribute).Assembly);
+            tester
+                .TestState
+                .AdditionalReferences
+                .Add(typeof(GenerateAutomaticInterfaceAttribute).Assembly);
 
-            tester.ExpectedDiagnostics.AddRange(new List<DiagnosticResult>()
-            {
-                new("AutomaticInterface", DiagnosticSeverity.Info), new("AutomaticInterface", DiagnosticSeverity.Info)
-            });
+            tester
+                .ExpectedDiagnostics
+                .AddRange(
+                    new List<DiagnosticResult>()
+                    {
+                        new("AutomaticInterface", DiagnosticSeverity.Info),
+                        new("AutomaticInterface", DiagnosticSeverity.Info)
+                    }
+                );
 
             await tester.RunAsync();
         }
@@ -53,7 +69,8 @@ namespace Tests
         [Fact]
         public async Task WorksWithOptionalParameters()
         {
-            const string code = @"
+            const string code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample;
@@ -100,7 +117,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task WorksWithOptionalStructParameters()
         {
-            const string code = @"
+            const string code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample;
@@ -149,7 +167,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task WorksWithOptionalNullParameters()
         {
-            const string code = @"
+            const string code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample;
@@ -193,7 +212,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task TestNoAttribute()
         {
-            var code = @"
+            var code =
+                @"
 class C { }
 ";
             await new VerifyCS.Test
@@ -201,16 +221,19 @@ class C { }
                 TestState =
                 {
                     Sources = { code },
-                    ExpectedDiagnostics = { new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info) }
+                    ExpectedDiagnostics =
+                    {
+                        new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info)
+                    }
                 }
             }.RunAsync();
         }
 
-
         [Fact]
         public async Task GeneratesEmptyInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -250,7 +273,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task GeneratesStringPropertyInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -293,7 +317,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task GeneratesStringPropertySetOnlyInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -337,7 +362,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task GeneratesStringPropertyGetOnlyInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -381,7 +407,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task AddsUsingsToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 
@@ -426,7 +453,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task AddsPublicMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 
@@ -472,7 +500,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task AddsPublicTaskMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 using System.Threading.Tasks;
@@ -519,7 +548,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task AddsPublicWithParamsMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 
@@ -565,7 +595,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task AddsPublicWithParamsGenericMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 using System.Threading.Tasks;
@@ -612,7 +643,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task AddsPublicWithMultipleParamsMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 
@@ -657,7 +689,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task IgnoresNotPublicMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 
@@ -701,7 +734,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task AddsDescriptionFromMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 
@@ -752,11 +786,11 @@ namespace AutomaticInterfaceExample
             Assert.True(true); // silence warnings, real test happens in the RunAsync() method
         }
 
-
         [Fact]
         public async Task AddsMultiLineDescriptionFromMethodToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System.IO;
 
@@ -808,7 +842,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task OmitsPrivateSetPropertyInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -851,7 +886,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task CopiesDocumentationOfPropertyToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -900,7 +936,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task CopiesDocumentationOfClassToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -948,7 +985,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task DoesNotCopyCtorToToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -1001,7 +1039,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task DoesNotCopyStaticMethodsToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -1052,7 +1091,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task MakesGenericInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -1100,7 +1140,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task CopiesEventsToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System;
 
@@ -1159,7 +1200,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task DoesNotCopyIndexerToInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System;
 
@@ -1217,7 +1259,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task FullExample()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 using System;
 
@@ -1323,7 +1366,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task WorksWithFileScopedNamespace()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample;
@@ -1365,7 +1409,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task WorksWithGenericMethods()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample;
@@ -1414,7 +1459,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task GeneratesOverloadedMethodInterface()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -1467,7 +1513,8 @@ namespace AutomaticInterfaceExample
         [Fact]
         public async Task WorksWithNullableContext()
         {
-            var code = @"
+            var code =
+                @"
 using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample;
 [GenerateAutomaticInterface]
@@ -1480,7 +1527,8 @@ public class DemoClass
 }
 ";
 
-            var expected = @"//--------------------------------------------------------------------------------------------------
+            var expected =
+                @"//--------------------------------------------------------------------------------------------------
 // <auto-generated>
 //     This code was generated by a tool.
 //

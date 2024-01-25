@@ -1,10 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutomaticInterface
 {
@@ -43,19 +42,28 @@ namespace AutomaticInterface
             return proxy.Modifiers.ToFullString().Trim();
         }
 
-        public static bool HaveAttribute(this ClassDeclarationSyntax classSyntax, string attributeName)
+        public static bool HaveAttribute(
+            this ClassDeclarationSyntax classSyntax,
+            string attributeName
+        )
         {
-            return classSyntax.AttributeLists.Count > 0 &&
-                   classSyntax.AttributeLists.SelectMany(al => al.Attributes
-                           .Where(a => { return (a?.Name as IdentifierNameSyntax)?.Identifier.Text == attributeName; }))
-                       .Any();
+            return classSyntax.AttributeLists.Count > 0
+                && classSyntax
+                    .AttributeLists
+                    .SelectMany(
+                        al =>
+                            al.Attributes.Where(a =>
+                            {
+                                return (a?.Name as IdentifierNameSyntax)?.Identifier.Text
+                                    == attributeName;
+                            })
+                    )
+                    .Any();
         }
-
 
         public static string GetNamespace(this CompilationUnitSyntax root)
         {
-            return root
-                .ChildNodes()
+            return root.ChildNodes()
                 .OfType<BaseNamespaceDeclarationSyntax>()
                 .First()
                 .Name
@@ -122,10 +130,14 @@ namespace AutomaticInterface
 
         private static string GetFullTypeString(this ISymbol type)
         {
-            return type.Name + type.GetTypeArgsStr(symbol => ((INamedTypeSymbol)symbol).TypeArguments);
+            return type.Name
+                + type.GetTypeArgsStr(symbol => ((INamedTypeSymbol)symbol).TypeArguments);
         }
 
-        private static string GetTypeArgsStr(this ISymbol symbol, Func<ISymbol, ImmutableArray<ITypeSymbol>> typeArgGetter)
+        private static string GetTypeArgsStr(
+            this ISymbol symbol,
+            Func<ISymbol, ImmutableArray<ITypeSymbol>> typeArgGetter
+        )
         {
             var typeArgs = typeArgGetter(symbol);
 
@@ -152,7 +164,7 @@ namespace AutomaticInterface
                 stringsToAdd.Add(strToAdd);
             }
 
-            var result = $"<{string.Join(", " ,stringsToAdd)}>";
+            var result = $"<{string.Join(", ", stringsToAdd)}>";
 
             return result;
         }
