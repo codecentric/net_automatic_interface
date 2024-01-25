@@ -144,12 +144,17 @@ Alternatively, the Source Generator generates a log file - look out for a "logs"
 
 ### I have an error
 
-Please ping me via Github.
-Ideally create a Test for your problem - source generators are a pain to debug and tests solve that problem.
+Please create an issue and a minimally reproducible test for the problem. 
+
+PRs are welcome!
+Please make sure that you run [CSharpier](https://csharpier.com/) on the code for formatting.
 
 ## Contributors
 
-Thanks to [dnf](https://dominikjeske.github.io/) for creating some great extensions. I use them partially in this Generator. Unfortunately due to problems referencing packages I cannot depend on his packages directly.
+- Thanks to [dnf](https://dominikjeske.github.io/) for creating some great extensions. I use them partially in this Generator. Unfortunately due to problems referencing packages I cannot depend on his packages directly.
+- skarllot for PRs
+- Frederik91 for PRs
+- definitelyokay for PRs
 
 ## Run tests
 
@@ -157,9 +162,11 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 1.6.1
+ - Minor bug fixes
+
 ### 1.5.0
  - Add support nullable context
-
 
 ### 1.4.0
  - Add support for overloaded methods.
