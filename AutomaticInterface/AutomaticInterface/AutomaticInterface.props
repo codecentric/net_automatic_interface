@@ -1,0 +1,9 @@
+﻿<Project>
+
+    <ItemGroup>
+        <CompilerVisibleProperty Include="AutomaticInterface_Logging_Enable" />
+        <CompilerVisibleProperty Include="AutomaticInterface_Logging_Path" />
+        <CompilerVisibleProperty Include="AutomaticInterface_AttributeName" />
+    </ItemGroup>
+
+</Project>

@@ -1,69 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutomaticInterface;
-using AutomaticInterfaceAttribute;
+using FluentAssertions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
-using VerifyCS = Tests.CSharpSourceGeneratorVerifier<AutomaticInterface.AutomaticInterfaceGenerator>;
 
 namespace Tests
 {
     public class GeneratorTests
     {
-        private readonly ImmutableArray<string> references = AppDomain
-            .CurrentDomain.GetAssemblies()
-            .Where(assembly => !assembly.IsDynamic)
-            .Select(assembly => assembly.Location)
-            .ToImmutableArray();
-
-        private async Task RunTestAsync(
-            string code,
-            string expectedResult,
-            NullableContextOptions nullableContextOptions = NullableContextOptions.Disable
-        )
+        private static string GenerateCode(string code)
         {
-            var tester = new VerifyCS.Test
-            {
-                NullableContextOptions = nullableContextOptions,
-                TestState =
-                {
-                    Sources = { code },
-                    GeneratedSources =
-                    {
-                        (
-                            typeof(AutomaticInterfaceGenerator),
-                            "IDemoClass.cs",
-                            SourceText.From(expectedResult, Encoding.UTF8)
-                        )
-                    }
-                },
-                ReferenceAssemblies = ReferenceAssemblies.Net.Net60
-            };
+            var syntaxTree = CSharpSyntaxTree.ParseText(code);
+            var references = AppDomain
+                .CurrentDomain.GetAssemblies()
+                .Where(assembly => !assembly.IsDynamic)
+                .Select(assembly => MetadataReference.CreateFromFile(assembly.Location))
+                .Cast<MetadataReference>();
 
-            tester.ReferenceAssemblies.AddAssemblies(references);
-            tester.TestState.AdditionalReferences.Add(
-                typeof(GenerateAutomaticInterfaceAttribute).Assembly
+            var compilation = CSharpCompilation.Create(
+                "SourceGeneratorTests",
+                new[] { syntaxTree },
+                references,
+                new(OutputKind.DynamicallyLinkedLibrary)
             );
 
-            tester.ExpectedDiagnostics.AddRange(
-                new List<DiagnosticResult>()
-                {
-                    new("AutomaticInterface", DiagnosticSeverity.Info),
-                    new("AutomaticInterface", DiagnosticSeverity.Info)
-                }
-            );
+            var generator = new AutomaticInterfaceGenerator();
 
-            await tester.RunAsync();
+            CSharpGeneratorDriver
+                .Create(generator)
+                .RunGeneratorsAndUpdateCompilation(
+                    compilation,
+                    out var outputCompilation,
+                    out var diagnostics
+                );
+
+            diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty();
+
+            return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString();
         }
 
         [Fact]
-        public async Task WorksWithOptionalParameters()
+        public void WorksWithOptionalParameters()
         {
             const string code =
                 @"
@@ -99,19 +78,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         bool TryStartTransaction(string file = """", string member = """", int line = 0);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task WorksWithOptionalStructParameters()
+        public void WorksWithOptionalStructParameters()
         {
             const string code =
                 @"
@@ -149,19 +128,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         bool TryStartTransaction(AutomaticInterfaceExample.MyStruct data = default(AutomaticInterfaceExample.MyStruct));
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task WorksWithOptionalNullParameters()
+        public void WorksWithOptionalNullParameters()
         {
             const string code =
                 @"
@@ -194,39 +173,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         bool TryStartTransaction(string data = null);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task TestNoAttribute()
-        {
-            var code =
-                @"
-class C { }
-";
-            await new VerifyCS.Test
-            {
-                TestState =
-                {
-                    Sources = { code },
-                    ExpectedDiagnostics =
-                    {
-                        new DiagnosticResult("AutomaticInterface", DiagnosticSeverity.Info)
-                    }
-                }
-            }.RunAsync();
-        }
-
-        [Fact]
-        public async Task GeneratesEmptyInterface()
+        public void GeneratesEmptyInterface()
         {
             var code =
                 @"
@@ -256,18 +215,17 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
     }
 }
 ";
 
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task GeneratesStringPropertyInterface()
+        public void GeneratesStringPropertyInterface()
         {
             var code =
                 @"
@@ -299,19 +257,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello { get; set; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task GeneratesStringPropertySetOnlyInterface()
+        public void GeneratesStringPropertySetOnlyInterface()
         {
             var code =
                 @"
@@ -344,19 +302,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello { set; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task GeneratesStringPropertyGetOnlyInterface()
+        public void GeneratesStringPropertyGetOnlyInterface()
         {
             var code =
                 @"
@@ -389,19 +347,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello { get; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsUsingsToInterface()
+        public void AddsUsingsToInterface()
         {
             var code =
                 @"
@@ -435,19 +393,19 @@ using System.IO;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         System.IO.DirectoryInfo Hello { get; set; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsPublicMethodToInterface()
+        public void AddsPublicMethodToInterface()
         {
             var code =
                 @"
@@ -482,19 +440,19 @@ using System.IO;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello();
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsPublicTaskMethodToInterface()
+        public void AddsPublicTaskMethodToInterface()
         {
             var code =
                 @"
@@ -508,7 +466,7 @@ namespace AutomaticInterfaceExample
     [GenerateAutomaticInterface]
     class DemoClass
     {
-        public async Task<string> Hello(){return """";}
+       public async Task<string> Hello(){return """";}
     }
 }
 ";
@@ -530,19 +488,19 @@ using System.Threading.Tasks;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         System.Threading.Tasks.Task<string> Hello();
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsPublicWithParamsMethodToInterface()
+        public void AddsPublicWithParamsMethodToInterface()
         {
             var code =
                 @"
@@ -577,19 +535,19 @@ using System.IO;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello(string x);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsPublicWithParamsGenericMethodToInterface()
+        public void AddsPublicWithParamsGenericMethodToInterface()
         {
             var code =
                 @"
@@ -625,19 +583,19 @@ using System.Threading.Tasks;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello(System.Threading.Tasks.Task<string> x);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsPublicWithMultipleParamsMethodToInterface()
+        public void AddsPublicWithMultipleParamsMethodToInterface()
         {
             var code =
                 @"
@@ -671,19 +629,19 @@ using System.IO;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello(string x, int y, double z);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task IgnoresNotPublicMethodToInterface()
+        public void IgnoresNotPublicMethodToInterface()
         {
             var code =
                 @"
@@ -718,17 +676,16 @@ using System.IO;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsDescriptionFromMethodToInterface()
+        public void AddsDescriptionFromMethodToInterface()
         {
             var code =
                 @"
@@ -767,23 +724,19 @@ using System.IO;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
-        /// <summary>
-        /// TEST
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         string Hello(string x);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task AddsMultiLineDescriptionFromMethodToInterface()
+        public void AddsMultiLineDescriptionFromMethodToInterface()
         {
             var code =
                 @"
@@ -821,22 +774,19 @@ using System.IO;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
-        /**
-        * <summary>Hello World!</summary>
-        */
+        /// <inheritdoc />
         string Hello(string x);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task OmitsPrivateSetPropertyInterface()
+        public void OmitsPrivateSetPropertyInterface()
         {
             var code =
                 @"
@@ -848,6 +798,7 @@ namespace AutomaticInterfaceExample
     [GenerateAutomaticInterface]
     class DemoClass
     {
+        /// <inheritdoc />
         public string Hello { get; private set; }
     }
 }
@@ -868,19 +819,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello { get; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task CopiesDocumentationOfPropertyToInterface()
+        public void CopiesDocumentationOfPropertyToInterface()
         {
             var code =
                 @"
@@ -915,22 +866,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
-        /// <summary>
-        /// Bla bla
-        /// </summary>
+        /// <inheritdoc />
         string Hello { get; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task CopiesDocumentationOfClassToInterface()
+        public void CopiesDocumentationOfClassToInterface()
         {
             var code =
                 @"
@@ -967,19 +915,19 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello { get; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task DoesNotCopyCtorToToInterface()
+        public void DoesNotCopyCtorToToInterface()
         {
             var code =
                 @"
@@ -1021,19 +969,19 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello { get; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task DoesNotCopyStaticMethodsToInterface()
+        public void DoesNotCopyStaticMethodsToInterface()
         {
             var code =
                 @"
@@ -1075,17 +1023,16 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task MakesGenericInterface()
+        public void MakesGenericInterface()
         {
             var code =
                 @"
@@ -1099,7 +1046,6 @@ namespace AutomaticInterfaceExample
     [GenerateAutomaticInterface]
     class DemoClass<T,U> where T:class
     {
-        public string Hello { get; private set; }
     }
 }
 ";
@@ -1122,19 +1068,16 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass<T,U> where T:class
+    public partial Interface IDemoClass<T,U> where T:class
     {
-        string Hello { get; }
-        
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task CopiesEventsToInterface()
+        public void CopiesEventsToInterface()
         {
             var code =
                 @"
@@ -1179,22 +1122,19 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
-        /// <summary>
-        /// Bla bla
-        /// </summary>
+        /// <inheritdoc />
         event System.EventHandler ShapeChanged;
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task DoesNotCopyIndexerToInterface()
+        public void DoesNotCopyIndexerToInterface()
         {
             var code =
                 @"
@@ -1243,17 +1183,16 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task FullExample()
+        public void FullExample()
         {
             var code =
                 @"
@@ -1333,34 +1272,28 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
-        /// <summary>
-        /// Property Documentation will be copied
-        /// </summary>
+        /// <inheritdoc />
         string Hello { get; set; }
         
+        /// <inheritdoc />
         string OnlyGet { get; }
         
-        /// <summary>
-        /// Method Documentation will be copied
-        /// </summary>
+        /// <inheritdoc />
         string AMethod(string x, string y);
         
-        /// <summary>
-        /// event Documentation will be copied
-        /// </summary>
+        /// <inheritdoc />
         event System.EventHandler ShapeChanged;
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task WorksWithFileScopedNamespace()
+        public void WorksWithFileScopedNamespace()
         {
             var code =
                 @"
@@ -1391,19 +1324,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string Hello { get; set; }
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task WorksWithGenericMethods()
+        public void WorksWithGenericMethods()
         {
             var code =
                 @"
@@ -1414,6 +1347,7 @@ namespace AutomaticInterfaceExample;
 [GenerateAutomaticInterface]
 public class DemoClass
 {
+    /// <inheritdoc />
     public string CMethod<T, T1, T2, T3, T4>(string x, string y)
         where T : class
         where T1 : struct
@@ -1441,19 +1375,19 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string CMethod<T, T1, T2, T3, T4>(string x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task GeneratesOverloadedMethodInterface()
+        public void GeneratesOverloadedMethodInterface()
         {
             var code =
                 @"
@@ -1493,21 +1427,22 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string AMethod(string x, string y);
         
+        /// <inheritdoc />
         string AMethod(string x, string y, string crash);
         
     }
 }
 ";
-            await RunTestAsync(code, expected);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
         }
 
         [Fact]
-        public async Task WorksWithNullableContext()
+        public void WorksWithNullableContext()
         {
             var code =
                 @"
@@ -1539,16 +1474,61 @@ using AutomaticInterfaceAttribute;
 namespace AutomaticInterfaceExample
 {
     [GeneratedCode(""AutomaticInterface"", """")]
-    public partial interface IDemoClass
+    public partial Interface IDemoClass
     {
+        /// <inheritdoc />
         string AMethod(AutomaticInterfaceExample.DemoClass? x, string y);
         
     }
 }
 #nullable restore
 ";
-            await RunTestAsync(code, expected, NullableContextOptions.Enable);
-            Assert.True(true); // silence warnings, real test happens in the RunAsync() method
+            GenerateCode(code).Should().Be(expected);
+        }
+
+        [Fact]
+        public void WorksWithNullableReturn()
+        {
+            var code =
+                @"
+using AutomaticInterfaceAttribute;
+namespace AutomaticInterfaceExample;
+[GenerateAutomaticInterface]
+public class DemoClass
+{
+    public string? AMethod(DemoClass x, string y)
+    {
+        return ""Ok"";
+    }
+}
+";
+
+            var expected =
+                @"//--------------------------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.
+// </auto-generated>
+//--------------------------------------------------------------------------------------------------
+
+#nullable enable
+using System.CodeDom.Compiler;
+using AutomaticInterfaceAttribute;
+
+namespace AutomaticInterfaceExample
+{
+    [GeneratedCode(""AutomaticInterface"", """")]
+    public partial Interface IDemoClass
+    {
+        /// <inheritdoc />
+        string? AMethod(AutomaticInterfaceExample.DemoClass x, string y);
+        
+    }
+}
+#nullable restore
+";
+            GenerateCode(code).Should().Be(expected);
         }
     }
 }

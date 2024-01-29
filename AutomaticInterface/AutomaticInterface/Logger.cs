@@ -9,7 +9,7 @@ namespace AutomaticInterface
 {
     public record LoggerOptions(string LogPath, bool EnableLogging, string Name);
 
-    internal sealed class Logger : IDisposable
+    public sealed class Logger : IDisposable
     {
         private const int LineSuffixLength = 20;
         private const int LineLenght = 100;

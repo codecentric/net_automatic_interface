@@ -12,6 +12,12 @@
 	  <SourceGenerator_LogPath>C:\tmp\log.txt</SourceGenerator_LogPath>
     </PropertyGroup>
 
+	<PropertyGroup>
+		<AutomaticInterface_Logging_Enable>enable</AutomaticInterface_Logging_Enable>
+		<AutomaticInterface_Logging_Path>./logs/log.txt</AutomaticInterface_Logging_Path>
+		<AutomaticInterface_AttributeName>GenerateAutomaticInterface</AutomaticInterface_AttributeName>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj" />
 		<ProjectReference Include="..\AutomaticInterface\AutomaticInterface.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
@@ -22,6 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+
 	  <None Remove="logs\AutomaticInterfaceGenerator_log.txt" />
 	</ItemGroup>
 
