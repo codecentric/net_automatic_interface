@@ -55,36 +55,38 @@ public static class Builder
             .ToList()
             .ForEach(method =>
             {
-                var returnType = method.ReturnType;
-                var name = method.Name;
-
-                var hasNullableParameter = method.Parameters.Any(x =>
-                    x.NullableAnnotation == NullableAnnotation.Annotated
-                );
-                var hasNullableReturn =
-                    method.ReturnType.NullableAnnotation == NullableAnnotation.Annotated;
-                if (hasNullableParameter || hasNullableReturn)
-                {
-                    codeGenerator.HasNullable = true;
-                }
-
-                var paramResult = new HashSet<string>();
-                method
-                    .Parameters.Select(GetMethodSignature)
-                    .ToList()
-                    .ForEach(x => paramResult.Add(x));
-
-                var typedArgs = method
-                    .TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
-                    .ToList();
-                codeGenerator.AddMethodToInterface(
-                    name,
-                    returnType.ToDisplayString(),
-                    InheritDoc,
-                    paramResult,
-                    typedArgs
-                );
+                AddMethod(codeGenerator, method);
             });
+    }
+
+    private static void AddMethod(InterfaceBuilder codeGenerator, IMethodSymbol method)
+    {
+        var returnType = method.ReturnType;
+        var name = method.Name;
+
+        var hasNullableParameter = method.Parameters.Any(x =>
+            x.NullableAnnotation == NullableAnnotation.Annotated
+        );
+        var hasNullableReturn =
+            method.ReturnType.NullableAnnotation == NullableAnnotation.Annotated;
+        if (hasNullableParameter || hasNullableReturn)
+        {
+            codeGenerator.HasNullable = true;
+        }
+
+        var paramResult = new HashSet<string>();
+        method.Parameters.Select(GetMethodSignature).ToList().ForEach(x => paramResult.Add(x));
+
+        var typedArgs = method
+            .TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
+            .ToList();
+        codeGenerator.AddMethodToInterface(
+            name,
+            returnType.ToDisplayString(),
+            InheritDoc,
+            paramResult,
+            typedArgs
+        );
     }
 
     private static void AddEventsToInterface(
