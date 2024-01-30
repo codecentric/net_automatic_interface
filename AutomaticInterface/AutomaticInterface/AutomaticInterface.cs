@@ -14,9 +14,6 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // todo nullable as in void Test(string? x);
-        // todo nullable event
-        // todo nullable property
         var classes = context
             .SyntaxProvider.CreateSyntaxProvider(CouldBeClassAsync, Transform)
             .Where(type => type is not null)

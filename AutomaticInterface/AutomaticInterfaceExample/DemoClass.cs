@@ -21,6 +21,8 @@ namespace AutomaticInterfaceExample
 
         public string OnlyGet { get; } // included, get and set are copied to the interface when public
 
+        public string? NullableProperty { get; set; }
+
         /// <summary>
         /// Method Documentation will be copied
         /// </summary>
@@ -62,6 +64,8 @@ namespace AutomaticInterfaceExample
         private event EventHandler ShapeChanged2; // ignored because not public
 #pragma warning restore IDE0051 // Remove unused private members
 #pragma warning restore S3264 // Events should be invoked
+
+        public event EventHandler? ShapeChangedNullable; // included
 
         private readonly int[] arr = new int[100];
 
