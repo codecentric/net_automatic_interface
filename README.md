@@ -162,6 +162,12 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 2.0.0
+- Major rework to Incremental Source generator
+- Fixed some outstanding bugs
+- Removed logging, b/c not really used
+- Increased coverage
+
 ### 1.6.1
  - Minor bug fixes
 
