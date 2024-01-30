@@ -9,19 +9,44 @@ namespace AutomaticInterface;
 [Generator]
 public class AutomaticInterfaceGenerator : IIncrementalGenerator
 {
-    private const string DefaultAttributeName = "GenerateAutomaticInterface";
+    public const string DefaultAttributeName = "GenerateAutomaticInterface";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var classes = context
-            .SyntaxProvider.CreateSyntaxProvider(CouldBeClassAsync, Transform)
+            .SyntaxProvider.CreateSyntaxProvider(CouldBeClassWithInterfaceAttribute, Transform)
             .Where(type => type is not null)
             .Collect();
 
         context.RegisterSourceOutput(classes, GenerateCode);
     }
 
-    private void GenerateCode(
+    private static bool CouldBeClassWithInterfaceAttribute(
+        SyntaxNode syntaxNode,
+        CancellationToken _
+    )
+    {
+        if (syntaxNode is not AttributeSyntax attribute)
+        {
+            return false;
+        }
+
+        var name = ExtractName(attribute.Name);
+
+        return name is DefaultAttributeName;
+    }
+
+    private static string? ExtractName(NameSyntax? name)
+    {
+        return name switch
+        {
+            SimpleNameSyntax ins => ins.Identifier.Text,
+            QualifiedNameSyntax qns => qns.Right.Identifier.Text,
+            _ => null
+        };
+    }
+
+    private static void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol?> enumerations
     )
@@ -44,7 +69,8 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
 
             var code = Builder.BuildInterfaceFor(type);
 
-            context.AddSource(typeNamespace, code);
+            var hintName = $"{typeNamespace}.I{type.Name}";
+            context.AddSource(hintName, code);
         }
     }
 
@@ -65,30 +91,5 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
                 cancellationToken: cancellationToken
             ) as ITypeSymbol;
         return type;
-    }
-
-    private static bool CouldBeClassAsync(
-        SyntaxNode syntaxNode,
-        CancellationToken cancellationToken
-    )
-    {
-        if (syntaxNode is not AttributeSyntax attribute)
-        {
-            return false;
-        }
-
-        var name = ExtractName(attribute.Name);
-
-        return name is DefaultAttributeName;
-    }
-
-    private static string? ExtractName(NameSyntax? name)
-    {
-        return name switch
-        {
-            SimpleNameSyntax ins => ins.Identifier.Text,
-            QualifiedNameSyntax qns => qns.Right.Identifier.Text,
-            _ => null
-        };
     }
 }

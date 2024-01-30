@@ -3,13 +3,10 @@ using System;
 using System.CodeDom.Compiler;
 using AutomaticInterfaceAttribute;
 
-/// <summary>
-/// Result of the generator
-/// </summary>
 namespace AutomaticInterfaceExample
 {
     /// <summary>
-    /// Bla bla
+    /// Result of the generator
     /// </summary>
     [GeneratedCode("AutomaticInterface", "")]
     public partial interface InterfaceExample // would be IDemoClass normally, changed to avoid naming problems

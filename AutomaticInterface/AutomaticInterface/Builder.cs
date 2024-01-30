@@ -21,7 +21,7 @@ public static class Builder
             return string.Empty;
         }
 
-        var namespaceName = typeSymbol.ContainingNamespace.ToDisplayString();
+        var namespaceName = GetNameSpace(typeSymbol);
 
         var interfaceName = $"I{classSyntax.GetClassName()}";
 
@@ -37,6 +37,26 @@ public static class Builder
         var generatedCode = interfaceGenerator.Build();
 
         return generatedCode;
+    }
+
+    private static string GetNameSpace(ISymbol typeSymbol)
+    {
+        var generationAttribute = typeSymbol
+            .GetAttributes()
+            .FirstOrDefault(x =>
+                x.AttributeClass != null
+                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            );
+
+        if (generationAttribute == null)
+        {
+            return typeSymbol.ContainingNamespace.ToDisplayString();
+        }
+        var customNs = generationAttribute.ConstructorArguments.FirstOrDefault().Value?.ToString();
+
+        return string.IsNullOrWhiteSpace(customNs)
+            ? typeSymbol.ContainingNamespace.ToDisplayString()
+            : customNs!;
     }
 
     private static void AddMethodsToInterface(
