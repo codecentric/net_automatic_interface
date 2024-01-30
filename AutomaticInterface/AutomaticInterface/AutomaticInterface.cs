@@ -9,8 +9,7 @@ namespace AutomaticInterface;
 [Generator]
 public class AutomaticInterfaceGenerator : IIncrementalGenerator
 {
-    private GeneratorOptions options = new();
-    public const string DefaultAttributeName = "GenerateAutomaticInterface";
+    private const string DefaultAttributeName = "GenerateAutomaticInterface";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -20,8 +19,6 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
             .Collect();
 
         context.RegisterSourceOutput(classes, GenerateCode);
-
-        options = GetGeneratorOptions(context);
     }
 
     private void GenerateCode(
@@ -45,7 +42,7 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
                 ? $"${Guid.NewGuid().ToString()}"
                 : $"{type.ContainingNamespace}";
 
-            var code = Builder.BuildInterfaceFor(options, type);
+            var code = Builder.BuildInterfaceFor(type);
 
             context.AddSource(typeNamespace, code);
         }
@@ -82,7 +79,7 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
 
         var name = ExtractName(attribute.Name);
 
-        return name is DefaultAttributeName or "GenerateAutomaticInterfaceAttribute";
+        return name is DefaultAttributeName;
     }
 
     private static string? ExtractName(NameSyntax? name)
@@ -94,52 +91,4 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
             _ => null
         };
     }
-
-    private static GeneratorOptions GetGeneratorOptions(
-        IncrementalGeneratorInitializationContext context
-    )
-    {
-        var opts = new GeneratorOptions();
-        context.AnalyzerConfigOptionsProvider.Select(
-            (options, _) =>
-            {
-                var enableLogging =
-                    options.GlobalOptions.TryGetValue(
-                        "build_property.AutomaticInterface_Logging_Enable",
-                        out var loggerEnabledValue
-                    ) && IsFeatureEnabled(loggerEnabledValue);
-
-                options.GlobalOptions.TryGetValue(
-                    "build_property.AutomaticInterface_Logging_Path",
-                    out var logPath
-                );
-
-                options.GlobalOptions.TryGetValue(
-                    "build_property.AutomaticInterface_AttributeName",
-                    out var attributeName
-                );
-
-                opts.LoggerEnabled = enableLogging;
-                opts.LoggerPath = logPath ?? "";
-                opts.AttributeName = attributeName ?? DefaultAttributeName;
-                return opts;
-            }
-        );
-
-        return opts;
-    }
-
-    private static bool IsFeatureEnabled(string counterEnabledValue)
-    {
-        return StringComparer.OrdinalIgnoreCase.Equals("enable", counterEnabledValue)
-            || StringComparer.OrdinalIgnoreCase.Equals("enabled", counterEnabledValue)
-            || StringComparer.OrdinalIgnoreCase.Equals("true", counterEnabledValue);
-    }
-}
-
-public record GeneratorOptions
-{
-    public bool LoggerEnabled { get; set; }
-    public string LoggerPath { get; set; } = "";
-    public string AttributeName { get; set; } = AutomaticInterfaceGenerator.DefaultAttributeName;
 }

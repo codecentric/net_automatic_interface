@@ -9,12 +9,7 @@
 	  <SourceGenerator_EnableDebug>True</SourceGenerator_EnableDebug>
 	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
 	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
-	  <SourceGenerator_LogPath>C:\tmp\log.txt</SourceGenerator_LogPath>
     </PropertyGroup>
-
-	<PropertyGroup>
-		<AutomaticInterface_AttributeName>GenerateAutomaticInterface</AutomaticInterface_AttributeName>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj" />

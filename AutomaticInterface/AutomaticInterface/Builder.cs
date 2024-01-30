@@ -1,27 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AutomaticInterface;
 
 public static class Builder
 {
-    private const string InheritDoc = "/// <inheritdoc />"; // we use inheritdoc because that should be able to fetch documentation from base classes.
+    private const string InheritDoc = "/// <inheritdoc />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
-    public static string BuildInterfaceFor(GeneratorOptions options, ITypeSymbol typeSymbol)
+    public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
     {
-        var classSyntax =
-            typeSymbol.DeclaringSyntaxReferences.First().GetSyntax() as ClassDeclarationSyntax;
-
-        if (classSyntax == null)
+        if (
+            typeSymbol.DeclaringSyntaxReferences.First().GetSyntax()
+            is not ClassDeclarationSyntax classSyntax
+        )
         {
-            // todo logging
-            // Interface was applied to non class
             return string.Empty;
         }
 
@@ -34,7 +30,7 @@ public static class Builder
         interfaceGenerator.AddUsings(GetUsings(typeSymbol));
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
         interfaceGenerator.AddGeneric(GetGeneric(classSyntax));
-        AddPropertiesToInterface(typeSymbol, interfaceGenerator, classSyntax);
+        AddPropertiesToInterface(typeSymbol, interfaceGenerator);
         AddMethodsToInterface(typeSymbol, interfaceGenerator);
         AddEventsToInterface(typeSymbol, interfaceGenerator);
 
@@ -132,8 +128,7 @@ public static class Builder
 
     private static void AddPropertiesToInterface(
         ITypeSymbol classSymbol,
-        InterfaceBuilder interfaceGenerator,
-        ClassDeclarationSyntax classSyntax
+        InterfaceBuilder interfaceGenerator
     )
     {
         classSymbol

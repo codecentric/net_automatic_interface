@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace AutomaticInterface
 {
     public static class StringExtensions
     {
-        public static IEnumerable<string> SplitToLines(this string input)
+        public static IEnumerable<string> SplitToLines(this string? input)
         {
             if (input == null)
             {
                 yield break;
             }
 
-            using (System.IO.StringReader reader = new System.IO.StringReader(input))
+            using var reader = new System.IO.StringReader(input);
+            while (reader.ReadLine() is { } line)
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    yield return line;
-                }
+                yield return line;
             }
         }
     }
