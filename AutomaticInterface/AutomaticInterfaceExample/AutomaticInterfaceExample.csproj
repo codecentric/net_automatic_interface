@@ -13,8 +13,6 @@
     </PropertyGroup>
 
 	<PropertyGroup>
-		<AutomaticInterface_Logging_Enable>enable</AutomaticInterface_Logging_Enable>
-		<AutomaticInterface_Logging_Path>./logs/log.txt</AutomaticInterface_Logging_Path>
 		<AutomaticInterface_AttributeName>GenerateAutomaticInterface</AutomaticInterface_AttributeName>
 	</PropertyGroup>
 

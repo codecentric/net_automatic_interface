@@ -115,7 +115,7 @@ namespace AutomaticInterface
             cb.AppendAndNormalizeMultipleLines(classDocumentation);
 
             cb.AppendLine($"[GeneratedCode(\"AutomaticInterface\", \"\")]");
-            cb.AppendLine($"public partial Interface {interfaceName}{genericType}");
+            cb.AppendLine($"public partial interface {interfaceName}{genericType}");
             cb.AppendLine("{");
 
             cb.Indent();
