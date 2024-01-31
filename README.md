@@ -162,8 +162,9 @@ Should be simply a build and run Tests
 
 ## Changelog
 
-### 2.0.1
+### 2.1.1
 
+- Fix bug where multiple automatic interfaces caused issues
 - Better support for nullable like Task<string?>, previously only top level generic where considered
 
 ### 2.0.0
