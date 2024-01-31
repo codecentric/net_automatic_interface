@@ -162,18 +162,26 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 2.0.1
+
+- Better support for nullable like Task<string?>, previously only top level generic where considered
+
 ### 2.0.0
+
 - Major rework to Incremental Source generator
 - Fixed some outstanding bugs
 - Removed logging, b/c not really used
 - Increased coverage
 
 ### 1.6.1
+
  - Minor bug fixes
 
 ### 1.5.0
+
  - Add support nullable context
 
 ### 1.4.0
+
  - Add support for overloaded methods.
  - Add support for optional parameters in method `void test(string x = null)` should now work.
