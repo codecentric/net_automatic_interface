@@ -84,15 +84,7 @@ public static class Builder
         var returnType = method.ReturnType;
         var name = method.Name;
 
-        var hasNullableParameter = method.Parameters.Any(x =>
-            x.NullableAnnotation == NullableAnnotation.Annotated
-        );
-        var hasNullableReturn =
-            method.ReturnType.NullableAnnotation == NullableAnnotation.Annotated;
-        if (hasNullableParameter || hasNullableReturn)
-        {
-            codeGenerator.HasNullable = true;
-        }
+        ActivateNullableIfNeeded(codeGenerator, method);
 
         var paramResult = new HashSet<string>();
         method.Parameters.Select(GetMethodSignature).ToList().ForEach(x => paramResult.Add(x));
@@ -100,6 +92,7 @@ public static class Builder
         var typedArgs = method
             .TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
             .ToList();
+
         codeGenerator.AddMethodToInterface(
             name,
             returnType.ToDisplayString(),
@@ -107,6 +100,55 @@ public static class Builder
             paramResult,
             typedArgs
         );
+    }
+
+    private static void ActivateNullableIfNeeded(
+        InterfaceBuilder codeGenerator,
+        ITypeSymbol typeSymbol
+    )
+    {
+        if (IsNullable(typeSymbol))
+        {
+            codeGenerator.HasNullable = true;
+        }
+    }
+
+    private static void ActivateNullableIfNeeded(
+        InterfaceBuilder codeGenerator,
+        IMethodSymbol method
+    )
+    {
+        var hasNullableParameter = method.Parameters.Any(x => IsNullable(x.Type));
+
+        var hasNullableReturn = IsNullable(method.ReturnType);
+
+        if (hasNullableParameter || hasNullableReturn)
+        {
+            codeGenerator.HasNullable = true;
+        }
+    }
+
+    private static bool IsNullable(ITypeSymbol typeSymbol)
+    {
+        if (typeSymbol.NullableAnnotation == NullableAnnotation.Annotated)
+        {
+            return true;
+        }
+
+        if (typeSymbol is not INamedTypeSymbol named)
+        {
+            return false;
+        }
+
+        foreach (var param in named.TypeArguments)
+        {
+            if (IsNullable(param))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static void AddEventsToInterface(
@@ -125,6 +167,8 @@ public static class Builder
             {
                 var type = evt.Type;
                 var name = evt.Name;
+
+                ActivateNullableIfNeeded(codeGenerator, type);
 
                 codeGenerator.AddEventToInterface(name, type.ToDisplayString(), InheritDoc);
             });
@@ -168,6 +212,8 @@ public static class Builder
                 var name = prop.Name;
                 var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
                 var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
+
+                ActivateNullableIfNeeded(interfaceGenerator, type);
 
                 interfaceGenerator.AddPropertyToInterface(
                     name,

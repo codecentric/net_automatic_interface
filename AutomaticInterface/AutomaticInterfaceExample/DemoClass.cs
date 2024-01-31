@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AutomaticInterfaceAttribute;
 
 namespace AutomaticInterfaceExample
@@ -45,6 +46,11 @@ namespace AutomaticInterfaceExample
             return "Ok";
         }
 
+        public Task<string?> ASync(string x, string y)
+        {
+            return Task.FromResult("");
+        }
+
         public static string StaticProperty => "abc"; // static property, ignored
 
         public static string StaticMethod() // static method, ignored
@@ -66,6 +72,8 @@ namespace AutomaticInterfaceExample
 #pragma warning restore S3264 // Events should be invoked
 
         public event EventHandler? ShapeChangedNullable; // included
+
+        public event EventHandler<string?> ShapeChangedNullable2; // included
 
         private readonly int[] arr = new int[100];
 
