@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -212,6 +212,7 @@ public static class Builder
                 var name = prop.Name;
                 var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
                 var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
+                var isRef = prop.ReturnsByRef;
 
                 ActivateNullableIfNeeded(interfaceGenerator, type);
 
@@ -220,6 +221,7 @@ public static class Builder
                     type.ToDisplayString(),
                     hasGet,
                     hasSet,
+                    isRef,
                     InheritDoc
                 );
             });
