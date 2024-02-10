@@ -176,9 +176,15 @@ public static class Builder
 
     private static string GetMethodSignature(IParameterSymbol x)
     {
+        var syntaxReference = x.DeclaringSyntaxReferences.FirstOrDefault();
+
+        var name = syntaxReference != null
+            ? ((ParameterSyntax)syntaxReference.GetSyntax()).Identifier.Text
+            : x.Name;
+        
         if (!x.HasExplicitDefaultValue)
         {
-            return $"{x.Type.ToDisplayString()} {x.Name}";
+            return $"{x.Type.ToDisplayString()} {name}";
         }
 
         var optionalValue = x.ExplicitDefaultValue switch
@@ -189,7 +195,7 @@ public static class Builder
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}"
         };
-        return $"{x.Type.ToDisplayString()} {x.Name}{optionalValue}";
+        return $"{x.Type.ToDisplayString()} {name}{optionalValue}";
     }
 
     private static void AddPropertiesToInterface(
