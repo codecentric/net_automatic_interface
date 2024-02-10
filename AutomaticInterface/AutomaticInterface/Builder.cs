@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -204,6 +204,8 @@ public static class Builder
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => !x.IsStatic)
             .Where(x => !x.IsIndexer)
+            .GroupBy(x => x.Name)
+            .Select(g => g.First())
             .ToList()
             .ForEach(prop =>
             {
