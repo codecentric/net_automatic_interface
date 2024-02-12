@@ -2108,7 +2108,7 @@ public class GeneratorTests
             """;
         GenerateCode(code).Should().Be(expected);
     }
-    
+
     [Fact]
     public void WorksWithReservedNames()
     {
@@ -2155,7 +2155,7 @@ public class GeneratorTests
             """;
         GenerateCode(code).Should().Be(expected);
     }
-    
+
     [Fact]
     public void WorksWithNewKeyword()
     {

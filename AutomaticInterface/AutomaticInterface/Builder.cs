@@ -178,10 +178,11 @@ public static class Builder
     {
         var syntaxReference = x.DeclaringSyntaxReferences.FirstOrDefault();
 
-        var name = syntaxReference != null
-            ? ((ParameterSyntax)syntaxReference.GetSyntax()).Identifier.Text
-            : x.Name;
-        
+        var name =
+            syntaxReference != null
+                ? ((ParameterSyntax)syntaxReference.GetSyntax()).Identifier.Text
+                : x.Name;
+
         if (!x.HasExplicitDefaultValue)
         {
             return $"{x.Type.ToDisplayString()} {name}";
