@@ -155,12 +155,19 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - skarllot for PRs
 - Frederik91 for PRs
 - definitelyokay for PRs
+- roflmuffin for PRs
 
 ## Run tests
 
 Should be simply a build and run Tests
 
 ## Changelog
+
+### 2.2.1
+
+- Now supports Interfaces containing `new`, previously duplicates entries where created
+- Now supports `ref` parameters
+- Now supports properties with reserved names like `@event`
 
 ### 2.1.1
 
