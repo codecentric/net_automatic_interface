@@ -1626,6 +1626,7 @@ public class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
+            #nullable enable
             using System.CodeDom.Compiler;
             using AutomaticInterfaceAttribute;
             using System;
@@ -1643,6 +1644,7 @@ public class GeneratorTests
                     
                 }
             }
+            #nullable restore
 
             """;
         GenerateCode(code).Should().Be(expected);
@@ -1742,6 +1744,7 @@ public class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
+            #nullable enable
             using System.CodeDom.Compiler;
             using AutomaticInterfaceAttribute;
             using System;
@@ -1759,6 +1762,7 @@ public class GeneratorTests
                     
                 }
             }
+            #nullable restore
 
             """;
         GenerateCode(code).Should().Be(expected);
