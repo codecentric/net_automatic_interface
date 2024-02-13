@@ -9,6 +9,7 @@ namespace AutomaticInterface
         string Ttype,
         bool HasGet,
         bool HasSet,
+        bool IsRef,
         string Documentation
     );
 
@@ -50,10 +51,11 @@ namespace AutomaticInterface
             string ttype,
             bool hasGet,
             bool hasSet,
+            bool isRef,
             string documentation
         )
         {
-            propertyInfos.Add(new(name, ttype, hasGet, hasSet, documentation));
+            propertyInfos.Add(new(name, ttype, hasGet, hasSet, isRef, documentation));
         }
 
         public void AddGeneric(string v)
@@ -122,9 +124,10 @@ namespace AutomaticInterface
             foreach (var prop in propertyInfos)
             {
                 cb.AppendAndNormalizeMultipleLines(prop.Documentation);
+                var @ref = prop.IsRef ? "ref " : string.Empty;
                 var get = prop.HasGet ? "get; " : string.Empty;
                 var set = prop.HasSet ? "set; " : string.Empty;
-                cb.AppendLine($"{prop.Ttype} {prop.Name} {{ {get}{set}}}");
+                cb.AppendLine($"{@ref}{prop.Ttype} {prop.Name} {{ {get}{set}}}");
                 cb.AppendLine("");
             }
             cb.Dedent();

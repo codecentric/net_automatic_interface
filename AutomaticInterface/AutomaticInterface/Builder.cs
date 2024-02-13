@@ -176,9 +176,16 @@ public static class Builder
 
     private static string GetMethodSignature(IParameterSymbol x)
     {
+        var syntaxReference = x.DeclaringSyntaxReferences.FirstOrDefault();
+
+        var name =
+            syntaxReference != null
+                ? ((ParameterSyntax)syntaxReference.GetSyntax()).Identifier.Text
+                : x.Name;
+
         if (!x.HasExplicitDefaultValue)
         {
-            return $"{x.Type.ToDisplayString()} {x.Name}";
+            return $"{x.Type.ToDisplayString()} {name}";
         }
 
         var optionalValue = x.ExplicitDefaultValue switch
@@ -189,7 +196,7 @@ public static class Builder
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}"
         };
-        return $"{x.Type.ToDisplayString()} {x.Name}{optionalValue}";
+        return $"{x.Type.ToDisplayString()} {name}{optionalValue}";
     }
 
     private static void AddPropertiesToInterface(
@@ -204,6 +211,8 @@ public static class Builder
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => !x.IsStatic)
             .Where(x => !x.IsIndexer)
+            .GroupBy(x => x.Name)
+            .Select(g => g.First())
             .ToList()
             .ForEach(prop =>
             {
@@ -212,6 +221,7 @@ public static class Builder
                 var name = prop.Name;
                 var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
                 var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
+                var isRef = prop.ReturnsByRef;
 
                 ActivateNullableIfNeeded(interfaceGenerator, type);
 
@@ -220,6 +230,7 @@ public static class Builder
                     type.ToDisplayString(),
                     hasGet,
                     hasSet,
+                    isRef,
                     InheritDoc
                 );
             });
