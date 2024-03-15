@@ -191,6 +191,7 @@ public static class Builder
         var optionalValue = x.ExplicitDefaultValue switch
         {
             string => $" = \"{x.ExplicitDefaultValue}\"",
+            bool value => $" = {(value ? "true" : "false")}",
             // struct
             null when x.Type.IsValueType => $" = default({x.Type})",
             null => " = null",

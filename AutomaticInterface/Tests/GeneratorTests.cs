@@ -56,7 +56,8 @@ public class GeneratorTests
                     public bool TryStartTransaction(
                         string file = "",
                         string member = "",
-                        int line = 0)
+                        int line = 0,
+                        bool notify = true)
                     {
             return true;
             }
@@ -82,7 +83,7 @@ public class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    bool TryStartTransaction(string file = "", string member = "", int line = 0);
+                    bool TryStartTransaction(string file = "", string member = "", int line = 0, bool notify = true);
                     
                 }
             }
@@ -1885,7 +1886,7 @@ public class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = False, bool? attachSupportingDocuments = True, CancellationToken cancellationToken = null);
+                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, CancellationToken cancellationToken = null);
                     
                 }
             }
@@ -1957,7 +1958,7 @@ public class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = False, bool? attachSupportingDocuments = True, CancellationToken cancellationToken = null);
+                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, CancellationToken cancellationToken = null);
                     
                 }
             }
