@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Tests;
 
-public class GeneratorTests
+public partial class GeneratorTests
 {
     private static string GenerateCode(string code)
     {

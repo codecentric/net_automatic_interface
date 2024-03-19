@@ -176,19 +176,21 @@ public static class Builder
 
     private static string GetMethodSignature(IParameterSymbol x)
     {
-        var syntaxReference = x.DeclaringSyntaxReferences.FirstOrDefault();
+        var name = GetMethodName(x);
+        var refKindText = GetRefKind(x);
+        var optionalValue = GetMethodOptionalValue(x);
 
-        var name =
-            syntaxReference != null
-                ? ((ParameterSyntax)syntaxReference.GetSyntax()).Identifier.Text
-                : x.Name;
+        return $"{refKindText}{x.Type.ToDisplayString()} {name}{optionalValue}";
+    }
 
+    private static string GetMethodOptionalValue(IParameterSymbol x)
+    {
         if (!x.HasExplicitDefaultValue)
         {
-            return $"{x.Type.ToDisplayString()} {name}";
+            return string.Empty;
         }
 
-        var optionalValue = x.ExplicitDefaultValue switch
+        return x.ExplicitDefaultValue switch
         {
             string => $" = \"{x.ExplicitDefaultValue}\"",
             // struct
@@ -196,7 +198,28 @@ public static class Builder
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}"
         };
-        return $"{x.Type.ToDisplayString()} {name}{optionalValue}";
+    }
+
+    private static string GetMethodName(IParameterSymbol x)
+    {
+        var syntaxReference = x.DeclaringSyntaxReferences.FirstOrDefault();
+
+        return syntaxReference != null
+            ? ((ParameterSyntax)syntaxReference.GetSyntax()).Identifier.Text
+            : x.Name;
+    }
+
+    private static string GetRefKind(IParameterSymbol x)
+    {
+        return x.RefKind switch
+        {
+            RefKind.Ref => "ref ",
+            RefKind.Out => "out ",
+            RefKind.In => "in ",
+            // Not sure why RefReadOnly and In both has Enum index 3.
+            // RefKind.RefReadOnly => "ref readonly ",
+            _ => string.Empty,
+        };
     }
 
     private static void AddPropertiesToInterface(

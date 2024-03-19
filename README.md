@@ -156,12 +156,17 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - Frederik91 for PRs
 - definitelyokay for PRs
 - roflmuffin for PRs
+- mohummedibrahim  for code and idea
 
 ## Run tests
 
 Should be simply a build and run Tests
 
 ## Changelog
+
+### 2.3.0
+
+- Now supports methods with `ref / in / out` parameters
 
 ### 2.2.1
 
