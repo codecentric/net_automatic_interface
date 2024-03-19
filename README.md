@@ -169,6 +169,7 @@ Should be simply a build and run Tests
 
 - Now supports methods with `ref / in / out` parameters. Thanks mohummedibrahim
 - Handles default values for `true / false` correctly. Thanks simonmckenzie!
+
 ### 2.2.1
 
 - Now supports Interfaces containing `new`, previously duplicates entries where created
