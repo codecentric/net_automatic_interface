@@ -157,6 +157,7 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - definitelyokay for PRs
 - roflmuffin for PRs
 - mohummedibrahim  for code and idea
+- simonmckenzie for PR
 
 ## Run tests
 
@@ -166,8 +167,8 @@ Should be simply a build and run Tests
 
 ### 2.3.0
 
-- Now supports methods with `ref / in / out` parameters
-
+- Now supports methods with `ref / in / out` parameters. Thanks mohummedibrahim
+- Handles default values for `true / false` correctly. Thanks simonmckenzie!
 ### 2.2.1
 
 - Now supports Interfaces containing `new`, previously duplicates entries where created
