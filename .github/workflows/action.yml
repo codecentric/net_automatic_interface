@@ -51,3 +51,19 @@ jobs:
         working-directory: AutomaticInterface
       - name: Nuget
         run: nuget push **\release\**\AutomaticInterface.*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+      - name: Get version
+        id: package_version
+        uses: KageKirin/get-csproj-version@v0
+        with:
+          file: AutomaticInterface/AutomaticInterface/AutomaticInterface.csproj
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.package_version.version }}
+          release_name: Release ${{ steps.package_version.version }}
+          body: See Readme
+          draft: false
+          prerelease: false
