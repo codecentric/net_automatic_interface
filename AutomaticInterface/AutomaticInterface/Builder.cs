@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -25,7 +26,9 @@ public static class Builder
 
         var interfaceName = $"I{classSyntax.GetClassName()}";
 
-        var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
+	    var accessSpecifier = typeSymbol.DeclaredAccessibility.ToString().ToLower(new CultureInfo("C"));
+
+        var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, accessSpecifier);
 
         interfaceGenerator.AddUsings(GetUsings(typeSymbol));
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
