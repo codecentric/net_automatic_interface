@@ -2,6 +2,8 @@
 
 A C# Source Generator to automatically create Interface from classes.
 
+[![NuGet version (sourcedepend)](https://img.shields.io/nuget/v/AutomaticInterface?color=blue)](https://www.nuget.org/packages/AutomaticInterface/)
+
 ## What does it do?
 
 Not all .NET Interfaces are created equal. Some Interfaces are lovingly handcrafted, e.g. the public interface of your .NET package which is used by your customers. Other interfaces are far from lovingly crafted, they are birthed because you need an interface for testing or for the DI container. They are often implemented only once or twice: The class itself and a mock for testing. They are noise at best and often create lots of friction. Adding a new method / field? You have to edit the interface, too!. Change parameters? Edit the interface. Add documentation? Hopefully you add it to the interface, too!
