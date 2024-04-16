@@ -12,7 +12,7 @@ namespace AutomaticInterface;
 public class AutomaticInterfaceGenerator : IIncrementalGenerator
 {
     public const string DefaultAttributeName = "GenerateAutomaticInterface";
-
+    
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput(static postInitializationContext =>
