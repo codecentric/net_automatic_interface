@@ -46,7 +46,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample;
 
@@ -75,7 +75,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -97,7 +97,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample;
 
@@ -127,7 +127,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -149,7 +149,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample;
 
@@ -174,7 +174,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -196,7 +196,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -218,7 +218,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -238,7 +238,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -262,7 +262,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -284,7 +284,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -309,7 +309,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -331,7 +331,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -356,7 +356,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -378,7 +378,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -403,7 +403,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -426,7 +426,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -452,7 +452,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -475,7 +475,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
             using System.Threading.Tasks;
 
@@ -501,7 +501,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
             using System.Threading.Tasks;
 
@@ -525,7 +525,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -551,7 +551,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -574,7 +574,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
             using System.Threading.Tasks;
 
@@ -600,7 +600,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
             using System.Threading.Tasks;
 
@@ -624,7 +624,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -649,7 +649,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -672,7 +672,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -698,7 +698,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -718,7 +718,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -748,7 +748,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -771,7 +771,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -800,7 +800,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -823,7 +823,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -848,7 +848,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -870,7 +870,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -897,7 +897,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -919,7 +919,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -945,7 +945,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -970,7 +970,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1001,7 +1001,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1026,7 +1026,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1057,7 +1057,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1079,7 +1079,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1104,7 +1104,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1126,7 +1126,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1159,7 +1159,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1185,7 +1185,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1222,7 +1222,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1245,7 +1245,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1313,7 +1313,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1348,7 +1348,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample;
 
@@ -1371,7 +1371,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1393,7 +1393,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample;
 
@@ -1424,7 +1424,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1446,7 +1446,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1478,7 +1478,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1503,7 +1503,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             namespace AutomaticInterfaceExample;
             [GenerateAutomaticInterface]
             public class DemoClass
@@ -1527,7 +1527,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1550,7 +1550,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             namespace AutomaticInterfaceExample;
             [GenerateAutomaticInterface]
             public class DemoClass
@@ -1574,7 +1574,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
 
             namespace AutomaticInterfaceExample
             {
@@ -1597,7 +1597,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1629,7 +1629,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1656,7 +1656,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1688,7 +1688,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1715,7 +1715,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1747,7 +1747,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1774,7 +1774,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
             using System.Threading.Tasks;
 
@@ -1807,7 +1807,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
             using System.Threading.Tasks;
 
@@ -1835,7 +1835,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1874,7 +1874,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
@@ -1967,7 +1967,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample;
@@ -1993,7 +1993,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample
@@ -2017,7 +2017,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample;
@@ -2043,7 +2043,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample
@@ -2067,7 +2067,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample;
@@ -2090,7 +2090,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample
@@ -2113,7 +2113,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample;
@@ -2137,7 +2137,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample
@@ -2160,7 +2160,7 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample;
@@ -2188,7 +2188,7 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample
