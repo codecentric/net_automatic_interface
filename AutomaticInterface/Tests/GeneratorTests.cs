@@ -201,7 +201,7 @@ public partial class GeneratorTests
             namespace AutomaticInterfaceExample
             {
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                                  }
             }
@@ -244,7 +244,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     public string Hello { get; set; }
                 }
@@ -290,7 +290,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     private string x;
                     public string Hello { set => x = value; }
@@ -337,7 +337,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     private string x;
                     public string Hello { get; }
@@ -385,7 +385,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     public DirectoryInfo Hello { get; set; }
                                  }
@@ -433,7 +433,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                               
                     public string Hello(){return "";}
@@ -483,7 +483,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                    public async Task<string> Hello(){return "";}
                 }
@@ -532,7 +532,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                               
                     public string Hello(string x){return x;}
@@ -582,7 +582,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     public string Hello(Task<string> x){return "";}
                 }
@@ -631,7 +631,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     public string Hello(string x, int y, double z){return x;}
                 }
@@ -679,7 +679,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     private string Hello(string x, int y, double z){return x;}
                     internal string Hello2(string x, int y, double z){return x;}
@@ -725,7 +725,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     /// <summary>
@@ -778,7 +778,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     /**
@@ -829,7 +829,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     /// <inheritdoc />
                     public string Hello { get; private set; }
@@ -876,7 +876,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     /// <summary>
                     /// Bla bla
@@ -927,7 +927,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     public string Hello { get; private set; }
                 }
@@ -978,7 +978,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     DemoClass(string x)
                     {
@@ -1034,7 +1034,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     public static string Hello => "abc"; // property
 
@@ -1087,7 +1087,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass<T,U> where T:class
+                public class DemoClass<T,U> where T:class
                 {
                 }
             }
@@ -1135,7 +1135,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     /// <summary>
@@ -1194,7 +1194,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     private int[] arr = new int[100];
@@ -1254,7 +1254,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     /// <summary>
                     /// Property Documentation will be copied
@@ -1353,7 +1353,7 @@ public partial class GeneratorTests
             namespace AutomaticInterfaceExample;
 
             [GenerateAutomaticInterface]
-            class DemoClass
+            public class DemoClass
             {
                 public string Hello { get; set; }
             }
@@ -1452,7 +1452,7 @@ public partial class GeneratorTests
             {
 
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
                     public string AMethod(string x, string y)
                     {
@@ -1606,7 +1606,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     /// <summary>
@@ -1665,7 +1665,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     /// <summary>
@@ -1724,7 +1724,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     /// <summary>
@@ -1784,7 +1784,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                     /// <summary>
@@ -1844,7 +1844,7 @@ public partial class GeneratorTests
                     /// Bla bla
                     /// </summary>
                 [GenerateAutomaticInterface]
-                class DemoClass
+                public class DemoClass
                 {
 
                    public async Task<Stream?> GetFinalDocumentsByIDFails(
@@ -1916,7 +1916,7 @@ public partial class GeneratorTests
                 /// Bla bla
                 /// </summary>
                 [GenerateAutomaticInterface("CustomNameSpace")]
-                class DemoClass
+                public class DemoClass
                 {
 
                    public async Task<Stream?> GetFinalDocumentsByIDFails(
