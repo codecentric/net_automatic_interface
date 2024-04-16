@@ -35,7 +35,8 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
                             internal {{{DefaultAttributeName}}}Attribute(string namespaceName = "") { }
                         }
                     }
-                    """, Encoding.UTF8));
+                    """,
+                    Encoding.UTF8));
         });
 
         var classes = context
