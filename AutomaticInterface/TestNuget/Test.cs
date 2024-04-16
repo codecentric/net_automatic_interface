@@ -1,4 +1,4 @@
-﻿using AutomaticInterfaceAttribute;
+﻿using AutomaticInterface;
 
 namespace TestNuget
 {

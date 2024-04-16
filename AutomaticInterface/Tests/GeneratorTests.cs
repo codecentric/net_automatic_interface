@@ -38,7 +38,7 @@ public partial class GeneratorTests
 
         diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty();
 
-        return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString();
+        return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString().Replace("\r","");
     }
 
     [Fact]
@@ -1901,17 +1901,11 @@ public partial class GeneratorTests
     {
         const string code = """
 
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace AutomaticInterfaceExample
             {
-                [AttributeUsage(AttributeTargets.Class)]
-                public class GenerateAutomaticInterfaceAttribute : Attribute
-                {
-                    public GenerateAutomaticInterfaceAttribute(string namespaceName = "") { }
-                }
-
                 /// <summary>
                 /// Bla bla
                 /// </summary>
@@ -1946,7 +1940,7 @@ public partial class GeneratorTests
 
             #nullable enable
             using System.CodeDom.Compiler;
-            using AutomaticInterfaceAttribute;
+            using AutomaticInterface;
             using System;
 
             namespace CustomNameSpace

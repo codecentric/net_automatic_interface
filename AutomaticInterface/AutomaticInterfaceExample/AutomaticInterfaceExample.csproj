@@ -12,7 +12,6 @@
     </PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AutomaticInterfaceAttribute\AutomaticInterfaceAttribute.csproj" />
 		<ProjectReference Include="..\AutomaticInterface\AutomaticInterface.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 

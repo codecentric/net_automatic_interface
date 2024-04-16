@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.CodeDom.Compiler;
-using AutomaticInterfaceAttribute;
+using AutomaticInterface;
 
 namespace AutomaticInterfaceExample
 {

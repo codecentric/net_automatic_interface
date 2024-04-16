@@ -1,5 +1,5 @@
 ﻿using System;
-using AutomaticInterfaceAttribute;
+using AutomaticInterface;
 using CustomNamespace;
 
 namespace AutomaticInterfaceExample
