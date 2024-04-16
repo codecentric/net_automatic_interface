@@ -36,7 +36,9 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
                         }
                     }
                     """,
-                    Encoding.UTF8));
+                    Encoding.UTF8
+                )
+            );
         });
 
         var classes = context
