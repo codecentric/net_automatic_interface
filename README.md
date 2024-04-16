@@ -126,8 +126,14 @@ namespace AutomaticInterfaceExample
 ## How to use it?
 
 1. Install the nuget: `dotnet add package AutomaticInterface`
-2. Let your class implement the interface, e.g. `SomeClass: ISomeClass`
-3. Build Solution, the Interface should now be available.
+2. Tag your class with the `[GenerateAutomaticInterface]` attribute.
+3. The Interface should now be available.
+
+To validate or use the interface:
+
+1. Let your class implement the interface, e.g. `SomeClass: ISomeClass`
+2. 'Go to definition' to see the generated interface.
+3. Build Solution to compile the interface.
 
 Any errors? Ping me at: christiian.sauer@codecentric.de
 
@@ -157,12 +163,17 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - roflmuffin for PRs
 - mohummedibrahim  for code and idea
 - simonmckenzie for PR
+- crwsolutions for PR
 
 ## Run tests
 
 Should be simply a build and run Tests
 
 ## Changelog
+
+### 3.0.0
+
+- You can remove the manually created `GenerateAutomaticInterfaceAttribute`, as it is generated automatically now. Thanks crwsolutions!
 
 ### 2.3.0
 
