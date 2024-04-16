@@ -38,7 +38,7 @@ public partial class GeneratorTests
 
         diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty();
 
-        return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString().Replace("\r","");
+        return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString();
     }
 
     [Fact]
