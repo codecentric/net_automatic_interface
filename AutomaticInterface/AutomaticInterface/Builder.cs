@@ -79,6 +79,7 @@ public static class Builder
             .Where(x => x.MethodKind == MethodKind.Ordinary)
             .Where(x => !x.IsStatic)
             .Where(x => x.ContainingType.Name != nameof(Object))
+            .Where(x => !HasIgnoreAttribute(x))
             .GroupBy(x => x.ToDisplayString(MethodSignatureDisplayFormat))
             .Select(g => g.First())
             .ToList()
@@ -171,6 +172,7 @@ public static class Builder
             .OfType<IEventSymbol>()
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => !x.IsStatic)
+            .Where(x => !HasIgnoreAttribute(x))
             .ToList()
             .ForEach(evt =>
             {
@@ -244,6 +246,7 @@ public static class Builder
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => !x.IsStatic)
             .Where(x => !x.IsIndexer)
+            .Where(x => !HasIgnoreAttribute(x))
             .GroupBy(x => x.Name)
             .Select(g => g.First())
             .ToList()
@@ -267,6 +270,17 @@ public static class Builder
                     InheritDoc
                 );
             });
+    }
+
+    private static bool HasIgnoreAttribute(ISymbol x)
+    {
+        return x.GetAttributes()
+            .Any(a =>
+                a.AttributeClass != null
+                && a.AttributeClass.Name.Contains(
+                    AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
+                )
+            );
     }
 
     private static string GetDocumentationForClass(CSharpSyntaxNode classSyntax)
