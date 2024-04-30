@@ -34,6 +34,9 @@ namespace AutomaticInterfaceExample
 
         public string OnlyGet { get; } // included, get and set are copied to the interface when public
 
+        [IgnoreAutomaticInterface] 
+        public string OnlyGet { get; } // ignored with help of attribute
+
         /// <summary>
         /// Method Documentation will be copied
         /// </summary>
