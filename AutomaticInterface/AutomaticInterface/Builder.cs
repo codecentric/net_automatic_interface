@@ -69,6 +69,7 @@ public static class Builder
             .Where(x => x.Kind == SymbolKind.Method)
             .OfType<IMethodSymbol>()
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
+            .Where(x => !x.IsOverride)
             .Where(x => x.MethodKind == MethodKind.Ordinary)
             .Where(x => !x.IsStatic)
             .Where(x => x.ContainingType.Name != nameof(Object))
