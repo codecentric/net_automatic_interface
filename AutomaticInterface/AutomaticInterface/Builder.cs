@@ -11,10 +11,11 @@ public static class Builder
 {
     private const string InheritDoc = "/// <inheritdoc />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
-    private static readonly SymbolDisplayFormat MethodDisplayFormatForDeduplication =
+    private static readonly SymbolDisplayFormat MethodSignatureDisplayFormat =
         new(
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
+                | SymbolDisplayParameterOptions.IncludeParamsRefOut
         );
 
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
@@ -79,7 +80,7 @@ public static class Builder
             .Where(x => !x.IsStatic)
             .Where(x => !HasIgnoreAttribute(x))
             .Where(x => x.ContainingType.Name != nameof(Object))
-            .GroupBy(x => x.ToDisplayString(MethodDisplayFormatForDeduplication))
+            .GroupBy(x => x.ToDisplayString(MethodSignatureDisplayFormat))
             .Select(g => g.First())
             .ToList()
             .ForEach(method =>
