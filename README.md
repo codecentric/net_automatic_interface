@@ -163,12 +163,16 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - roflmuffin for PRs
 - mohummedibrahim  for code and idea
 - simonmckenzie for PR
+- avtc for PR
 
 ## Run tests
 
 Should be simply a build and run Tests
 
 ## Changelog
+
+### 2.40.
+- Now can ignore class members with [IgnoreAutomaticInterface] attribute. Thanks avtc!
 
 ### 2.40.
 - Now prevents duplicates when overriding or shadowing methods (`new void DoSomething()`). Thanks simonmckenzie!
