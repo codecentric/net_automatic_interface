@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 namespace AutomaticInterface;
+
 internal static class RegisterAttributesExtensions
 {
     public static IncrementalGeneratorInitializationContext RegisterDefaultAttribute(this IncrementalGeneratorInitializationContext context)
