@@ -6,7 +6,9 @@ namespace AutomaticInterface;
 
 internal static class RegisterAttributesExtensions
 {
-    public static IncrementalGeneratorInitializationContext RegisterDefaultAttribute(this IncrementalGeneratorInitializationContext context)
+    public static IncrementalGeneratorInitializationContext RegisterDefaultAttribute(
+        this IncrementalGeneratorInitializationContext context
+    )
     {
         context.RegisterPostInitializationOutput(static postInitializationContext =>
         {
@@ -36,7 +38,9 @@ internal static class RegisterAttributesExtensions
         return context;
     }
 
-    public static IncrementalGeneratorInitializationContext RegisterIgnoreAttribute(this IncrementalGeneratorInitializationContext context)
+    public static IncrementalGeneratorInitializationContext RegisterIgnoreAttribute(
+        this IncrementalGeneratorInitializationContext context
+    )
     {
         context.RegisterPostInitializationOutput(static postInitializationContext =>
         {
