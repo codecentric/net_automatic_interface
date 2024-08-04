@@ -11,6 +11,12 @@ public static class Builder
 {
     private const string InheritDoc = "/// <inheritdoc />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
+    private static readonly SymbolDisplayFormat MethodDisplayFormatForDeduplication =
+        new(
+            memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
+            parameterOptions: SymbolDisplayParameterOptions.IncludeType
+        );
+
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
     {
         if (
@@ -71,8 +77,10 @@ public static class Builder
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => x.MethodKind == MethodKind.Ordinary)
             .Where(x => !x.IsStatic)
-            .Where(x => x.ContainingType.Name != nameof(Object))
             .Where(x => !HasIgnoreAttribute(x))
+            .Where(x => x.ContainingType.Name != nameof(Object))
+            .GroupBy(x => x.ToDisplayString(MethodDisplayFormatForDeduplication))
+            .Select(g => g.First())
             .ToList()
             .ForEach(method =>
             {
@@ -266,7 +274,12 @@ public static class Builder
     private static bool HasIgnoreAttribute(ISymbol x)
     {
         return x.GetAttributes()
-            .Any(a => a.AttributeClass != null && a.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName));
+            .Any(a =>
+                a.AttributeClass != null
+                && a.AttributeClass.Name.Contains(
+                    AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
+                )
+            );
     }
 
     private static string GetDocumentationForClass(CSharpSyntaxNode classSyntax)
@@ -314,7 +327,7 @@ public static class Builder
                 );
         }
 
-        return [..allUsings.Select(x => x.ToString())];
+        return [.. allUsings.Select(x => x.ToString())];
     }
 
     private static string GetGeneric(TypeDeclarationSyntax classSyntax)
