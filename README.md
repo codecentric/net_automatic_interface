@@ -167,6 +167,9 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 2.40.
+- Now prevents duplicates when overriding or shadowing methods (`new void DoSomething()`). Thanks simonmckenzie!
+
 ### 2.3.0
 
 - Now supports methods with `ref / in / out` parameters. Thanks mohummedibrahim
