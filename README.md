@@ -181,6 +181,9 @@ Should be simply a build and run Tests
 
 - You can remove the manually created `GenerateAutomaticInterfaceAttribute`, as it is generated automatically now. Thanks crwsolutions!
 
+### 2.40.
+- Now prevents duplicates when overriding or shadowing methods (`new void DoSomething()`). Thanks simonmckenzie!
+
 ### 2.3.0
 
 - Now supports methods with `ref / in / out` parameters. Thanks mohummedibrahim
