@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using AutomaticInterface;
 
@@ -44,6 +45,12 @@ namespace AutomaticInterfaceExample
             where T4 : IDemoClass
         {
             return "Ok";
+        }
+
+        [IgnoreAutomaticInterface]
+        public string IgnoreMethod(string x, string y) // // ignored because of attribute
+        {
+            return BMethod(x, y);
         }
 
         public Task<string?> ASync(string x, string y)
