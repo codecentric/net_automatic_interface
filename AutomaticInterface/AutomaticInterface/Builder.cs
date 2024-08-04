@@ -80,6 +80,7 @@ public static class Builder
             .Where(x => !x.IsStatic)
             .Where(x => !HasIgnoreAttribute(x))
             .Where(x => x.ContainingType.Name != nameof(Object))
+            .Where(x => !HasIgnoreAttribute(x))
             .GroupBy(x => x.ToDisplayString(MethodSignatureDisplayFormat))
             .Select(g => g.First())
             .ToList()

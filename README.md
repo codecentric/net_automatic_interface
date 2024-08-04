@@ -14,7 +14,7 @@ This interface will be generated on each subsequent build, eliminating the the f
 ## Example
 
 ```c#
-using AutomaticInterfaceAttribute;
+using AutomaticInterface;
 using System;
 
 namespace AutomaticInterfaceExample
@@ -90,7 +90,7 @@ This will create this interface:
 ```C#
 #nullable enable
 using System.CodeDom.Compiler;
-using AutomaticInterfaceAttribute;
+using AutomaticInterface;
 using System;
 
 /// <summary>
@@ -130,10 +130,16 @@ namespace AutomaticInterfaceExample
 
 ## How to use it?
 
-1. Install the nuget: `dotnet add package AutomaticInterface`
-2. Create an Attribute with the Name `[GenerateAutomaticInterface]`. You can just copy the minimal code from this Repo (see the `AutomaticInterfaceAttribute` project). It's the easiest way to get that attribute because you cannot reference any code from the analyzer package.
-3. Let your class implement the interface, e.g. `SomeClass: ISomeClass`
-4. Build Solution, the Interface should now be available.
+1. Install the nuget: `dotnet add package AutomaticInterface`.
+2. Add `using AutomaticInterface;` or (Pro-tip) add `global using AutomaticInterface;` to you GlobalUsings.
+3. Tag your class with the `[GenerateAutomaticInterface]` attribute.
+4. The Interface should now be available.
+
+To validate or use the interface:
+
+1. Let your class implement the interface, e.g. `SomeClass: ISomeClass`
+2. 'Go to definition' to see the generated interface.
+3. Build Solution to compile the interface.
 
 Any errors? Ping me at: christiian.sauer@codecentric.de
 
@@ -164,12 +170,17 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - mohummedibrahim  for code and idea
 - simonmckenzie for PR
 - avtc for PR
+- crwsolutions for PR
 
 ## Run tests
 
 Should be simply a build and run Tests
 
 ## Changelog
+
+### 3.0.0
+
+- You can remove the manually created `GenerateAutomaticInterfaceAttribute`, as it is generated automatically now. Thanks crwsolutions!
 
 ### 2.50.
 - Now can ignore class members with [IgnoreAutomaticInterface] attribute. Thanks avtc!
