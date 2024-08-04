@@ -10,6 +10,7 @@ namespace AutomaticInterface;
 public class AutomaticInterfaceGenerator : IIncrementalGenerator
 {
     public const string DefaultAttributeName = "GenerateAutomaticInterface";
+    public const string IgnoreAutomaticInterfaceAttributeName = "IgnoreAutomaticInterface";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
