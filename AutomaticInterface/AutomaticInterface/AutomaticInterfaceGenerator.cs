@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutomaticInterface;
 
@@ -18,10 +19,9 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
         var classes = context
             .SyntaxProvider.ForAttributeWithMetadataName(
                 $"AutomaticInterface.{DefaultAttributeName}Attribute",
-                (_, _) => true,
+                (node, _) => node is ClassDeclarationSyntax,
                 (context, _) => (ITypeSymbol)context.TargetSymbol
             )
-            .Where(type => type is not null)
             .Collect();
 
         context.RegisterSourceOutput(classes, GenerateCode);
