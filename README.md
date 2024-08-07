@@ -178,6 +178,10 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 3.0.1
+
+- Maintenance update. Use of `ForAttributeWithMetadataName` to improve performance. Thanks crwsolutions!
+
 ### 3.0.0
 
 - You can remove the manually created `GenerateAutomaticInterfaceAttribute`, as it is generated automatically now. Thanks crwsolutions!
