@@ -1,6 +1,6 @@
 # Automatic Interface
 
-A C# Source Generator to automatically create Interface from classes.
+A C# Source Generator to automatically create Interfaces from classes.
 
 [![NuGet version (sourcedepend)](https://img.shields.io/nuget/v/AutomaticInterface?color=blue)](https://www.nuget.org/packages/AutomaticInterface/)
 
@@ -181,6 +181,7 @@ Should be simply a build and run Tests
 ### 3.0.0
 
 - You can remove the manually created `GenerateAutomaticInterfaceAttribute`, as it is generated automatically now. Thanks crwsolutions!
+- You can remove the manually created `IgnoreAutomaticInterfaceAttribute`, as it is generated automatically now. Thanks crwsolutions!
 
 ### 2.50.
 - Now can ignore class members with [IgnoreAutomaticInterface] attribute. Thanks avtc!
