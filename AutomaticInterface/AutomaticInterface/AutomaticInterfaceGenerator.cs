@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Immutable;
-using System.Text;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -19,41 +17,19 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
         context.RegisterIgnoreAttribute();
 
         var classes = context
-            .SyntaxProvider.CreateSyntaxProvider(CouldBeClassWithInterfaceAttribute, Transform)
-            .Where(type => type is not null)
+            .SyntaxProvider.ForAttributeWithMetadataName(
+                $"AutomaticInterface.{DefaultAttributeName}Attribute",
+                (node, _) => node is ClassDeclarationSyntax,
+                (context, _) => (ITypeSymbol)context.TargetSymbol
+            )
             .Collect();
 
         context.RegisterSourceOutput(classes, GenerateCode);
     }
 
-    private static bool CouldBeClassWithInterfaceAttribute(
-        SyntaxNode syntaxNode,
-        CancellationToken _
-    )
-    {
-        if (syntaxNode is not AttributeSyntax attribute)
-        {
-            return false;
-        }
-
-        var name = ExtractName(attribute.Name);
-
-        return name is DefaultAttributeName;
-    }
-
-    private static string? ExtractName(NameSyntax? name)
-    {
-        return name switch
-        {
-            SimpleNameSyntax ins => ins.Identifier.Text,
-            QualifiedNameSyntax qns => qns.Right.Identifier.Text,
-            _ => null
-        };
-    }
-
     private static void GenerateCode(
         SourceProductionContext context,
-        ImmutableArray<ITypeSymbol?> enumerations
+        ImmutableArray<ITypeSymbol> enumerations
     )
     {
         if (enumerations.IsDefaultOrEmpty)
@@ -63,13 +39,8 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
 
         foreach (var type in enumerations)
         {
-            if (type is null)
-            {
-                continue;
-            }
-
             var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? $"${Guid.NewGuid().ToString()}"
+                ? $"${Guid.NewGuid()}"
                 : $"{type.ContainingNamespace}";
 
             var code = Builder.BuildInterfaceFor(type);
@@ -77,24 +48,5 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
             var hintName = $"{typeNamespace}.I{type.Name}";
             context.AddSource(hintName, code);
         }
-    }
-
-    private static ITypeSymbol? Transform(
-        GeneratorSyntaxContext context,
-        CancellationToken cancellationToken
-    )
-    {
-        var attributeSyntax = (AttributeSyntax)context.Node;
-        if (attributeSyntax.Parent?.Parent is not ClassDeclarationSyntax classDeclaration)
-        {
-            return null;
-        }
-
-        var type =
-            context.SemanticModel.GetDeclaredSymbol(
-                classDeclaration,
-                cancellationToken: cancellationToken
-            ) as ITypeSymbol;
-        return type;
     }
 }
