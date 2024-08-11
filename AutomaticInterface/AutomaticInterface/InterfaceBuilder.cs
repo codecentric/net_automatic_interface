@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace AutomaticInterface
         string Name,
         string Ttype,
         bool HasGet,
-        bool HasSet,
+        PropertySetKind SetKind,
         bool IsRef,
         string Documentation
     );
@@ -50,7 +51,7 @@ namespace AutomaticInterface
             string name,
             string ttype,
             bool hasGet,
-            bool hasSet,
+            PropertySetKind hasSet,
             bool isRef,
             string documentation
         )
@@ -126,7 +127,7 @@ namespace AutomaticInterface
                 cb.AppendAndNormalizeMultipleLines(prop.Documentation);
                 var @ref = prop.IsRef ? "ref " : string.Empty;
                 var get = prop.HasGet ? "get; " : string.Empty;
-                var set = prop.HasSet ? "set; " : string.Empty;
+                var set = GetSet(prop.SetKind);
                 cb.AppendLine($"{@ref}{prop.Ttype} {prop.Name} {{ {get}{set}}}");
                 cb.AppendLine("");
             }
@@ -159,6 +160,17 @@ namespace AutomaticInterface
             return cb.Build();
         }
 
+        private static string GetSet(PropertySetKind propSetKind)
+        {
+            return propSetKind switch
+            {
+                PropertySetKind.NoSet => string.Empty,
+                PropertySetKind.Always => "set; ",
+                PropertySetKind.Init => "init; ",
+                _ => throw new ArgumentOutOfRangeException(nameof(propSetKind), propSetKind, null)
+            };
+        }
+
         private static void BuildMethod(CodeBuilder cb, MethodInfo method)
         {
             cb.AppendAndNormalizeMultipleLines(method.Documentation);
@@ -189,6 +201,13 @@ namespace AutomaticInterface
         {
             return Build();
         }
+    }
+
+    public enum PropertySetKind
+    {
+        NoSet = 0,
+        Always = 1,
+        Init = 2,
     }
 
     public class CodeBuilder

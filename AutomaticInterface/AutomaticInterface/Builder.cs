@@ -265,7 +265,7 @@ public static class Builder
 
                 var name = prop.Name;
                 var hasGet = prop.GetMethod?.DeclaredAccessibility == Accessibility.Public;
-                var hasSet = prop.SetMethod?.DeclaredAccessibility == Accessibility.Public;
+                var hasSet = GetSetKind(prop.SetMethod);
                 var isRef = prop.ReturnsByRef;
 
                 ActivateNullableIfNeeded(interfaceGenerator, type);
@@ -279,6 +279,20 @@ public static class Builder
                     InheritDoc
                 );
             });
+    }
+
+    private static PropertySetKind GetSetKind(IMethodSymbol? setMethodSymbol)
+    {
+        return setMethodSymbol switch
+        {
+            null => PropertySetKind.NoSet,
+            { IsInitOnly: true, DeclaredAccessibility: Accessibility.Public }
+                => PropertySetKind.Init,
+            _
+                => setMethodSymbol is { DeclaredAccessibility: Accessibility.Public }
+                    ? PropertySetKind.Always
+                    : PropertySetKind.NoSet
+        };
     }
 
     private static bool HasIgnoreAttribute(ISymbol x)

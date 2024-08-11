@@ -179,6 +179,10 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 4.1.0
+
+- Adds ability to use `init` in property setters
+- 
 ### 4.0.0
 
 - Breaking change in how generated code qualifies parameters, e.g. `async Task` should no longer generated as `System.Threading.Task`. I hope this does not break things
