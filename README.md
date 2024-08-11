@@ -171,12 +171,19 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - simonmckenzie for PR
 - avtc for PR
 - crwsolutions for PR
+- FinnAngelo for PR
 
 ## Run tests
 
 Should be simply a build and run Tests
 
 ## Changelog
+
+### 4.0.0
+
+- Breaking change in how generated code qualifies parameters, e.g. `async Task` should no longer generated as `System.Threading.Task`. I hope this does not break things
+- Completely overhauled test suite - fixed lots of code issues and tightened checks so that errors now surface when testing-
+- Applied fixes for overriding and shadowing also for events. Thanks FinnAngelo!
 
 ### 3.0.1
 
