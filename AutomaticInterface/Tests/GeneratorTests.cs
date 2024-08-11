@@ -34,8 +34,12 @@ public partial class GeneratorTests
             .Should()
             .BeEmpty();
 
-        // two are expected due to unresolved GenerateAutomaticInterface, but more are usually missing usings.
-        sourceDiagnostics.Count(x => x.Id == "CS0246").Should().Be(2);
+        sourceDiagnostics
+            .Where(d => d.Severity == DiagnosticSeverity.Error)
+            .Where(x => x.Id != "CS0246")
+            .Where(x => !MissingUsingsAreOk(x))
+            .Should()
+            .BeEmpty();
 
         var generator = new AutomaticInterfaceGenerator();
 
@@ -50,6 +54,15 @@ public partial class GeneratorTests
         diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty();
 
         return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString();
+    }
+
+    private static bool MissingUsingsAreOk(Diagnostic x)
+    {
+        var locString = x.ToString();
+        return locString.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            || locString.Contains(
+                AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
+            );
     }
 
     [Fact]
@@ -146,7 +159,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    bool TryStartTransaction(AutomaticInterfaceExample.MyStruct data = default(AutomaticInterfaceExample.MyStruct));
+                    bool TryStartTransaction(MyStruct data = default(MyStruct));
                     
                 }
             }
@@ -522,7 +535,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    System.Threading.Tasks.Task<string> Hello();
+                    Task<string> Hello();
                     
                 }
             }
@@ -621,7 +634,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    string Hello(System.Threading.Tasks.Task<string> x);
+                    string Hello(Task<string> x);
                     
                 }
             }
@@ -730,6 +743,7 @@ public partial class GeneratorTests
         const string code = """
 
             using AutomaticInterface;
+            using System;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -757,6 +771,7 @@ public partial class GeneratorTests
 
             using System.CodeDom.Compiler;
             using AutomaticInterface;
+            using System;
             using System.IO;
 
             namespace AutomaticInterfaceExample
@@ -1593,7 +1608,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    string AMethod(AutomaticInterfaceExample.DemoClass? x, string y);
+                    string AMethod(DemoClass? x, string y);
                     
                 }
             }
@@ -1640,7 +1655,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    string? AMethod(AutomaticInterfaceExample.DemoClass x, string y);
+                    string? AMethod(DemoClass x, string y);
                     
                 }
             }
@@ -1950,7 +1965,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, CancellationToken cancellationToken = null);
+                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, CancellationToken cancellationToken = default(CancellationToken));
                     
                 }
             }
@@ -1967,6 +1982,9 @@ public partial class GeneratorTests
 
             using AutomaticInterface;
             using System;
+            using System.IO;
+            using System.Threading;
+            using System.Threading.Tasks;
 
             namespace AutomaticInterfaceExample
             {
@@ -2006,6 +2024,9 @@ public partial class GeneratorTests
             using System.CodeDom.Compiler;
             using AutomaticInterface;
             using System;
+            using System.IO;
+            using System.Threading;
+            using System.Threading.Tasks;
 
             namespace CustomNameSpace
             {
@@ -2016,7 +2037,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, CancellationToken cancellationToken = null);
+                    Task<Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, CancellationToken cancellationToken = default(CancellationToken));
                     
                 }
             }
@@ -2040,7 +2061,7 @@ public partial class GeneratorTests
             {
                 public Task<string?> AMethodAsync(DemoClass x, string y)
                 {
-                    return "Ok";
+                    return Task.FromResult("Ok");
                 }
             }
 
@@ -2066,7 +2087,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    System.Threading.Tasks.Task<string?> AMethodAsync(AutomaticInterfaceExample.DemoClass x, string y);
+                    Task<string?> AMethodAsync(DemoClass x, string y);
                     
                 }
             }
@@ -2116,7 +2137,7 @@ public partial class GeneratorTests
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    string AMethod(System.Threading.Tasks.Task<AutomaticInterfaceExample.DemoClass?> x, string y);
+                    string AMethod(Task<DemoClass?> x, string y);
                     
                 }
             }
@@ -2281,13 +2302,13 @@ public partial class GeneratorTests
 
             public class BaseClass
             {
-                public virtual bool AMethod();
+                public virtual bool AMethod() => true;
             }
 
             [GenerateAutomaticInterface]
             public class DemoClass : BaseClass
             {
-                public override bool AMethod() => return true;
+                public override bool AMethod() => true;
             }
 
             """;
@@ -2330,13 +2351,13 @@ public partial class GeneratorTests
 
             public class BaseClass
             {
-                public bool AMethod();
+                public bool AMethod() => true;
             }
 
             [GenerateAutomaticInterface]
             public class DemoClass : BaseClass
             {
-                public new bool AMethod() => return true;
+                public new bool AMethod() => true;
             }
 
             """;
@@ -2380,9 +2401,9 @@ public partial class GeneratorTests
             [GenerateAutomaticInterface]
             public class DemoClass
             {
-                public void AMethod(int val) => return true;
+                public void AMethod(int val) {}
                 
-                public void AMethod(ref int val) => return true;
+                public void AMethod(ref int val){}
             }
 
             """;

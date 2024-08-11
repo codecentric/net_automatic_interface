@@ -101,12 +101,17 @@ public static class Builder
         method.Parameters.Select(GetMethodSignature).ToList().ForEach(x => paramResult.Add(x));
 
         var typedArgs = method
-            .TypeParameters.Select(arg => (arg.ToDisplayString(), arg.GetWhereStatement()))
+            .TypeParameters.Select(arg =>
+                (
+                    arg.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
+                    arg.GetWhereStatement()
+                )
+            )
             .ToList();
 
         codeGenerator.AddMethodToInterface(
             name,
-            returnType.ToDisplayString(),
+            returnType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
             InheritDoc,
             paramResult,
             typedArgs
@@ -194,7 +199,7 @@ public static class Builder
         var refKindText = GetRefKind(x);
         var optionalValue = GetMethodOptionalValue(x);
 
-        return $"{refKindText}{x.Type.ToDisplayString()} {name}{optionalValue}";
+        return $"{refKindText}{x.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {name}{optionalValue}";
     }
 
     private static string GetMethodOptionalValue(IParameterSymbol x)
@@ -209,7 +214,8 @@ public static class Builder
             string => $" = \"{x.ExplicitDefaultValue}\"",
             bool value => $" = {(value ? "true" : "false")}",
             // struct
-            null when x.Type.IsValueType => $" = default({x.Type})",
+            null when x.Type.IsValueType
+                => $" = default({x.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)})",
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}"
         };
