@@ -174,6 +174,8 @@ public static class Builder
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => !x.IsStatic)
             .Where(x => !HasIgnoreAttribute(x))
+            .GroupBy(x => x.ToDisplayString(MethodSignatureDisplayFormat))
+            .Select(g => g.First())
             .ToList()
             .ForEach(evt =>
             {

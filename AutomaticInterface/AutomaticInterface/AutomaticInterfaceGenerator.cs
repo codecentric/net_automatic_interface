@@ -20,7 +20,7 @@ public class AutomaticInterfaceGenerator : IIncrementalGenerator
             .SyntaxProvider.ForAttributeWithMetadataName(
                 $"AutomaticInterface.{DefaultAttributeName}Attribute",
                 (node, _) => node is ClassDeclarationSyntax,
-                (context, _) => (ITypeSymbol)context.TargetSymbol
+                (ctx, _) => (ITypeSymbol)ctx.TargetSymbol
             )
             .Collect();
 
