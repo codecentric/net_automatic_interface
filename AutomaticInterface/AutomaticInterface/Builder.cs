@@ -13,6 +13,7 @@ public static class Builder
 
     private static readonly SymbolDisplayFormat MethodSignatureDisplayFormat =
         new(
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
                 | SymbolDisplayParameterOptions.IncludeParamsRefOut
