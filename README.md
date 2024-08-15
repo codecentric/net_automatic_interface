@@ -26,15 +26,14 @@ namespace AutomaticInterfaceExample
     class DemoClass: IDemoClass // You Interface will get the Name I+classname, here IDemoclass. 
     // Generics, including constraints are allowed, too. E.g. MyClass<T> where T: class
     {
-
         /// <summary>
         /// Property Documentation will be copied
         /// </summary>
-        public string Hello { get; set; }  // included, get and set are copied to the interface when public
+        public string Hello { get; set; } // included, get and set are copied to the interface when public
 
         public string OnlyGet { get; } // included, get and set are copied to the interface when public
 
-        [IgnoreAutomaticInterface] 
+        [IgnoreAutomaticInterface]
         public string? AnotherGet { get; } // ignored with help of attribute
 
         /// <summary>
@@ -42,14 +41,14 @@ namespace AutomaticInterfaceExample
         /// </summary>
         public string AMethod(string x, string y) // included
         {
-            return BMethod(x,y);
+            return BMethod(x, y);
         }
 
         private string BMethod(string x, string y) // ignored because not public
         {
             return x + y;
         }
-		
+
         public string CMethod<T, T1, T2, T3, T4>(string? x, string y) // included
             where T : class
             where T1 : struct
@@ -59,9 +58,14 @@ namespace AutomaticInterfaceExample
             return "Ok";
         }
 
+        public Task<string> ASync(string x, string y)
+        {
+            return Task.FromResult("");
+        }
+
         public static string StaticProperty => "abc"; // static property, ignored
 
-        public static string StaticMethod()  // static method, ignored
+        public static string StaticMethod() // static method, ignored
         {
             return "static" + DateTime.Now;
         }
@@ -104,25 +108,30 @@ namespace AutomaticInterfaceExample
     [GeneratedCode("AutomaticInterface", "")]
     public partial interface IDemoClass
     {
-        /// <summary>
-        /// Property Documentation will be copied
-        /// </summary>
+        /// <inheritdoc />
         string Hello { get; set; }
-
+        
+        /// <inheritdoc />
         string OnlyGet { get; }
-
-        /// <summary>
-        /// Method Documentation will be copied
-        /// </summary>
+        
+        /// <inheritdoc />
         string AMethod(string x, string y);
-
+        
+        /// <inheritdoc />
         string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
-
-        /// <summary>
-        /// event Documentation will be copied
-        /// </summary>
+        
+        /// <inheritdoc />
+        System.Threading.Tasks.Task<string> ASync(string x, string y);
+        
+        /// <inheritdoc />
         event System.EventHandler ShapeChanged;
-
+        
+        /// <inheritdoc />
+        event System.EventHandler? ShapeChangedNullable;
+        
+        /// <inheritdoc />
+        event System.EventHandler<string?> ShapeChangedNullable2;
+        
     }
 }
 #nullable restore
