@@ -35,7 +35,7 @@ namespace AutomaticInterfaceExample
         public string OnlyGet { get; } // included, get and set are copied to the interface when public
 
         [IgnoreAutomaticInterface] 
-        public string OnlyGet { get; } // ignored with help of attribute
+        public string? AnotherGet { get; } // ignored with help of attribute
 
         /// <summary>
         /// Method Documentation will be copied
@@ -131,7 +131,7 @@ namespace AutomaticInterfaceExample
 ## How to use it?
 
 1. Install the nuget: `dotnet add package AutomaticInterface`.
-2. Add `using AutomaticInterface;` or (Pro-tip) add `global using AutomaticInterface;` to you GlobalUsings.
+2. Add `using AutomaticInterface;` or (Pro-tip) add `global using AutomaticInterface;` to your GlobalUsings.
 3. Tag your class with the `[GenerateAutomaticInterface]` attribute.
 4. The Interface should now be available.
 
@@ -170,7 +170,7 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - mohummedibrahim  for code and idea
 - simonmckenzie for PR
 - avtc for PR
-- crwsolutions for PR
+- crwsolutions for PRs
 - FinnAngelo for PR
 
 ## Run tests
