@@ -16,7 +16,8 @@ public static class Builder
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
-                | SymbolDisplayParameterOptions.IncludeParamsRefOut
+                | SymbolDisplayParameterOptions.IncludeParamsRefOut,
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces
         );
 
     private static readonly SymbolDisplayFormat TypeDisplayFormat =
