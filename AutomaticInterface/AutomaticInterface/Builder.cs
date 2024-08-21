@@ -18,6 +18,15 @@ public static class Builder
                 | SymbolDisplayParameterOptions.IncludeParamsRefOut
         );
 
+    private static readonly SymbolDisplayFormat TypeDisplayFormat =
+        new(
+            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
+                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+        );
+
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
     {
         if (
@@ -34,7 +43,6 @@ public static class Builder
 
         var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
 
-        interfaceGenerator.AddUsings(GetUsings(typeSymbol));
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
         interfaceGenerator.AddGeneric(GetGeneric(classSyntax));
         AddPropertiesToInterface(typeSymbol, interfaceGenerator);
@@ -102,16 +110,13 @@ public static class Builder
 
         var typedArgs = method
             .TypeParameters.Select(arg =>
-                (
-                    arg.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
-                    arg.GetWhereStatement()
-                )
+                (arg.ToDisplayString(TypeDisplayFormat), arg.GetWhereStatement(TypeDisplayFormat))
             )
             .ToList();
 
         codeGenerator.AddMethodToInterface(
             name,
-            returnType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
+            returnType.ToDisplayString(TypeDisplayFormat),
             InheritDoc,
             paramResult,
             typedArgs
@@ -189,7 +194,11 @@ public static class Builder
 
                 ActivateNullableIfNeeded(codeGenerator, type);
 
-                codeGenerator.AddEventToInterface(name, type.ToDisplayString(), InheritDoc);
+                codeGenerator.AddEventToInterface(
+                    name,
+                    type.ToDisplayString(TypeDisplayFormat),
+                    InheritDoc
+                );
             });
     }
 
@@ -199,7 +208,7 @@ public static class Builder
         var refKindText = GetRefKind(x);
         var optionalValue = GetMethodOptionalValue(x);
 
-        return $"{refKindText}{x.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {name}{optionalValue}";
+        return $"{refKindText}{x.Type.ToDisplayString(TypeDisplayFormat)} {name}{optionalValue}";
     }
 
     private static string GetMethodOptionalValue(IParameterSymbol x)
@@ -215,7 +224,7 @@ public static class Builder
             bool value => $" = {(value ? "true" : "false")}",
             // struct
             null when x.Type.IsValueType
-                => $" = default({x.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)})",
+                => $" = default({x.Type.ToDisplayString(TypeDisplayFormat)})",
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}"
         };
@@ -272,7 +281,7 @@ public static class Builder
 
                 interfaceGenerator.AddPropertyToInterface(
                     name,
-                    type.ToDisplayString(),
+                    type.ToDisplayString(TypeDisplayFormat),
                     hasGet,
                     hasSet,
                     isRef,
@@ -328,30 +337,6 @@ public static class Builder
             .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ToFullString()));
 
         return trivia.ToFullString().Trim();
-    }
-
-    private static IEnumerable<string> GetUsings(ISymbol classSymbol)
-    {
-        var allUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
-        foreach (var syntaxRef in classSymbol.DeclaringSyntaxReferences)
-        {
-            allUsings = syntaxRef
-                .GetSyntax()
-                .Ancestors(false)
-                .Aggregate(
-                    allUsings,
-                    (current, parent) =>
-                        parent switch
-                        {
-                            NamespaceDeclarationSyntax ndSyntax
-                                => current.AddRange(ndSyntax.Usings),
-                            CompilationUnitSyntax cuSyntax => current.AddRange(cuSyntax.Usings),
-                            _ => current
-                        }
-                );
-        }
-
-        return [.. allUsings.Select(x => x.ToString())];
     }
 
     private static string GetGeneric(TypeDeclarationSyntax classSyntax)

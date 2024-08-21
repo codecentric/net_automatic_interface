@@ -6,10 +6,10 @@ A C# Source Generator to automatically create Interfaces from classes.
 
 ## What does it do?
 
-Not all .NET Interfaces are created equal. Some Interfaces are lovingly handcrafted, e.g. the public interface of your .NET package which is used by your customers. Other interfaces are far from lovingly crafted, they are birthed because you need an interface for testing or for the DI container. They are often implemented only once or twice: The class itself and a mock for testing. They are noise at best and often create lots of friction. Adding a new method / field? You have to edit the interface, too!. Change parameters? Edit the interface. Add documentation? Hopefully you add it to the interface, too!
+Not all .NET Interfaces are created equal. Some interfaces are lovingly handcrafted, e.g. the public interface of your .NET package which is used by your customers. Other interfaces are far from lovingly crafted, they are birthed because you need an interface for testing or for the DI container. They are often implemented only once or twice: The class itself and a mock for testing. They are noise at best and often create lots of friction. Adding a new method / field? You have to edit the interface, too!. Change parameters? Edit the interface. Add documentation? Hopefully you add it to the interface, too!
 
 This Source Generator aims to eliminate this cost by generating an interface from the class, without you needing to do anything.
-This interface will be generated on each subsequent build, eliminating the the friction.
+This interface will be generated on each subsequent build, eliminating the friction.
 
 ## Example
 
@@ -22,8 +22,8 @@ namespace AutomaticInterfaceExample
     /// <summary>
     /// Class Documentation will be copied
     /// </summary>
-    [GenerateAutomaticInterface]  // you need to create an Attribute with exactly this name in your solution. You cannot reference Code from the Analyzer.
-    class DemoClass: IDemoClass // You Interface will get the Name I+classname, here IDemoclass. 
+    [GenerateAutomaticInterface]
+    class DemoClass: IDemoClass // Your interface will get the Name I+classname, here IDemoclass. 
     // Generics, including constraints are allowed, too. E.g. MyClass<T> where T: class
     {
 
@@ -89,9 +89,6 @@ This will create this interface:
 
 ```C#
 #nullable enable
-using System.CodeDom.Compiler;
-using AutomaticInterface;
-using System;
 
 /// <summary>
 /// Result of the generator
@@ -99,30 +96,26 @@ using System;
 namespace AutomaticInterfaceExample
 {
     /// <summary>
-    /// Bla bla
+    /// Class documentation will be copied
     /// </summary>
-    [GeneratedCode("AutomaticInterface", "")]
+    [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
     public partial interface IDemoClass
     {
-        /// <summary>
-        /// Property Documentation will be copied
-        /// </summary>
+        /// <inheritdoc />
         string Hello { get; set; }
-
+        
+        /// <inheritdoc />
         string OnlyGet { get; }
-
-        /// <summary>
-        /// Method Documentation will be copied
-        /// </summary>
+        
+        /// <inheritdoc />
         string AMethod(string x, string y);
-
-        string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
-
-        /// <summary>
-        /// event Documentation will be copied
-        /// </summary>
-        event System.EventHandler ShapeChanged;
-
+        
+        /// <inheritdoc />
+        string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass;
+        
+        /// <inheritdoc />
+        event global::System.EventHandler ShapeChanged;
+        
     }
 }
 #nullable restore
