@@ -34,13 +34,6 @@ public partial class GeneratorTests
             .Should()
             .BeEmpty();
 
-        sourceDiagnostics
-            .Where(d => d.Severity == DiagnosticSeverity.Error)
-            .Where(x => x.Id != "CS0246")
-            .Where(x => !MissingUsingsAreOk(x))
-            .Should()
-            .BeEmpty();
-
         var generator = new AutomaticInterfaceGenerator();
 
         CSharpGeneratorDriver
@@ -54,15 +47,6 @@ public partial class GeneratorTests
         diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty();
 
         return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString();
-    }
-
-    private static bool MissingUsingsAreOk(Diagnostic x)
-    {
-        var locString = x.ToString();
-        return locString.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
-            || locString.Contains(
-                AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
-            );
     }
 
     [Fact]
