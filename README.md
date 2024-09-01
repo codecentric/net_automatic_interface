@@ -174,7 +174,7 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - definitelyokay for PRs
 - roflmuffin for PRs
 - mohummedibrahim  for code and idea
-- simonmckenzie for PR
+- simonmckenzie for PRs
 - avtc for PR
 - crwsolutions for PRs
 - FinnAngelo for PR
@@ -184,6 +184,10 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 Should be simply a build and run Tests
 
 ## Changelog
+
+### 5.0.0
+
+- 4.0.0 changed how parameters where qualified - this PR changes it to using qualified names everywhere because 4.0.0 broke lots of stuff. Thanks for your contributions!
 
 ### 4.1.0
 
