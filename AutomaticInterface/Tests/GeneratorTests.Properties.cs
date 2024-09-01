@@ -34,12 +34,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -83,12 +80,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -137,16 +131,12 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             #nullable enable
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System;
-
             namespace AutomaticInterfaceExample
             {
                 /// <summary>
                 /// Bla bla
                 /// </summary>
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -197,21 +187,16 @@ public partial class GeneratorTests
             //--------------------------------------------------------------------------------------------------
 
             #nullable enable
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System;
-            using System.Threading.Tasks;
-
             namespace AutomaticInterfaceExample
             {
                 /// <summary>
                 /// Bla bla
                 /// </summary>
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
-                    System.Threading.Tasks.Task<string?> NullableProperty { get; set; }
+                    global::System.Threading.Tasks.Task<string?> NullableProperty { get; set; }
                     
                 }
             }
@@ -253,13 +238,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System.Threading.Tasks;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface ISecondClass
                 {
                     /// <inheritdoc />
@@ -302,13 +283,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -352,13 +329,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -399,12 +372,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -446,12 +416,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -493,12 +460,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -539,12 +503,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />

@@ -34,13 +34,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System.Threading.Tasks;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -81,13 +77,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System.Threading.Tasks;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
@@ -128,13 +120,9 @@ public partial class GeneratorTests
             // </auto-generated>
             //--------------------------------------------------------------------------------------------------
 
-            using System.CodeDom.Compiler;
-            using AutomaticInterface;
-            using System.Threading.Tasks;
-
             namespace AutomaticInterfaceExample
             {
-                [GeneratedCode("AutomaticInterface", "")]
+                [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
                     /// <inheritdoc />
