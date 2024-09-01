@@ -35,9 +35,10 @@ namespace AutomaticInterface
         /// <summary>
         /// Thanks to https://www.codeproject.com/Articles/871704/Roslyn-Code-Analysis-in-Easy-Samples-Part-2
         /// </summary>
-        /// <param name="typeParameterSymbol"></param>
-        /// <returns></returns>
-        public static string GetWhereStatement(this ITypeParameterSymbol typeParameterSymbol)
+        public static string GetWhereStatement(
+            this ITypeParameterSymbol typeParameterSymbol,
+            SymbolDisplayFormat typeDisplayFormat
+        )
         {
             var result = $"where {typeParameterSymbol.Name} : ";
 
@@ -69,7 +70,7 @@ namespace AutomaticInterface
                     isFirstConstraint = false;
                 }
 
-                constraints += constraintType.GetFullTypeString();
+                constraints += constraintType.GetFullTypeString(typeDisplayFormat);
             }
 
             if (string.IsNullOrEmpty(constraints))
@@ -82,14 +83,21 @@ namespace AutomaticInterface
             return result;
         }
 
-        private static string GetFullTypeString(this ISymbol type)
+        private static string GetFullTypeString(
+            this ISymbol type,
+            SymbolDisplayFormat typeDisplayFormat
+        )
         {
-            return type.Name
-                + type.GetTypeArgsStr(symbol => ((INamedTypeSymbol)symbol).TypeArguments);
+            return type.ToDisplayString(typeDisplayFormat)
+                + type.GetTypeArgsStr(
+                    typeDisplayFormat,
+                    symbol => ((INamedTypeSymbol)symbol).TypeArguments
+                );
         }
 
         private static string GetTypeArgsStr(
             this ISymbol symbol,
+            SymbolDisplayFormat typeDisplayFormat,
             Func<ISymbol, ImmutableArray<ITypeSymbol>> typeArgGetter
         )
         {
@@ -106,13 +114,13 @@ namespace AutomaticInterface
                 if (arg is ITypeParameterSymbol typeParameterSymbol)
                 {
                     // this is a generic argument
-                    strToAdd = typeParameterSymbol.Name;
+                    strToAdd = typeParameterSymbol.ToDisplayString(typeDisplayFormat);
                 }
                 else
                 {
                     // this is a generic argument value.
                     var namedTypeSymbol = arg as INamedTypeSymbol;
-                    strToAdd = namedTypeSymbol!.GetFullTypeString();
+                    strToAdd = namedTypeSymbol!.GetFullTypeString(typeDisplayFormat);
                 }
 
                 stringsToAdd.Add(strToAdd);

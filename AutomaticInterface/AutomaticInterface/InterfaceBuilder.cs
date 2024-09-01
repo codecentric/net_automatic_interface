@@ -38,7 +38,6 @@ namespace AutomaticInterface
 
             """;
 
-        private readonly HashSet<string> usings = ["using System.CodeDom.Compiler;"];
         private readonly List<PropertyInfo> propertyInfos = [];
         private readonly List<MethodInfo> methodInfos = [];
         private readonly List<EventInfo> events = [];
@@ -69,14 +68,6 @@ namespace AutomaticInterface
             classDocumentation = documentation;
         }
 
-        public void AddUsings(IEnumerable<string> additionalUsings)
-        {
-            foreach (var usg in additionalUsings)
-            {
-                usings.Add(usg);
-            }
-        }
-
         public void AddMethodToInterface(
             string name,
             string returnType,
@@ -103,13 +94,6 @@ namespace AutomaticInterface
                 cb.AppendLine("#nullable enable");
             }
 
-            foreach (var usg in usings)
-            {
-                cb.AppendLine(usg);
-            }
-
-            cb.AppendLine("");
-
             cb.AppendLine($"namespace {nameSpaceName}");
             cb.AppendLine("{");
 
@@ -117,7 +101,9 @@ namespace AutomaticInterface
 
             cb.AppendAndNormalizeMultipleLines(classDocumentation);
 
-            cb.AppendLine($"[GeneratedCode(\"AutomaticInterface\", \"\")]");
+            cb.AppendLine(
+                "[global::System.CodeDom.Compiler.GeneratedCode(\"AutomaticInterface\", \"\")]"
+            );
             cb.AppendLine($"public partial interface {interfaceName}{genericType}");
             cb.AppendLine("{");
 
