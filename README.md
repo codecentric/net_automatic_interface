@@ -26,30 +26,29 @@ namespace AutomaticInterfaceExample
     class DemoClass: IDemoClass // Your interface will get the Name I+classname, here IDemoclass. 
     // Generics, including constraints are allowed, too. E.g. MyClass<T> where T: class
     {
-
         /// <summary>
         /// Property Documentation will be copied
         /// </summary>
-        public string Hello { get; set; }  // included, get and set are copied to the interface when public
+        public string Hello { get; set; } // included, get and set are copied to the interface when public
 
         public string OnlyGet { get; } // included, get and set are copied to the interface when public
 
-        [IgnoreAutomaticInterface] 
-        public string OnlyGet { get; } // ignored with help of attribute
+        [IgnoreAutomaticInterface]
+        public string? AnotherGet { get; } // ignored with help of attribute
 
         /// <summary>
         /// Method Documentation will be copied
         /// </summary>
         public string AMethod(string x, string y) // included
         {
-            return BMethod(x,y);
+            return BMethod(x, y);
         }
 
         private string BMethod(string x, string y) // ignored because not public
         {
             return x + y;
         }
-		
+
         public string CMethod<T, T1, T2, T3, T4>(string? x, string y) // included
             where T : class
             where T1 : struct
@@ -59,9 +58,14 @@ namespace AutomaticInterfaceExample
             return "Ok";
         }
 
+        public Task<string> ASync(string x, string y)
+        {
+            return Task.FromResult("");
+        }
+
         public static string StaticProperty => "abc"; // static property, ignored
 
-        public static string StaticMethod()  // static method, ignored
+        public static string StaticMethod() // static method, ignored
         {
             return "static" + DateTime.Now;
         }
@@ -111,10 +115,19 @@ namespace AutomaticInterfaceExample
         string AMethod(string x, string y);
         
         /// <inheritdoc />
-        string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass;
+        string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
+        
+        /// <inheritdoc />
+        global::System.Threading.Tasks.Task<string> ASync(string x, string y);
         
         /// <inheritdoc />
         event global::System.EventHandler ShapeChanged;
+        
+        /// <inheritdoc />
+        event global::System.EventHandler? ShapeChangedNullable;
+        
+        /// <inheritdoc />
+        event global::System.EventHandler<string?> ShapeChangedNullable2;
         
     }
 }
@@ -124,7 +137,7 @@ namespace AutomaticInterfaceExample
 ## How to use it?
 
 1. Install the nuget: `dotnet add package AutomaticInterface`.
-2. Add `using AutomaticInterface;` or (Pro-tip) add `global using AutomaticInterface;` to you GlobalUsings.
+2. Add `using AutomaticInterface;` or (Pro-tip) add `global using AutomaticInterface;` to your GlobalUsings.
 3. Tag your class with the `[GenerateAutomaticInterface]` attribute.
 4. The Interface should now be available.
 
@@ -163,7 +176,7 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - mohummedibrahim  for code and idea
 - simonmckenzie for PRs
 - avtc for PR
-- crwsolutions for PR
+- crwsolutions for PRs
 - FinnAngelo for PR
 
 ## Run tests
@@ -174,7 +187,12 @@ Should be simply a build and run Tests
 
 ### 5.0.0
 
-- 4.0.0 changed how parameters where qualified - this PR changes it to using qualified names everywhere because 4.0.0 broke lots of stuff. Thanks for your contributions!
+- Sync DemoClass and actual generated code with README. Thanks, @crwsolutions!
+-  Removed manual attribute in TestNuget project. Thanks, @crwsolutions!
+
+### 5.0.0
+
+- 4.0.0 changed how parameters where qualified - this PR changes it to using qualified names everywhere because 4.0.0 broke lots of stuff. Thanks for your contributions! Especially simonmckenzie for the hard work and realbart for bringing it up
 
 ### 4.1.0
 
