@@ -15,6 +15,7 @@ namespace AutomaticInterfaceExample
 
             IDemoClass demoInterface = demo;
             Console.WriteLine(demoInterface.AMethod("A", "B"));
+            Console.WriteLine(demoInterface.CMethod<string, int, uint, DemoClass, DemoClass>("A", "B"));
             Console.WriteLine("Hello World!");
         }
     }

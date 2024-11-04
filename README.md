@@ -114,7 +114,7 @@ namespace AutomaticInterfaceExample
         /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(string, string)" />
         string AMethod(string x, string y);
         
-        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod<T, T1, T2, T3, T4>(string?, string)" />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod{T, T1, T2, T3, T4}(string?, string)" />
         string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass;
         
         /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ASync(string, string)" />

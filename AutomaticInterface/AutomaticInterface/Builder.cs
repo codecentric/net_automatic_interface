@@ -9,7 +9,7 @@ namespace AutomaticInterface;
 
 public static class Builder
 {
-    private static string InheritDoc(string source) => $"/// <inheritdoc cref=\"{source}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
+    private static string InheritDoc(string source) => $"/// <inheritdoc cref=\"{source.Replace('<', '{').Replace('>', '}')}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
     private static readonly SymbolDisplayFormat MethodSignatureDisplayFormat =
         new(

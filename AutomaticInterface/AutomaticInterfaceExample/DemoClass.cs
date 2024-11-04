@@ -38,6 +38,17 @@ namespace AutomaticInterfaceExample
             return x + y;
         }
 
+        /// <summary>
+        /// CMethod allows operations with multiple generic type parameters and string inputs.
+        /// </summary>
+        /// <typeparam name="T">The first generic type parameter which must be a class.</typeparam>
+        /// <typeparam name="T1">The second generic type parameter which must be a structure.</typeparam>
+        /// <typeparam name="T2">The third generic type parameter.</typeparam>
+        /// <typeparam name="T3">The fourth generic type parameter which must be derived from DemoClass.</typeparam>
+        /// <typeparam name="T4">The fifth generic type parameter which must implement IDemoClass.</typeparam>
+        /// <param name="x">The optional first string input parameter.</param>
+        /// <param name="y">The second string input parameter.</param>
+        /// <return>Returns a string result.</return>
         public string CMethod<T, T1, T2, T3, T4>(string? x, string y) // included
             where T : class
             where T1 : struct

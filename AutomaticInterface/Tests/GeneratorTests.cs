@@ -398,7 +398,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello(System.Threading.Tasks.Task<string>)" />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello(System.Threading.Tasks.Task{string})" />
                     string Hello(global::System.Threading.Tasks.Task<string> x);
                     
                 }
@@ -1080,7 +1080,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod<T, T1, T2, T3, T4>(string, string)" />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod{T, T1, T2, T3, T4}(string, string)" />
                     string CMethod<T, T1, T2, T3, T4>(string x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass;
                     
                 }
@@ -1553,7 +1553,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(System.Threading.Tasks.Task<AutomaticInterfaceExample.DemoClass?>, string)" />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(System.Threading.Tasks.Task{AutomaticInterfaceExample.DemoClass?}, string)" />
                     string AMethod(global::System.Threading.Tasks.Task<global::AutomaticInterfaceExample.DemoClass?> x, string y);
                     
                 }
