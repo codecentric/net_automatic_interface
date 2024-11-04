@@ -39,7 +39,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; }
                     
                 }
@@ -85,7 +85,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; }
                     
                 }
@@ -139,7 +139,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.NullableProperty" />
                     string? NullableProperty { get; set; }
                     
                 }
@@ -195,7 +195,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.NullableProperty" />
                     global::System.Threading.Tasks.Task<string?> NullableProperty { get; set; }
                     
                 }
@@ -243,7 +243,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface ISecondClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.SecondClass.AProperty" />
                     int AProperty { get; set; }
                     
                 }
@@ -288,7 +288,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.SomeProperty" />
                     string SomeProperty { get; set; }
                     
                 }
@@ -334,7 +334,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.SomeProperty" />
                     string SomeProperty { get; set; }
                     
                 }
@@ -377,7 +377,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; set; }
                     
                 }
@@ -421,7 +421,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { set; }
                     
                 }
@@ -465,7 +465,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; }
                     
                 }
@@ -508,7 +508,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; init; }
                     
                 }

@@ -87,7 +87,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.TryStartTransaction(string, string, int, bool)" />
                     bool TryStartTransaction(string file = "", string member = "", int line = 0, bool notify = true);
                     
                 }
@@ -136,7 +136,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.TryStartTransaction(AutomaticInterfaceExample.MyStruct)" />
                     bool TryStartTransaction(global::AutomaticInterfaceExample.MyStruct data = default(global::AutomaticInterfaceExample.MyStruct));
                     
                 }
@@ -180,7 +180,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.TryStartTransaction(string)" />
                     bool TryStartTransaction(string data = null);
                     
                 }
@@ -263,7 +263,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello()" />
                     string Hello();
                     
                 }
@@ -308,7 +308,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello()" />
                     global::System.Threading.Tasks.Task<string> Hello();
                     
                 }
@@ -353,7 +353,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello(string)" />
                     string Hello(string x);
                     
                 }
@@ -398,7 +398,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello(System.Threading.Tasks.Task<string>)" />
                     string Hello(global::System.Threading.Tasks.Task<string> x);
                     
                 }
@@ -442,7 +442,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello(string, int, double)" />
                     string Hello(string x, int y, double z);
                     
                 }
@@ -577,7 +577,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello(string)" />
                     string Hello(string x);
                     
                 }
@@ -625,7 +625,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello(string)" />
                     string Hello(string x);
                     
                 }
@@ -673,7 +673,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; }
                     
                 }
@@ -726,7 +726,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; }
                     
                 }
@@ -875,7 +875,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ShapeChanged" />
                     event global::System.EventHandler ShapeChanged;
                     
                 }
@@ -1021,16 +1021,16 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
                     string Hello { get; set; }
                     
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.OnlyGet" />
                     string OnlyGet { get; }
                     
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(string, string)" />
                     string AMethod(string x, string y);
                     
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ShapeChanged" />
                     event global::System.EventHandler ShapeChanged;
                     
                 }
@@ -1080,7 +1080,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod<T, T1, T2, T3, T4>(string, string)" />
                     string CMethod<T, T1, T2, T3, T4>(string x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass;
                     
                 }
@@ -1131,10 +1131,10 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(string, string)" />
                     string AMethod(string x, string y);
                     
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(string, string, string)" />
                     string AMethod(string x, string y, string crash);
                     
                 }
@@ -1177,7 +1177,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(AutomaticInterfaceExample.DemoClass?, string)" />
                     string AMethod(global::AutomaticInterfaceExample.DemoClass? x, string y);
                     
                 }
@@ -1221,7 +1221,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(AutomaticInterfaceExample.DemoClass, string)" />
                     string? AMethod(global::AutomaticInterfaceExample.DemoClass x, string y);
                     
                 }
@@ -1276,7 +1276,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ShapeChangedNullable" />
                     event global::System.EventHandler? ShapeChangedNullable;
                     
                 }
@@ -1331,7 +1331,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ShapeChangedNullable" />
                     event global::System.EventHandler<string?> ShapeChangedNullable;
                     
                 }
@@ -1396,7 +1396,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.GetFinalDocumentsByIDFails(string, string, bool, bool?, System.Threading.CancellationToken)" />
                     global::System.Threading.Tasks.Task<global::System.IO.Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken));
                     
                 }
@@ -1461,7 +1461,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.GetFinalDocumentsByIDFails(string, string, bool, bool?, System.Threading.CancellationToken)" />
                     global::System.Threading.Tasks.Task<global::System.IO.Stream?> GetFinalDocumentsByIDFails(string agreementID, string docType, bool amt = false, bool? attachSupportingDocuments = true, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken));
                     
                 }
@@ -1507,7 +1507,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethodAsync(AutomaticInterfaceExample.DemoClass, string)" />
                     global::System.Threading.Tasks.Task<string?> AMethodAsync(global::AutomaticInterfaceExample.DemoClass x, string y);
                     
                 }
@@ -1553,7 +1553,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(System.Threading.Tasks.Task<AutomaticInterfaceExample.DemoClass?>, string)" />
                     string AMethod(global::System.Threading.Tasks.Task<global::AutomaticInterfaceExample.DemoClass?> x, string y);
                     
                 }
@@ -1596,7 +1596,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AProperty" />
                     ref string AProperty { get; }
                     
                 }
@@ -1639,7 +1639,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(int)" />
                     void AMethod(int @event);
                     
                 }
@@ -1685,7 +1685,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod()" />
                     bool AMethod();
                     
                 }
@@ -1731,7 +1731,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod()" />
                     bool AMethod();
                     
                 }
@@ -1774,10 +1774,10 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(int)" />
                     void AMethod(int val);
                     
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(ref int)" />
                     void AMethod(ref int val);
                     
                 }
@@ -1824,7 +1824,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AnEvent" />
                     event global::System.EventHandler AnEvent;
                     
                 }
@@ -1871,7 +1871,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AnEvent" />
                     event global::System.EventHandler AnEvent;
                     
                 }
