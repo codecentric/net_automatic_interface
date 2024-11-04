@@ -105,28 +105,28 @@ namespace AutomaticInterfaceExample
     [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
     public partial interface IDemoClass
     {
-        /// <inheritdoc />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.Hello" />
         string Hello { get; set; }
         
-        /// <inheritdoc />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.OnlyGet" />
         string OnlyGet { get; }
         
-        /// <inheritdoc />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(string, string)" />
         string AMethod(string x, string y);
         
-        /// <inheritdoc />
-        string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : DemoClass where T4 : IDemoClass;
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod<T, T1, T2, T3, T4>(string?, string)" />
+        string CMethod<T, T1, T2, T3, T4>(string? x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass;
         
-        /// <inheritdoc />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ASync(string, string)" />
         global::System.Threading.Tasks.Task<string> ASync(string x, string y);
         
-        /// <inheritdoc />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ShapeChanged" />
         event global::System.EventHandler ShapeChanged;
         
-        /// <inheritdoc />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ShapeChangedNullable" />
         event global::System.EventHandler? ShapeChangedNullable;
         
-        /// <inheritdoc />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.ShapeChangedNullable2" />
         event global::System.EventHandler<string?> ShapeChangedNullable2;
         
     }
