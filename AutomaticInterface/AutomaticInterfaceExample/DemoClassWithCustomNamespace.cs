@@ -18,8 +18,6 @@ namespace AutomaticInterfaceExample
         /// <summary>
         /// This is a test method
         /// </summary>
-        public void Test()
-        {
-        }
+        public void Test() { }
     }
 }

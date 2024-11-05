@@ -222,10 +222,10 @@ public static class Builder
             string => $" = \"{x.ExplicitDefaultValue}\"",
             bool value => $" = {(value ? "true" : "false")}",
             // struct
-            null when x.Type.IsValueType
-                => $" = default({x.Type.ToDisplayString(TypeDisplayFormat)})",
+            null when x.Type.IsValueType =>
+                $" = default({x.Type.ToDisplayString(TypeDisplayFormat)})",
             null => " = null",
-            _ => $" = {x.ExplicitDefaultValue}"
+            _ => $" = {x.ExplicitDefaultValue}",
         };
     }
 
@@ -294,12 +294,11 @@ public static class Builder
         return setMethodSymbol switch
         {
             null => PropertySetKind.NoSet,
-            { IsInitOnly: true, DeclaredAccessibility: Accessibility.Public }
-                => PropertySetKind.Init,
-            _
-                => setMethodSymbol is { DeclaredAccessibility: Accessibility.Public }
-                    ? PropertySetKind.Always
-                    : PropertySetKind.NoSet
+            { IsInitOnly: true, DeclaredAccessibility: Accessibility.Public } =>
+                PropertySetKind.Init,
+            _ => setMethodSymbol is { DeclaredAccessibility: Accessibility.Public }
+                ? PropertySetKind.Always
+                : PropertySetKind.NoSet,
         };
     }
 
@@ -327,7 +326,7 @@ public static class Builder
             SyntaxKind.DocumentationCommentExteriorTrivia,
             SyntaxKind.EndOfDocumentationCommentToken,
             SyntaxKind.MultiLineDocumentationCommentTrivia,
-            SyntaxKind.SingleLineDocumentationCommentTrivia
+            SyntaxKind.SingleLineDocumentationCommentTrivia,
         ];
 
         var trivia = classSyntax

@@ -153,7 +153,7 @@ namespace AutomaticInterface
                 PropertySetKind.NoSet => string.Empty,
                 PropertySetKind.Always => "set; ",
                 PropertySetKind.Init => "init; ",
-                _ => throw new ArgumentOutOfRangeException(nameof(propSetKind), propSetKind, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(propSetKind), propSetKind, null),
             };
         }
 
