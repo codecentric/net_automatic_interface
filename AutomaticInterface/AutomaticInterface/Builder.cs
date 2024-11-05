@@ -9,13 +9,14 @@ namespace AutomaticInterface;
 
 public static class Builder
 {
-    private static string InheritDoc(string source) => $"/// <inheritdoc cref=\"{source.Replace('<', '{').Replace('>', '}')}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
+    private static string InheritDoc(ISymbol source) =>
+        $"/// <inheritdoc cref=\"{source.ToDisplayString().Replace('<', '{').Replace('>', '}')}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
     private static readonly SymbolDisplayFormat MethodSignatureDisplayFormat =
         new(
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
-                              | SymbolDisplayParameterOptions.IncludeParamsRefOut
+                | SymbolDisplayParameterOptions.IncludeParamsRefOut
         );
 
     private static readonly SymbolDisplayFormat TypeDisplayFormat =
@@ -24,7 +25,7 @@ public static class Builder
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
-                                  | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
         );
 
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
@@ -93,7 +94,7 @@ public static class Builder
             .GroupBy(x => x.ToDisplayString(MethodSignatureDisplayFormat))
             .Select(g => g.First())
             .ToList()
-            .ForEach(method => { AddMethod(codeGenerator, method); });
+            .ForEach(method => AddMethod(codeGenerator, method));
     }
 
     private static void AddMethod(InterfaceBuilder codeGenerator, IMethodSymbol method)
@@ -115,7 +116,7 @@ public static class Builder
         codeGenerator.AddMethodToInterface(
             name,
             returnType.ToDisplayString(TypeDisplayFormat),
-            InheritDoc(method.ToDisplayString()),
+            InheritDoc(method),
             paramResult,
             typedArgs
         );
@@ -195,7 +196,7 @@ public static class Builder
                 codeGenerator.AddEventToInterface(
                     name,
                     type.ToDisplayString(TypeDisplayFormat),
-                    InheritDoc(evt.ToDisplayString())
+                    InheritDoc(evt)
                 );
             });
     }
@@ -283,7 +284,7 @@ public static class Builder
                     hasGet,
                     hasSet,
                     isRef,
-                    InheritDoc(prop.ToDisplayString())
+                    InheritDoc(prop)
                 );
             });
     }
