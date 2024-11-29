@@ -25,11 +25,11 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-Recommended</AnalysisLevel>
-        <Version>5.0.2</Version>
+        <Version>5.0.3</Version>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>1701;1702;NU5128</NoWarn>
-        <PackageReleaseNotes>Use ForAttributeWithMetadataName to improve performance</PackageReleaseNotes>
+        <PackageReleaseNotes>Query members only once. Small optimization.</PackageReleaseNotes>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerator|AnyCPU'">

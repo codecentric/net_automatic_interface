@@ -41,9 +41,17 @@ public static class Builder
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
         interfaceGenerator.AddGeneric(GetGeneric(classSyntax));
-        AddPropertiesToInterface(typeSymbol, interfaceGenerator);
-        AddMethodsToInterface(typeSymbol, interfaceGenerator);
-        AddEventsToInterface(typeSymbol, interfaceGenerator);
+
+        var members = typeSymbol
+            .GetAllMembers()
+            .Where(x => x.DeclaredAccessibility == Accessibility.Public)
+            .Where(x => !x.IsStatic)
+            .Where(x => !HasIgnoreAttribute(x))
+            .ToList();
+
+        AddPropertiesToInterface(members, interfaceGenerator);
+        AddMethodsToInterface(members, interfaceGenerator);
+        AddEventsToInterface(members, interfaceGenerator);
 
         var generatedCode = interfaceGenerator.Build();
 
@@ -70,19 +78,12 @@ public static class Builder
             : customNs!;
     }
 
-    private static void AddMethodsToInterface(
-        ITypeSymbol classSymbol,
-        InterfaceBuilder codeGenerator
-    )
+    private static void AddMethodsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
     {
-        classSymbol
-            .GetAllMembers()
+        members
             .Where(x => x.Kind == SymbolKind.Method)
             .OfType<IMethodSymbol>()
-            .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => x.MethodKind == MethodKind.Ordinary)
-            .Where(x => !x.IsStatic)
-            .Where(x => !HasIgnoreAttribute(x))
             .Where(x => x.ContainingType.Name != nameof(Object))
             .Where(x => !HasIgnoreAttribute(x))
             .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
@@ -171,18 +172,11 @@ public static class Builder
         return false;
     }
 
-    private static void AddEventsToInterface(
-        ITypeSymbol classSymbol,
-        InterfaceBuilder codeGenerator
-    )
+    private static void AddEventsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
     {
-        classSymbol
-            .GetAllMembers()
+        members
             .Where(x => x.Kind == SymbolKind.Event)
             .OfType<IEventSymbol>()
-            .Where(x => x.DeclaredAccessibility == Accessibility.Public)
-            .Where(x => !x.IsStatic)
-            .Where(x => !HasIgnoreAttribute(x))
             .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
             .Select(g => g.First())
             .ToList()
@@ -252,18 +246,14 @@ public static class Builder
     }
 
     private static void AddPropertiesToInterface(
-        ITypeSymbol classSymbol,
+        List<ISymbol> members,
         InterfaceBuilder interfaceGenerator
     )
     {
-        classSymbol
-            .GetAllMembers()
+        members
             .Where(x => x.Kind == SymbolKind.Property)
             .OfType<IPropertySymbol>()
-            .Where(x => x.DeclaredAccessibility == Accessibility.Public)
-            .Where(x => !x.IsStatic)
             .Where(x => !x.IsIndexer)
-            .Where(x => !HasIgnoreAttribute(x))
             .GroupBy(x => x.Name)
             .Select(g => g.First())
             .ToList()

@@ -185,10 +185,18 @@ Should be simply a build and run Tests
 
 ## Changelog
 
-### 5.0.0
+### 5.0.3
+
+- Query members only once. Small optimization. Thanks, @crwsolutions!
+
+### 5.0.2
+
+- Fully qualify type references; remove usings . Thanks, @simonmckenzie!
+
+### 5.0.1
 
 - Sync DemoClass and actual generated code with README. Thanks, @crwsolutions!
--  Removed manual attribute in TestNuget project. Thanks, @crwsolutions!
+- Removed manual attribute in TestNuget project. Thanks, @crwsolutions!
 
 ### 5.0.0
 
