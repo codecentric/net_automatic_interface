@@ -29,7 +29,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>1701;1702;NU5128</NoWarn>
-        <PackageReleaseNotes>Use ForAttributeWithMetadataName to improve performance</PackageReleaseNotes>
+        <PackageReleaseNotes>Query members only once. Small optimization.</PackageReleaseNotes>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerator|AnyCPU'">
