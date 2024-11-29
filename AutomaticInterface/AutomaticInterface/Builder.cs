@@ -12,20 +12,14 @@ public static class Builder
     private static string InheritDoc(ISymbol source) =>
         $"/// <inheritdoc cref=\"{source.ToDisplayString().Replace('<', '{').Replace('>', '}')}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
-    private static readonly SymbolDisplayFormat MethodSignatureDisplayFormat =
+    private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormat =
         new(
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
                 | SymbolDisplayParameterOptions.IncludeParamsRefOut,
-            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces
-        );
-
-    private static readonly SymbolDisplayFormat TypeDisplayFormat =
-        new(
-            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
                 | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
         );
@@ -61,9 +55,12 @@ public static class Builder
     {
         var generationAttribute = typeSymbol
             .GetAttributes()
-            .FirstOrDefault(x =>
-                x.AttributeClass != null
-                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            .FirstOrDefault(
+                x =>
+                    x.AttributeClass != null
+                    && x.AttributeClass
+                        .Name
+                        .Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
             );
 
         if (generationAttribute == null)
@@ -93,7 +90,7 @@ public static class Builder
             .Where(x => !HasIgnoreAttribute(x))
             .Where(x => x.ContainingType.Name != nameof(Object))
             .Where(x => !HasIgnoreAttribute(x))
-            .GroupBy(x => x.ToDisplayString(MethodSignatureDisplayFormat))
+            .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
             .Select(g => g.First())
             .ToList()
             .ForEach(method => AddMethod(codeGenerator, method));
@@ -110,14 +107,19 @@ public static class Builder
         method.Parameters.Select(GetMethodSignature).ToList().ForEach(x => paramResult.Add(x));
 
         var typedArgs = method
-            .TypeParameters.Select(arg =>
-                (arg.ToDisplayString(TypeDisplayFormat), arg.GetWhereStatement(TypeDisplayFormat))
+            .TypeParameters
+            .Select(
+                arg =>
+                    (
+                        arg.ToDisplayString(FullyQualifiedDisplayFormat),
+                        arg.GetWhereStatement(FullyQualifiedDisplayFormat)
+                    )
             )
             .ToList();
 
         codeGenerator.AddMethodToInterface(
             name,
-            returnType.ToDisplayString(TypeDisplayFormat),
+            returnType.ToDisplayString(FullyQualifiedDisplayFormat),
             InheritDoc(method),
             paramResult,
             typedArgs
@@ -185,7 +187,7 @@ public static class Builder
             .Where(x => x.DeclaredAccessibility == Accessibility.Public)
             .Where(x => !x.IsStatic)
             .Where(x => !HasIgnoreAttribute(x))
-            .GroupBy(x => x.ToDisplayString(MethodSignatureDisplayFormat))
+            .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
             .Select(g => g.First())
             .ToList()
             .ForEach(evt =>
@@ -197,7 +199,7 @@ public static class Builder
 
                 codeGenerator.AddEventToInterface(
                     name,
-                    type.ToDisplayString(TypeDisplayFormat),
+                    type.ToDisplayString(FullyQualifiedDisplayFormat),
                     InheritDoc(evt)
                 );
             });
@@ -209,7 +211,7 @@ public static class Builder
         var refKindText = GetRefKind(x);
         var optionalValue = GetMethodOptionalValue(x);
 
-        return $"{refKindText}{x.Type.ToDisplayString(TypeDisplayFormat)} {name}{optionalValue}";
+        return $"{refKindText}{x.Type.ToDisplayString(FullyQualifiedDisplayFormat)} {name}{optionalValue}";
     }
 
     private static string GetMethodOptionalValue(IParameterSymbol x)
@@ -225,7 +227,7 @@ public static class Builder
             bool value => $" = {(value ? "true" : "false")}",
             // struct
             null when x.Type.IsValueType
-                => $" = default({x.Type.ToDisplayString(TypeDisplayFormat)})",
+                => $" = default({x.Type.ToDisplayString(FullyQualifiedDisplayFormat)})",
             null => " = null",
             _ => $" = {x.ExplicitDefaultValue}",
         };
@@ -282,7 +284,7 @@ public static class Builder
 
                 interfaceGenerator.AddPropertyToInterface(
                     name,
-                    type.ToDisplayString(TypeDisplayFormat),
+                    type.ToDisplayString(FullyQualifiedDisplayFormat),
                     hasGet,
                     hasSet,
                     isRef,
@@ -308,11 +310,12 @@ public static class Builder
     private static bool HasIgnoreAttribute(ISymbol x)
     {
         return x.GetAttributes()
-            .Any(a =>
-                a.AttributeClass != null
-                && a.AttributeClass.Name.Contains(
-                    AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
-                )
+            .Any(
+                a =>
+                    a.AttributeClass != null
+                    && a.AttributeClass
+                        .Name
+                        .Contains(AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName)
             );
     }
 
