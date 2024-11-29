@@ -39,7 +39,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(out int)" />
                     void AMethod(out int someOutParameter);
                     
                 }
@@ -82,7 +82,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(in int)" />
                     void AMethod(in int someOutParameter);
                     
                 }
@@ -125,7 +125,7 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(ref int)" />
                     void AMethod(ref int someOutParameter);
                     
                 }

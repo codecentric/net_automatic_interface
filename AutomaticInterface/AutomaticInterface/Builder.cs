@@ -9,7 +9,8 @@ namespace AutomaticInterface;
 
 public static class Builder
 {
-    private const string InheritDoc = "/// <inheritdoc />"; // we use inherit doc because that should be able to fetch documentation from base classes.
+    private static string InheritDoc(ISymbol source) =>
+        $"/// <inheritdoc cref=\"{source.ToDisplayString().Replace('<', '{').Replace('>', '}')}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
     private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormat =
         new(
@@ -62,15 +63,19 @@ public static class Builder
     {
         var generationAttribute = typeSymbol
             .GetAttributes()
-            .FirstOrDefault(x =>
-                x.AttributeClass != null
-                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            .FirstOrDefault(
+                x =>
+                    x.AttributeClass != null
+                    && x.AttributeClass
+                        .Name
+                        .Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
             );
 
         if (generationAttribute == null)
         {
             return typeSymbol.ContainingNamespace.ToDisplayString();
         }
+
         var customNs = generationAttribute.ConstructorArguments.FirstOrDefault().Value?.ToString();
 
         return string.IsNullOrWhiteSpace(customNs)
@@ -89,10 +94,7 @@ public static class Builder
             .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
             .Select(g => g.First())
             .ToList()
-            .ForEach(method =>
-            {
-                AddMethod(codeGenerator, method);
-            });
+            .ForEach(method => AddMethod(codeGenerator, method));
     }
 
     private static void AddMethod(InterfaceBuilder codeGenerator, IMethodSymbol method)
@@ -117,7 +119,7 @@ public static class Builder
         codeGenerator.AddMethodToInterface(
             name,
             returnType.ToDisplayString(FullyQualifiedDisplayFormat),
-            InheritDoc,
+            InheritDoc(method),
             paramResult,
             typedArgs
         );
@@ -190,7 +192,7 @@ public static class Builder
                 codeGenerator.AddEventToInterface(
                     name,
                     type.ToDisplayString(FullyQualifiedDisplayFormat),
-                    InheritDoc
+                    InheritDoc(evt)
                 );
             });
     }
@@ -219,7 +221,7 @@ public static class Builder
             null when x.Type.IsValueType
                 => $" = default({x.Type.ToDisplayString(FullyQualifiedDisplayFormat)})",
             null => " = null",
-            _ => $" = {x.ExplicitDefaultValue}"
+            _ => $" = {x.ExplicitDefaultValue}",
         };
     }
 
@@ -274,7 +276,7 @@ public static class Builder
                     hasGet,
                     hasSet,
                     isRef,
-                    InheritDoc
+                    InheritDoc(prop)
                 );
             });
     }
@@ -289,18 +291,19 @@ public static class Builder
             _
                 => setMethodSymbol is { DeclaredAccessibility: Accessibility.Public }
                     ? PropertySetKind.Always
-                    : PropertySetKind.NoSet
+                    : PropertySetKind.NoSet,
         };
     }
 
     private static bool HasIgnoreAttribute(ISymbol x)
     {
         return x.GetAttributes()
-            .Any(a =>
-                a.AttributeClass != null
-                && a.AttributeClass.Name.Contains(
-                    AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
-                )
+            .Any(
+                a =>
+                    a.AttributeClass != null
+                    && a.AttributeClass
+                        .Name
+                        .Contains(AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName)
             );
     }
 
@@ -317,7 +320,7 @@ public static class Builder
             SyntaxKind.DocumentationCommentExteriorTrivia,
             SyntaxKind.EndOfDocumentationCommentToken,
             SyntaxKind.MultiLineDocumentationCommentTrivia,
-            SyntaxKind.SingleLineDocumentationCommentTrivia
+            SyntaxKind.SingleLineDocumentationCommentTrivia,
         ];
 
         var trivia = classSyntax

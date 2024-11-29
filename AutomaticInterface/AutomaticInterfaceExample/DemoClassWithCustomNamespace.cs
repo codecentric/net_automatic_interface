@@ -15,6 +15,9 @@ namespace AutomaticInterfaceExample
     )]
     public class DemoClass2 : IDemoClass2
     {
+        /// <summary>
+        /// This is a test method
+        /// </summary>
         public void Test() { }
     }
 }
