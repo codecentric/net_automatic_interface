@@ -1053,11 +1053,12 @@ public partial class GeneratorTests
             public class DemoClass
             {
                 /// <inheritdoc />
-                public string CMethod<T, T1, T2, T3, T4>(string x, string y)
+                public string CMethod<T, T1, T2, T3, T4, T5>(string x, string y)
                     where T : class
                     where T1 : struct
                     where T3 : DemoClass
                     where T4 : IDemoClass
+                    where T5 : new()
                 {
                     return "Ok";
                 }
@@ -1080,8 +1081,8 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod{T, T1, T2, T3, T4}(string, string)" />
-                    string CMethod<T, T1, T2, T3, T4>(string x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass;
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.CMethod{T, T1, T2, T3, T4, T5}(string, string)" />
+                    string CMethod<T, T1, T2, T3, T4, T5>(string x, string y) where T : class where T1 : struct where T3 : global::AutomaticInterfaceExample.DemoClass where T4 : IDemoClass where T5 : new();
                     
                 }
             }
@@ -1820,10 +1821,10 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(Func{Task{int}})" />
                     void AMethod(Func<Task<int>> getValue);
                     
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(Func{Task{float}})" />
                     void AMethod(Func<Task<float>> getValue);
                     
                 }
@@ -1875,10 +1876,10 @@ public partial class GeneratorTests
                 [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                 public partial interface IDemoClass
                 {
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(Func{Task{AutomaticInterfaceExample.Types1.Model}})" />
                     void AMethod(Func<Task<global::AutomaticInterfaceExample.Types1.Model>> getValue);
                     
-                    /// <inheritdoc />
+                    /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(Func{Task{AutomaticInterfaceExample.Types2.Model}})" />
                     void AMethod(Func<Task<global::AutomaticInterfaceExample.Types2.Model>> getValue);
                     
                 }

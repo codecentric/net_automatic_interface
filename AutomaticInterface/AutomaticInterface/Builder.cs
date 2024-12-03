@@ -63,12 +63,9 @@ public static class Builder
     {
         var generationAttribute = typeSymbol
             .GetAttributes()
-            .FirstOrDefault(
-                x =>
-                    x.AttributeClass != null
-                    && x.AttributeClass
-                        .Name
-                        .Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            .FirstOrDefault(x =>
+                x.AttributeClass != null
+                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
             );
 
         if (generationAttribute == null)
@@ -298,12 +295,11 @@ public static class Builder
     private static bool HasIgnoreAttribute(ISymbol x)
     {
         return x.GetAttributes()
-            .Any(
-                a =>
-                    a.AttributeClass != null
-                    && a.AttributeClass
-                        .Name
-                        .Contains(AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName)
+            .Any(a =>
+                a.AttributeClass != null
+                && a.AttributeClass.Name.Contains(
+                    AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
+                )
             );
     }
 
