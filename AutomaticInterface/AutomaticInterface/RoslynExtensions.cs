@@ -58,6 +58,12 @@ namespace AutomaticInterface
                 isFirstConstraint = false;
             }
 
+            if (typeParameterSymbol.HasConstructorConstraint)
+            {
+                constraints += "new()";
+                isFirstConstraint = false;
+            }
+
             foreach (var constraintType in typeParameterSymbol.ConstraintTypes)
             {
                 // if not first constraint prepend with comma

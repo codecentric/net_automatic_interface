@@ -17,11 +17,14 @@ public static class Builder
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
-                | SymbolDisplayParameterOptions.IncludeParamsRefOut,
+                | SymbolDisplayParameterOptions.IncludeParamsRefOut
+                | SymbolDisplayParameterOptions.IncludeDefaultValue
+                | SymbolDisplayParameterOptions.IncludeName,
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
             globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
                 | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+                | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
         );
 
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
@@ -63,12 +66,9 @@ public static class Builder
     {
         var generationAttribute = typeSymbol
             .GetAttributes()
-            .FirstOrDefault(
-                x =>
-                    x.AttributeClass != null
-                    && x.AttributeClass
-                        .Name
-                        .Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            .FirstOrDefault(x =>
+                x.AttributeClass != null
+                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
             );
 
         if (generationAttribute == null)
@@ -105,7 +105,10 @@ public static class Builder
         ActivateNullableIfNeeded(codeGenerator, method);
 
         var paramResult = new HashSet<string>();
-        method.Parameters.Select(GetMethodSignature).ToList().ForEach(x => paramResult.Add(x));
+        method
+            .Parameters.Select(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
+            .ToList()
+            .ForEach(x => paramResult.Add(x));
 
         var typedArgs = method
             .TypeParameters.Select(arg =>
@@ -197,56 +200,6 @@ public static class Builder
             });
     }
 
-    private static string GetMethodSignature(IParameterSymbol x)
-    {
-        var name = GetMethodName(x);
-        var refKindText = GetRefKind(x);
-        var optionalValue = GetMethodOptionalValue(x);
-
-        return $"{refKindText}{x.Type.ToDisplayString(FullyQualifiedDisplayFormat)} {name}{optionalValue}";
-    }
-
-    private static string GetMethodOptionalValue(IParameterSymbol x)
-    {
-        if (!x.HasExplicitDefaultValue)
-        {
-            return string.Empty;
-        }
-
-        return x.ExplicitDefaultValue switch
-        {
-            string => $" = \"{x.ExplicitDefaultValue}\"",
-            bool value => $" = {(value ? "true" : "false")}",
-            // struct
-            null when x.Type.IsValueType
-                => $" = default({x.Type.ToDisplayString(FullyQualifiedDisplayFormat)})",
-            null => " = null",
-            _ => $" = {x.ExplicitDefaultValue}",
-        };
-    }
-
-    private static string GetMethodName(IParameterSymbol x)
-    {
-        var syntaxReference = x.DeclaringSyntaxReferences.FirstOrDefault();
-
-        return syntaxReference != null
-            ? ((ParameterSyntax)syntaxReference.GetSyntax()).Identifier.Text
-            : x.Name;
-    }
-
-    private static string GetRefKind(IParameterSymbol x)
-    {
-        return x.RefKind switch
-        {
-            RefKind.Ref => "ref ",
-            RefKind.Out => "out ",
-            RefKind.In => "in ",
-            // Not sure why RefReadOnly and In both has Enum index 3.
-            // RefKind.RefReadOnly => "ref readonly ",
-            _ => string.Empty,
-        };
-    }
-
     private static void AddPropertiesToInterface(
         List<ISymbol> members,
         InterfaceBuilder interfaceGenerator
@@ -298,12 +251,11 @@ public static class Builder
     private static bool HasIgnoreAttribute(ISymbol x)
     {
         return x.GetAttributes()
-            .Any(
-                a =>
-                    a.AttributeClass != null
-                    && a.AttributeClass
-                        .Name
-                        .Contains(AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName)
+            .Any(a =>
+                a.AttributeClass != null
+                && a.AttributeClass.Name.Contains(
+                    AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName
+                )
             );
     }
 
