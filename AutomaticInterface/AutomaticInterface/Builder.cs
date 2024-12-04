@@ -102,7 +102,7 @@ public static class Builder
         ActivateNullableIfNeeded(codeGenerator, method);
 
         var paramResult = new HashSet<string>();
-        method.Parameters.Select(GetMethodSignature).ToList().ForEach(x => paramResult.Add(x));
+        method.Parameters.Select(GetParameterSignature).ToList().ForEach(x => paramResult.Add(x));
 
         var typedArgs = method
             .TypeParameters.Select(arg =>
@@ -194,16 +194,18 @@ public static class Builder
             });
     }
 
-    private static string GetMethodSignature(IParameterSymbol x)
+    private static string GetParameterSignature(IParameterSymbol x)
     {
-        var name = GetMethodName(x);
-        var refKindText = GetRefKind(x);
-        var optionalValue = GetMethodOptionalValue(x);
+        var name = GetParameterName(x);
+        var refKindText = GetParameterRefKind(x);
+        var optionalValue = GetParameterOptionalValue(x);
 
-        return $"{refKindText}{x.Type.ToDisplayString(FullyQualifiedDisplayFormat)} {name}{optionalValue}";
+        var paramsPrefix = x.IsParams ? "params " : "";
+
+        return $"{paramsPrefix}{refKindText}{x.Type.ToDisplayString(FullyQualifiedDisplayFormat)} {name}{optionalValue}";
     }
 
-    private static string GetMethodOptionalValue(IParameterSymbol x)
+    private static string GetParameterOptionalValue(IParameterSymbol x)
     {
         if (!x.HasExplicitDefaultValue)
         {
@@ -222,7 +224,7 @@ public static class Builder
         };
     }
 
-    private static string GetMethodName(IParameterSymbol x)
+    private static string GetParameterName(IParameterSymbol x)
     {
         var syntaxReference = x.DeclaringSyntaxReferences.FirstOrDefault();
 
@@ -231,7 +233,7 @@ public static class Builder
             : x.Name;
     }
 
-    private static string GetRefKind(IParameterSymbol x)
+    private static string GetParameterRefKind(IParameterSymbol x)
     {
         return x.RefKind switch
         {
