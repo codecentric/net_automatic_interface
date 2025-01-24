@@ -28,6 +28,24 @@ public static class Builder
                 | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
         );
 
+    /// <summary>
+    /// We do need to be able to group shadowing and new methods/events into a single entry, hence this is missing SymbolDisplayMemberOptions.IncludeContainingType
+    /// </summary>
+    private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormatForGrouping =
+        new(
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+            memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
+            parameterOptions: SymbolDisplayParameterOptions.IncludeType
+                | SymbolDisplayParameterOptions.IncludeParamsRefOut
+                | SymbolDisplayParameterOptions.IncludeDefaultValue
+                | SymbolDisplayParameterOptions.IncludeName,
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
+                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+                | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
+        );
+
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
     {
         if (
@@ -92,7 +110,7 @@ public static class Builder
             .Where(x => x.MethodKind == MethodKind.Ordinary)
             .Where(x => x.ContainingType.Name != nameof(Object))
             .Where(x => !HasIgnoreAttribute(x))
-            .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
+            .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormatForGrouping))
             .Select(g => g.First())
             .ToList()
             .ForEach(method => AddMethod(codeGenerator, method));
@@ -183,7 +201,7 @@ public static class Builder
         members
             .Where(x => x.Kind == SymbolKind.Event)
             .OfType<IEventSymbol>()
-            .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
+            .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormatForGrouping))
             .Select(g => g.First())
             .ToList()
             .ForEach(evt =>
