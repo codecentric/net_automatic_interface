@@ -39,3 +39,5 @@ msbuild.wrn
 
 #Generator logs
 AutomaticInterfaceGenerator_log.txt
+
+*.received.*

@@ -627,7 +627,9 @@ public partial class GeneratorTests
             }
 
             """;
-        GenerateCode(code).Should().Be(expected);
+
+        var rv = GenerateCode(code);
+        Verify(rv);
     }
 
     [Fact]

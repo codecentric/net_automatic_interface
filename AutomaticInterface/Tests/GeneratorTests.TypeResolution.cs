@@ -6,6 +6,9 @@ namespace Tests;
 public partial class GeneratorTests
 {
     [Fact]
+    public Task Run() => VerifyChecks.Run();
+
+    [Fact]
     public void WorksWithFileScopedNamespace()
     {
         const string code = """
