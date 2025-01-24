@@ -15,7 +15,8 @@ public static class Builder
     private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormat =
         new(
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-            memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
+            memberOptions: SymbolDisplayMemberOptions.IncludeParameters
+                | SymbolDisplayMemberOptions.IncludeContainingType,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
                 | SymbolDisplayParameterOptions.IncludeParamsRefOut
                 | SymbolDisplayParameterOptions.IncludeDefaultValue
