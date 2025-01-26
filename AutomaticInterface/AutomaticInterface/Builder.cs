@@ -18,7 +18,6 @@ public static class Builder
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
                 | SymbolDisplayParameterOptions.IncludeParamsRefOut
-                | SymbolDisplayParameterOptions.IncludeDefaultValue
                 | SymbolDisplayParameterOptions.IncludeName,
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
             globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
@@ -105,10 +104,7 @@ public static class Builder
         ActivateNullableIfNeeded(codeGenerator, method);
 
         var paramResult = new HashSet<string>();
-        method
-            .Parameters.Select(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
-            .ToList()
-            .ForEach(x => paramResult.Add(x));
+        method.Parameters.Select(GetParameterSignature).ToList().ForEach(x => paramResult.Add(x));
 
         var typedArgs = method
             .TypeParameters.Select(arg =>
@@ -126,6 +122,54 @@ public static class Builder
             paramResult,
             typedArgs
         );
+    }
+
+    private static string GetParameterSignature(IParameterSymbol parameterSymbol)
+    {
+        var parameterDefinition = parameterSymbol.ToDisplayString(FullyQualifiedDisplayFormat);
+
+        if (!parameterSymbol.HasExplicitDefaultValue)
+        {
+            return parameterDefinition;
+        }
+
+        var defaultValue = parameterSymbol.ExplicitDefaultValue switch
+        {
+            string value => $"\"{value}\"",
+            bool value => $"{(value ? "true" : "false")}",
+            object value when IsEnum(parameterSymbol.Type, out var enumType) && !Equals(value, 0)
+                => $"({enumType!.ToDisplayString(FullyQualifiedDisplayFormat)}){value}",
+            // struct
+            null when parameterSymbol.Type.IsValueType
+                => $"default({parameterSymbol.Type.ToDisplayString(FullyQualifiedDisplayFormat)})",
+            null => "null",
+            _ => $"{parameterSymbol.ExplicitDefaultValue}",
+        };
+
+        return $"{parameterDefinition} = {defaultValue}";
+    }
+
+    private static bool IsEnum(ITypeSymbol type, out ITypeSymbol? enumType)
+    {
+        if (type is { TypeKind: TypeKind.Enum })
+        {
+            enumType = type;
+            return true;
+        }
+
+        if (
+            type.NullableAnnotation == NullableAnnotation.Annotated
+            && type is INamedTypeSymbol namedType
+            && namedType.TypeArguments.FirstOrDefault()
+                is { TypeKind: TypeKind.Enum } enumTypeArgument
+        )
+        {
+            enumType = enumTypeArgument;
+            return true;
+        }
+
+        enumType = null;
+        return false;
     }
 
     private static void ActivateNullableIfNeeded(
