@@ -185,6 +185,10 @@ Should be simply a build and run Tests
 
 ## Changelog
 
+### 5.1.2
+
+- Fixing enums in method signatures
+  
 ### 5.1.1
 
 - Emit `new()` type constraints on generic type parameters; emit `params` keyword for method parameters. Thanks, @simonmckenzie!

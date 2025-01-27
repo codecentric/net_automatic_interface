@@ -25,7 +25,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-Recommended</AnalysisLevel>
-        <Version>5.1.1</Version>
+        <Version>5.1.2</Version>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>1701;1702;NU5128</NoWarn>
