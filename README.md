@@ -182,6 +182,7 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 ## Run tests
 
 Should be simply a build and run Tests
+Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It's recommended that you use te Verify plugin for your UI.
 
 ## Changelog
 
