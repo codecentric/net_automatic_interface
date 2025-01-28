@@ -50,7 +50,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
         working-directory: AutomaticInterface
       - name: Nuget
-        run: dotnet nuget push **\release\**\AutomaticInterface.*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+        run: dotnet nuget push **\release\**\AutomaticInterface.*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
       - name: Get version
         id: package_version
         uses: KageKirin/get-csproj-version@v0
