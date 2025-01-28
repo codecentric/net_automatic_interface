@@ -33,17 +33,13 @@ public static class Builder
     /// </summary>
     private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormatForGrouping =
         new(
-            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-            memberOptions: SymbolDisplayMemberOptions.IncludeParameters,
-            parameterOptions: SymbolDisplayParameterOptions.IncludeType
-                | SymbolDisplayParameterOptions.IncludeParamsRefOut
-                | SymbolDisplayParameterOptions.IncludeDefaultValue
-                | SymbolDisplayParameterOptions.IncludeName,
-            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
-                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
-                | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
+            genericsOptions: FullyQualifiedDisplayFormat.GenericsOptions,
+            memberOptions: FullyQualifiedDisplayFormat.MemberOptions
+                & ~SymbolDisplayMemberOptions.IncludeContainingType,
+            parameterOptions: FullyQualifiedDisplayFormat.ParameterOptions,
+            typeQualificationStyle: FullyQualifiedDisplayFormat.TypeQualificationStyle,
+            globalNamespaceStyle: FullyQualifiedDisplayFormat.GlobalNamespaceStyle,
+            miscellaneousOptions: FullyQualifiedDisplayFormat.MiscellaneousOptions
         );
 
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
