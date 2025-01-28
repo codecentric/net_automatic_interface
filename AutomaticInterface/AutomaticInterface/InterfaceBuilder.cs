@@ -121,7 +121,9 @@ namespace AutomaticInterface
 
             cb.Indent();
             foreach (var method in methodInfos)
+            {
                 BuildMethod(cb, method);
+            }
 
             cb.Dedent();
 
