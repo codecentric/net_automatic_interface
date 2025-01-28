@@ -2,8 +2,35 @@
 
 public class Enums
 {
+    [Theory]
+    [InlineData("byte")]
+    [InlineData("int")]
+    [InlineData("long")]
+    public async Task WorksWithEnum(string enumName)
+    {
+        var code = $$"""
+
+            using AutomaticInterface;
+            using System;
+
+            namespace AutomaticInterfaceExample;
+
+            public enum EnumWithByteType : {{enumName}} { A = 1, B = 2, C = 3 };
+
+            [GenerateAutomaticInterface]
+            public class DemoClass
+            {
+                public void MethodWithDefaultParameter(EnumWithByteType a = EnumWithByteType.B) { }
+            }
+            
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code))
+            .UseMethodName($"{nameof(WorksWithEnum)}-{enumName}");
+    }
+
     [Fact]
-    public async Task WorksWithByteEnums()
+    public async Task WorksWithFlagEnum()
     {
         const string code = """
 
@@ -12,7 +39,8 @@ public class Enums
 
             namespace AutomaticInterfaceExample;
 
-            public enum EnumWithByteType : byte { A = 1, B = 2, C = 3 };
+            [Flags]
+            public enum EnumWithByteType  { A = 1, B = 2, C = 3 };
 
             [GenerateAutomaticInterface]
             public class DemoClass
@@ -26,7 +54,7 @@ public class Enums
     }
 
     [Fact]
-    public async Task WorksWithByteEnumsAsReturnType()
+    public async Task WorksWithEnumsAsReturnType()
     {
         const string code = """
 
@@ -35,7 +63,7 @@ public class Enums
 
             namespace AutomaticInterfaceExample;
 
-            public enum EnumWithByteType : byte { A = 1, B = 2, C = 3 };
+            public enum EnumWithByteType { A = 1, B = 2, C = 3 };
 
             [GenerateAutomaticInterface]
             public class DemoClass
