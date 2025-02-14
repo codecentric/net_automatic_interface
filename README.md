@@ -186,6 +186,10 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 
 ## Changelog
 
+### 5.1.3.
+
+- Emit `notnull` type constraints on generic type parameters
+
 ### 5.1.2
 
 - Fixing enums in method signatures
