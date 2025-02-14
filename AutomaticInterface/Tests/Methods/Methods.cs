@@ -330,6 +330,27 @@ public class Methods
     }
 
     [Fact]
+    public async Task WorksWithGenericTypeConstraintsForMethods()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+
+            namespace AutomaticInterfaceExample;
+
+            [GenerateAutomaticInterface]
+            public class DemoClass
+            {
+                public IQueryable<T> AddFilter<T>(IQueryable<T> qry) where T : notnull => qry;
+            }
+
+
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
     public async Task GeneratesOverloadedMethodInterface()
     {
         const string code = """

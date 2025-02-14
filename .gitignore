@@ -1,4 +1,4 @@
-IntelliJ IDEA   
+IntelliJ IDEA
 *.swp
 *.*~
 project.lock.json
@@ -39,3 +39,5 @@ msbuild.wrn
 
 #Generator logs
 AutomaticInterfaceGenerator_log.txt
+
+*.received.*

@@ -64,6 +64,12 @@ namespace AutomaticInterface
                 isFirstConstraint = false;
             }
 
+            if (typeParameterSymbol.HasNotNullConstraint)
+            {
+                constraints += "notnull";
+                isFirstConstraint = false;
+            }
+
             foreach (var constraintType in typeParameterSymbol.ConstraintTypes)
             {
                 // if not first constraint prepend with comma
