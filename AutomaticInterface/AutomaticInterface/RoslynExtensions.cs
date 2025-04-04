@@ -82,7 +82,7 @@ namespace AutomaticInterface
                     isFirstConstraint = false;
                 }
 
-                constraints += constraintType.GetFullTypeString(typeDisplayFormat);
+                constraints += constraintType.ToDisplayString(typeDisplayFormat);
             }
 
             if (string.IsNullOrEmpty(constraints))
@@ -91,54 +91,6 @@ namespace AutomaticInterface
             }
 
             result += constraints;
-
-            return result;
-        }
-
-        private static string GetFullTypeString(
-            this ISymbol type,
-            SymbolDisplayFormat typeDisplayFormat
-        )
-        {
-            return type.ToDisplayString(typeDisplayFormat)
-                + type.GetTypeArgsStr(
-                    typeDisplayFormat,
-                    symbol => ((INamedTypeSymbol)symbol).TypeArguments
-                );
-        }
-
-        private static string GetTypeArgsStr(
-            this ISymbol symbol,
-            SymbolDisplayFormat typeDisplayFormat,
-            Func<ISymbol, ImmutableArray<ITypeSymbol>> typeArgGetter
-        )
-        {
-            var typeArgs = typeArgGetter(symbol);
-
-            if (!typeArgs.Any())
-                return string.Empty;
-
-            var stringsToAdd = new List<string>();
-            foreach (var arg in typeArgs)
-            {
-                string strToAdd;
-
-                if (arg is ITypeParameterSymbol typeParameterSymbol)
-                {
-                    // this is a generic argument
-                    strToAdd = typeParameterSymbol.ToDisplayString(typeDisplayFormat);
-                }
-                else
-                {
-                    // this is a generic argument value.
-                    var namedTypeSymbol = arg as INamedTypeSymbol;
-                    strToAdd = namedTypeSymbol!.GetFullTypeString(typeDisplayFormat);
-                }
-
-                stringsToAdd.Add(strToAdd);
-            }
-
-            var result = $"<{string.Join(", ", stringsToAdd)}>";
 
             return result;
         }

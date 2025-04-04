@@ -46,12 +46,12 @@ public static class Builder
     {
         if (
             typeSymbol.DeclaringSyntaxReferences.First().GetSyntax()
-            is not ClassDeclarationSyntax classSyntax
+                is not ClassDeclarationSyntax classSyntax
+            || typeSymbol is not INamedTypeSymbol namedTypeSymbol
         )
         {
             return string.Empty;
         }
-
         var namespaceName = GetNameSpace(typeSymbol);
 
         var interfaceName = $"I{classSyntax.GetClassName()}";
@@ -59,7 +59,7 @@ public static class Builder
         var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
-        interfaceGenerator.AddGeneric(GetGeneric(classSyntax));
+        interfaceGenerator.AddGeneric(GetGeneric(classSyntax, namedTypeSymbol));
 
         var members = typeSymbol
             .GetAllMembers()
@@ -298,16 +298,14 @@ public static class Builder
         return trivia.ToFullString().Trim();
     }
 
-    private static string GetGeneric(TypeDeclarationSyntax classSyntax)
+    private static string GetGeneric(TypeDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol)
     {
-        if (classSyntax.TypeParameterList?.Parameters.Count == 0)
-        {
-            return string.Empty;
-        }
+        var whereStatements = typeSymbol
+            .TypeParameters.Select(typeParameter =>
+                typeParameter.GetWhereStatement(FullyQualifiedDisplayFormat)
+            )
+            .Where(constraint => !string.IsNullOrEmpty(constraint));
 
-        var formattedGeneric =
-            $"{classSyntax.TypeParameterList?.ToFullString().Trim()} {classSyntax.ConstraintClauses}".Trim();
-
-        return formattedGeneric;
+        return $"{classSyntax.TypeParameterList?.ToFullString().Trim()} {string.Join(" ", whereStatements)}".Trim();
     }
 }
