@@ -12,7 +12,7 @@ namespace AutomaticInterfaceExample
     /// Bla bla
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
-    public partial interface IDemoClass<T, U> where T : global::AutomaticInterfaceExample.DemoModel
+    public partial interface IDemoClass<T1, T2, U> where T1 : global::AutomaticInterfaceExample.DemoModel, new() where T2 : global::AutomaticInterfaceExample.DemoModel
     {
     }
 }

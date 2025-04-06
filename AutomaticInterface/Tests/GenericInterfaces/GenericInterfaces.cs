@@ -64,8 +64,9 @@ public class GenericInterfaces
             /// Bla bla
             /// </summary>
             [GenerateAutomaticInterface]
-            public class DemoClass<T, U>
-                where T: DemoModel;
+            public class DemoClass<T1, T2, U>
+                where T1: DemoModel, new()
+                where T2: DemoModel;
             """;
 
         await Verify(Infrastructure.GenerateCode(code));

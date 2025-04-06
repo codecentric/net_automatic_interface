@@ -42,55 +42,41 @@ namespace AutomaticInterface
         {
             var result = $"where {typeParameterSymbol.Name} : ";
 
-            var constraints = "";
-
-            var isFirstConstraint = true;
+            var constraints = new List<string>();
 
             if (typeParameterSymbol.HasReferenceTypeConstraint)
             {
-                constraints += "class";
-                isFirstConstraint = false;
+                constraints.Add("class");
             }
 
             if (typeParameterSymbol.HasValueTypeConstraint)
             {
-                constraints += "struct";
-                isFirstConstraint = false;
-            }
-
-            if (typeParameterSymbol.HasConstructorConstraint)
-            {
-                constraints += "new()";
-                isFirstConstraint = false;
+                constraints.Add("struct");
             }
 
             if (typeParameterSymbol.HasNotNullConstraint)
             {
-                constraints += "notnull";
-                isFirstConstraint = false;
+                constraints.Add("notnull");
             }
 
-            foreach (var constraintType in typeParameterSymbol.ConstraintTypes)
+            constraints.AddRange(
+                typeParameterSymbol.ConstraintTypes.Select(t =>
+                    t.ToDisplayString(typeDisplayFormat)
+                )
+            );
+
+            // The new() constraint must be last
+            if (typeParameterSymbol.HasConstructorConstraint)
             {
-                // if not first constraint prepend with comma
-                if (!isFirstConstraint)
-                {
-                    constraints += ", ";
-                }
-                else
-                {
-                    isFirstConstraint = false;
-                }
-
-                constraints += constraintType.ToDisplayString(typeDisplayFormat);
+                constraints.Add("new()");
             }
 
-            if (string.IsNullOrEmpty(constraints))
+            if (constraints.Count == 0)
             {
                 return "";
             }
 
-            result += constraints;
+            result += string.Join(", ", constraints);
 
             return result;
         }
