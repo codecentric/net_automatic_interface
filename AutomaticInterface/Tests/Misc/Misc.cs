@@ -133,29 +133,6 @@ public class Misc
     }
 
     [Fact]
-    public async Task MakesGenericInterface()
-    {
-        const string code = """
-
-            using AutomaticInterface;
-
-            namespace AutomaticInterfaceExample
-            {
-                    /// <summary>
-                    /// Bla bla
-                    /// </summary>
-                [GenerateAutomaticInterface]
-                class DemoClass<T,U> where T:class
-                {
-                }
-            }
-
-            """;
-
-        await Verify(Infrastructure.GenerateCode(code));
-    }
-
-    [Fact]
     public async Task DoesNotCopyIndexerToInterface()
     {
         const string code = """

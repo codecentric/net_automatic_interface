@@ -186,7 +186,11 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 
 ## Changelog
 
-### 5.1.3.
+### 5.1.4
+
+- Emit fully qualified type constraints on generic interfaces
+
+### 5.1.3
 
 - Emit `notnull` type constraints on generic type parameters
 
