@@ -292,4 +292,44 @@ public class Misc
 
         await Verify(Infrastructure.GenerateCode(code));
     }
+
+    [Fact]
+    public async Task AsInternal()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+            namespace AutomaticInterfaceExample;
+            [GenerateAutomaticInterface(asInternal: true)]
+            public class DemoClass
+            {
+                public string AMethod(DemoClass? x, string y)
+                {
+                    return "Ok";
+                }
+            }
+
+            """;
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task AsInternalExplicitFalse()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+            namespace AutomaticInterfaceExample;
+            [GenerateAutomaticInterface(asInternal: false)]
+            public class DemoClass
+            {
+                public string AMethod(DemoClass? x, string y)
+                {
+                    return "Ok";
+                }
+            }
+
+            """;
+        await Verify(Infrastructure.GenerateCode(code));
+    }
 }
