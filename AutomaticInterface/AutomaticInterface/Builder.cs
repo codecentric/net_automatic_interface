@@ -53,10 +53,10 @@ public static class Builder
             return string.Empty;
         }
         var namespaceName = GetNameSpace(typeSymbol);
-
+        var asInternal = GetAsInternal(typeSymbol);
         var interfaceName = $"I{classSyntax.GetClassName()}";
 
-        var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
+        var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, asInternal);
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
         interfaceGenerator.AddGeneric(GetGeneric(classSyntax, namedTypeSymbol));
@@ -96,6 +96,25 @@ public static class Builder
         return string.IsNullOrWhiteSpace(customNs)
             ? typeSymbol.ContainingNamespace.ToDisplayString()
             : customNs!;
+    }
+
+    private static bool GetAsInternal(ISymbol typeSymbol)
+    {
+        var generationAttribute = typeSymbol
+            .GetAttributes()
+            .FirstOrDefault(x =>
+                x.AttributeClass != null
+                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            );
+
+        if (generationAttribute == null)
+        {
+            return false;
+        }
+
+        var asInternal = (bool?)generationAttribute.ConstructorArguments.Skip(1).FirstOrDefault().Value;
+
+        return asInternal.GetValueOrDefault();
     }
 
     private static void AddMethodsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
