@@ -52,14 +52,12 @@ public static class Builder
         {
             return string.Empty;
         }
-        var symbolDetails = GetSymbolDetails(typeSymbol, classSyntax);
-        var asInternal = GetAsInternal(typeSymbol);
+        var generationAttribute = GetGenerationAttribute(typeSymbol);
+        var namespaceName = GetNameSpace(typeSymbol, generationAttribute);
+        var asInternal = GetAsInternal(generationAttribute);
+        var interfaceName = $"I{classSyntax.GetClassName()}";
 
-        var interfaceGenerator = new InterfaceBuilder(
-            symbolDetails.NamespaceName,
-            symbolDetails.InterfaceName,
-            asInternal
-        );
+        var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, asInternal);
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
         interfaceGenerator.AddGeneric(GetGeneric(classSyntax, namedTypeSymbol));
@@ -80,30 +78,32 @@ public static class Builder
         return generatedCode;
     }
 
-    private static GeneratedSymbolDetails GetSymbolDetails(
-        ITypeSymbol typeSymbol,
-        ClassDeclarationSyntax classSyntax
-    )
+    private static AttributeData? GetGenerationAttribute(ISymbol typeSymbol)
     {
-        var generationAttribute = typeSymbol
+        return typeSymbol
             .GetAttributes()
             .FirstOrDefault(x =>
                 x.AttributeClass != null
                 && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
             );
-
-        return new GeneratedSymbolDetails(generationAttribute, typeSymbol, classSyntax);
     }
 
-    private static bool GetAsInternal(ISymbol typeSymbol)
+    private static string GetNameSpace(ISymbol typeSymbol, AttributeData? generationAttribute)
     {
-        var generationAttribute = typeSymbol
-            .GetAttributes()
-            .FirstOrDefault(x =>
-                x.AttributeClass != null
-                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
-            );
+        if (generationAttribute == null)
+        {
+            return typeSymbol.ContainingNamespace.ToDisplayString();
+        }
 
+        var customNs = generationAttribute.ConstructorArguments.FirstOrDefault().Value?.ToString();
+
+        return string.IsNullOrWhiteSpace(customNs)
+            ? typeSymbol.ContainingNamespace.ToDisplayString()
+            : customNs!;
+    }
+
+    private static bool GetAsInternal(AttributeData? generationAttribute)
+    {
         if (generationAttribute == null)
         {
             return false;
