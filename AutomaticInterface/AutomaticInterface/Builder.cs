@@ -52,8 +52,9 @@ public static class Builder
         {
             return string.Empty;
         }
-        var namespaceName = GetNameSpace(typeSymbol);
-        var asInternal = GetAsInternal(typeSymbol);
+        var generationAttribute = GetGenerationAttribute(typeSymbol);
+        var namespaceName = GetNameSpace(typeSymbol, generationAttribute);
+        var asInternal = GetAsInternal(generationAttribute);
         var interfaceName = $"I{classSyntax.GetClassName()}";
 
         var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, asInternal);
@@ -77,15 +78,18 @@ public static class Builder
         return generatedCode;
     }
 
-    private static string GetNameSpace(ISymbol typeSymbol)
+    private static AttributeData? GetGenerationAttribute(ISymbol typeSymbol)
     {
-        var generationAttribute = typeSymbol
-            .GetAttributes()
-            .FirstOrDefault(x =>
-                x.AttributeClass != null
-                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
-            );
+        return typeSymbol
+           .GetAttributes()
+           .FirstOrDefault(x =>
+               x.AttributeClass != null
+               && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+           );
+    }
 
+    private static string GetNameSpace(ISymbol typeSymbol, AttributeData? generationAttribute)
+    {
         if (generationAttribute == null)
         {
             return typeSymbol.ContainingNamespace.ToDisplayString();
@@ -98,15 +102,8 @@ public static class Builder
             : customNs!;
     }
 
-    private static bool GetAsInternal(ISymbol typeSymbol)
+    private static bool GetAsInternal(AttributeData? generationAttribute)
     {
-        var generationAttribute = typeSymbol
-            .GetAttributes()
-            .FirstOrDefault(x =>
-                x.AttributeClass != null
-                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
-            );
-
         if (generationAttribute == null)
         {
             return false;
