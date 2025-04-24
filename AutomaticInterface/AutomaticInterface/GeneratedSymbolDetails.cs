@@ -7,7 +7,8 @@ namespace AutomaticInterface;
 internal sealed class GeneratedSymbolDetails(
     AttributeData? generationAttribute,
     ITypeSymbol typeSymbol,
-    ClassDeclarationSyntax classSyntax)
+    ClassDeclarationSyntax classSyntax
+)
 {
     /// <summary>
     /// Represents the namespace name associated with the generated interface or type symbol.
