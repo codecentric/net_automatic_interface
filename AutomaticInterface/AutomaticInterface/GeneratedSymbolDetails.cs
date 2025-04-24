@@ -15,7 +15,7 @@ internal sealed class GeneratedSymbolDetails(
     /// This value is typically derived from the provided generation attribute or defaults
     /// to the containing namespace of the type symbol.
     /// </summary>
-    public string NamespaceName { get; } = 
+    public string NamespaceName { get; } =
         PrepareValue(
             generationAttribute,
             AutomaticInterfaceGenerator.NamespaceParameterName,
@@ -27,7 +27,7 @@ internal sealed class GeneratedSymbolDetails(
     /// is derived from the class name, prefixed with 'I', unless overridden by a specific
     /// attribute value during generation.
     /// </summary>
-    public string InterfaceName { get; } = 
+    public string InterfaceName { get; } =
         PrepareValue(generationAttribute,
             AutomaticInterfaceGenerator.InterfaceParameterName,
             $"I{classSyntax.GetClassName()}"
