@@ -81,7 +81,7 @@ public static class Builder
     private static GeneratedSymbolDetails GetSymbolDetails(
         ITypeSymbol typeSymbol,
         ClassDeclarationSyntax classSyntax
-        )
+    )
     {
         var generationAttribute = typeSymbol
             .GetAttributes()

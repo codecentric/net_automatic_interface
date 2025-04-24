@@ -20,7 +20,7 @@ internal sealed class GeneratedSymbolDetails(
             generationAttribute,
             AutomaticInterfaceGenerator.NamespaceParameterName,
             typeSymbol.ContainingNamespace.ToDisplayString()
-            );
+        );
 
     /// <summary>
     /// Represents the name of the interface generated for a class. The interface name
@@ -31,7 +31,7 @@ internal sealed class GeneratedSymbolDetails(
         PrepareValue(generationAttribute,
             AutomaticInterfaceGenerator.InterfaceParameterName,
             $"I{classSyntax.GetClassName()}"
-            );
+        );
 
     private static string PrepareValue(AttributeData? generationAttribute, string key, string defaultValue)
     {
