@@ -28,18 +28,27 @@ internal sealed class GeneratedSymbolDetails(
     /// attribute value during generation.
     /// </summary>
     public string InterfaceName { get; } =
-        PrepareValue(generationAttribute,
+        PrepareValue(
+            generationAttribute,
             AutomaticInterfaceGenerator.InterfaceParameterName,
             $"I{classSyntax.GetClassName()}"
         );
 
-    private static string PrepareValue(AttributeData? generationAttribute, string key, string defaultValue)
+    private static string PrepareValue(
+        AttributeData? generationAttribute,
+        string key,
+        string defaultValue
+    )
     {
-        var parameterSymbol = generationAttribute?.AttributeConstructor?.Parameters.SingleOrDefault(x => x.Name == key);
+        var parameterSymbol = generationAttribute?.AttributeConstructor?.Parameters.SingleOrDefault(
+            x => x.Name == key
+        );
 
         if (parameterSymbol != null)
         {
-            var index = generationAttribute!.AttributeConstructor!.Parameters.IndexOf(parameterSymbol);
+            var index = generationAttribute!.AttributeConstructor!.Parameters.IndexOf(
+                parameterSymbol
+            );
             var result = generationAttribute.ConstructorArguments[index].Value!.ToString();
             if (!string.IsNullOrWhiteSpace(result))
             {
