@@ -24,10 +24,12 @@ internal static class RegisterAttributesExtensions
                         /// <summary>
                         /// Use source generator to automatically create a Interface from this class
                         /// </summary>
+                        /// <param name="namespaceName">Namespace name for the generated interface. Defaults to the same namespace as the class.</param>
+                        /// <param name="interfaceName">Interface name for the generated interface. Defaults to an interface version of the class name.</param>
                         [AttributeUsage(AttributeTargets.Class)]
                         internal sealed class {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute : Attribute
                         {
-                            internal {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute(string namespaceName = "") { }
+                            internal {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute(string {{{AutomaticInterfaceGenerator.NamespaceParameterName}}} = "", string {{{AutomaticInterfaceGenerator.InterfaceParameterName}}} = "") { }
                         }
                     }
                     """,

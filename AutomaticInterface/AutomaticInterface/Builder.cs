@@ -16,16 +16,16 @@ public static class Builder
         new(
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters
-                | SymbolDisplayMemberOptions.IncludeContainingType,
+                           | SymbolDisplayMemberOptions.IncludeContainingType,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
-                | SymbolDisplayParameterOptions.IncludeParamsRefOut
-                | SymbolDisplayParameterOptions.IncludeDefaultValue
-                | SymbolDisplayParameterOptions.IncludeName,
+                              | SymbolDisplayParameterOptions.IncludeParamsRefOut
+                              | SymbolDisplayParameterOptions.IncludeDefaultValue
+                              | SymbolDisplayParameterOptions.IncludeName,
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
             globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
-                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
-                | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
+                                  | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+                                  | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
         );
 
     /// <summary>
@@ -35,7 +35,7 @@ public static class Builder
         new(
             genericsOptions: FullyQualifiedDisplayFormat.GenericsOptions,
             memberOptions: FullyQualifiedDisplayFormat.MemberOptions
-                & ~SymbolDisplayMemberOptions.IncludeContainingType,
+                           & ~SymbolDisplayMemberOptions.IncludeContainingType,
             parameterOptions: FullyQualifiedDisplayFormat.ParameterOptions,
             typeQualificationStyle: FullyQualifiedDisplayFormat.TypeQualificationStyle,
             globalNamespaceStyle: FullyQualifiedDisplayFormat.GlobalNamespaceStyle,
@@ -52,11 +52,9 @@ public static class Builder
         {
             return string.Empty;
         }
-        var namespaceName = GetNameSpace(typeSymbol);
 
-        var interfaceName = $"I{classSyntax.GetClassName()}";
-
-        var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName);
+        var symbolDetails = GetSymbolDetails(typeSymbol, classSyntax);
+        var interfaceGenerator = new InterfaceBuilder(symbolDetails.NamespaceName, symbolDetails.InterfaceName);
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
         interfaceGenerator.AddGeneric(GetGeneric(classSyntax, namedTypeSymbol));
@@ -77,7 +75,7 @@ public static class Builder
         return generatedCode;
     }
 
-    private static string GetNameSpace(ISymbol typeSymbol)
+    private static GeneratedSymbolDetails GetSymbolDetails(ITypeSymbol typeSymbol, ClassDeclarationSyntax classSyntax)
     {
         var generationAttribute = typeSymbol
             .GetAttributes()
@@ -86,16 +84,7 @@ public static class Builder
                 && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
             );
 
-        if (generationAttribute == null)
-        {
-            return typeSymbol.ContainingNamespace.ToDisplayString();
-        }
-
-        var customNs = generationAttribute.ConstructorArguments.FirstOrDefault().Value?.ToString();
-
-        return string.IsNullOrWhiteSpace(customNs)
-            ? typeSymbol.ContainingNamespace.ToDisplayString()
-            : customNs!;
+        return new GeneratedSymbolDetails(generationAttribute, typeSymbol, classSyntax);
     }
 
     private static void AddMethodsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
