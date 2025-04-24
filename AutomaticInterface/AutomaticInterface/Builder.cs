@@ -16,16 +16,16 @@ public static class Builder
         new(
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters
-                           | SymbolDisplayMemberOptions.IncludeContainingType,
+                | SymbolDisplayMemberOptions.IncludeContainingType,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType
-                              | SymbolDisplayParameterOptions.IncludeParamsRefOut
-                              | SymbolDisplayParameterOptions.IncludeDefaultValue
-                              | SymbolDisplayParameterOptions.IncludeName,
+                | SymbolDisplayParameterOptions.IncludeParamsRefOut
+                | SymbolDisplayParameterOptions.IncludeDefaultValue
+                | SymbolDisplayParameterOptions.IncludeName,
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
             globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
-                                  | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
-                                  | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
+                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+                | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
         );
 
     /// <summary>
