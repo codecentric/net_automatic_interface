@@ -55,7 +55,7 @@ public static class Builder
 
         var symbolDetails = GetSymbolDetails(typeSymbol, classSyntax);
         var interfaceGenerator = new InterfaceBuilder(
-            symbolDetails.NamespaceName, 
+            symbolDetails.NamespaceName,
             symbolDetails.InterfaceName
         );
 
