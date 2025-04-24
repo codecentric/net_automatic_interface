@@ -5,7 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace AutomaticInterface;
 
 internal sealed class GeneratedSymbolDetails(
-    AttributeData? generationAttribute, ITypeSymbol typeSymbol, ClassDeclarationSyntax classSyntax)
+    AttributeData? generationAttribute, 
+    ITypeSymbol typeSymbol,
+    ClassDeclarationSyntax classSyntax)
 {
     /// <summary>
     /// Represents the namespace name associated with the generated interface or type symbol.

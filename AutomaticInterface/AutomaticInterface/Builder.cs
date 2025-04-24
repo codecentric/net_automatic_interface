@@ -35,7 +35,7 @@ public static class Builder
         new(
             genericsOptions: FullyQualifiedDisplayFormat.GenericsOptions,
             memberOptions: FullyQualifiedDisplayFormat.MemberOptions
-                           & ~SymbolDisplayMemberOptions.IncludeContainingType,
+                & ~SymbolDisplayMemberOptions.IncludeContainingType,
             parameterOptions: FullyQualifiedDisplayFormat.ParameterOptions,
             typeQualificationStyle: FullyQualifiedDisplayFormat.TypeQualificationStyle,
             globalNamespaceStyle: FullyQualifiedDisplayFormat.GlobalNamespaceStyle,
