@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace AutomaticInterface;
 
 internal sealed class GeneratedSymbolDetails(
-    AttributeData? generationAttribute, 
+    AttributeData? generationAttribute,
     ITypeSymbol typeSymbol,
     ClassDeclarationSyntax classSyntax)
 {
