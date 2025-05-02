@@ -27,7 +27,7 @@ internal static class RegisterAttributesExtensions
                         [AttributeUsage(AttributeTargets.Class)]
                         internal sealed class {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute : Attribute
                         {
-                            internal {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute(string namespaceName = "") { }
+                            internal {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute(string namespaceName = "", bool asInternal = false) { }
                         }
                     }
                     """,
