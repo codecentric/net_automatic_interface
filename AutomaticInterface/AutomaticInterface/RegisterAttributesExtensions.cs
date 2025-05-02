@@ -29,7 +29,7 @@ internal static class RegisterAttributesExtensions
                         [AttributeUsage(AttributeTargets.Class)]
                         internal sealed class {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute : Attribute
                         {
-                            internal {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute(string {{{AutomaticInterfaceGenerator.NamespaceParameterName}}} = "", string {{{AutomaticInterfaceGenerator.InterfaceParameterName}}} = "") { }
+                            internal {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute(string {{{AutomaticInterfaceGenerator.NamespaceParameterName}}} = "", string {{{AutomaticInterfaceGenerator.InterfaceParameterName}}} = "", bool asInternal = false) { }
                         }
                     }
                     """,

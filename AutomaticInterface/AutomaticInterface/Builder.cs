@@ -52,11 +52,13 @@ public static class Builder
         {
             return string.Empty;
         }
-
         var symbolDetails = GetSymbolDetails(typeSymbol, classSyntax);
+        var asInternal = GetAsInternal(typeSymbol);
+
         var interfaceGenerator = new InterfaceBuilder(
             symbolDetails.NamespaceName,
-            symbolDetails.InterfaceName
+            symbolDetails.InterfaceName,
+            asInternal
         );
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
@@ -91,6 +93,26 @@ public static class Builder
             );
 
         return new GeneratedSymbolDetails(generationAttribute, typeSymbol, classSyntax);
+    }
+
+    private static bool GetAsInternal(ISymbol typeSymbol)
+    {
+        var generationAttribute = typeSymbol
+            .GetAttributes()
+            .FirstOrDefault(x =>
+                x.AttributeClass != null
+                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            );
+
+        if (generationAttribute == null)
+        {
+            return false;
+        }
+
+        var asInternal = (bool?)
+            generationAttribute.ConstructorArguments.Skip(2).FirstOrDefault().Value;
+
+        return asInternal.GetValueOrDefault();
     }
 
     private static void AddMethodsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
