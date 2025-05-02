@@ -53,11 +53,13 @@ public static class Builder
             return string.Empty;
         }
         var generationAttribute = GetGenerationAttribute(typeSymbol);
-        var namespaceName = GetNameSpace(typeSymbol, generationAttribute);
         var asInternal = GetAsInternal(generationAttribute);
-        var interfaceName = $"I{classSyntax.GetClassName()}";
-
-        var interfaceGenerator = new InterfaceBuilder(namespaceName, interfaceName, asInternal);
+        var symbolDetails = GetSymbolDetails(typeSymbol, classSyntax);
+        var interfaceGenerator = new InterfaceBuilder(
+            symbolDetails.NamespaceName,
+            symbolDetails.InterfaceName,
+            asInternal
+        );
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
         interfaceGenerator.AddGeneric(GetGeneric(classSyntax, namedTypeSymbol));
@@ -81,11 +83,11 @@ public static class Builder
     private static AttributeData? GetGenerationAttribute(ISymbol typeSymbol)
     {
         return typeSymbol
-           .GetAttributes()
-           .FirstOrDefault(x =>
-               x.AttributeClass != null
-               && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
-           );
+            .GetAttributes()
+            .FirstOrDefault(x =>
+                x.AttributeClass != null
+                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            );
     }
 
     private static string GetNameSpace(ISymbol typeSymbol, AttributeData? generationAttribute)
@@ -109,9 +111,25 @@ public static class Builder
             return false;
         }
 
-        var asInternal = (bool?)generationAttribute.ConstructorArguments.Skip(1).FirstOrDefault().Value;
+        var asInternal = (bool?)
+            generationAttribute.ConstructorArguments.Skip(2).FirstOrDefault().Value;
 
         return asInternal.GetValueOrDefault();
+    }
+
+    private static GeneratedSymbolDetails GetSymbolDetails(
+        ITypeSymbol typeSymbol,
+        ClassDeclarationSyntax classSyntax
+    )
+    {
+        var generationAttribute = typeSymbol
+            .GetAttributes()
+            .FirstOrDefault(x =>
+                x.AttributeClass != null
+                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
+            );
+
+        return new GeneratedSymbolDetails(generationAttribute, typeSymbol, classSyntax);
     }
 
     private static void AddMethodsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)

@@ -255,6 +255,78 @@ public class Misc
     }
 
     [Fact]
+    public async Task CustomInterfaceAndNamespace()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+
+            namespace AutomaticInterfaceExample
+            {
+                [GenerateAutomaticInterface("CustomNamespace", "ISpecialInterface")]
+                public class DemoClassWithCustomInterfaceName : ISpecialInterface
+                {
+                    /// <summary>
+                    /// This is a test method
+                    /// </summary>
+                    public void Test() { }
+                }
+            }
+
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task CustomInterfaceAndNamespaceParametersReversed()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+
+            namespace AutomaticInterfaceExample
+            {
+                [GenerateAutomaticInterface(interfaceName: "ISpecialInterface", namespaceName: "CustomNamespace")]
+                public class DemoClassWithCustomInterfaceName : ISpecialInterface
+                {
+                    /// <summary>
+                    /// This is a test method
+                    /// </summary>
+                    public void Test() { }
+                }
+            }
+
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task CustomInterface()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+
+            namespace AutomaticInterfaceExample
+            {
+                [GenerateAutomaticInterface(interfaceName: "ISpecialInterface")]
+                public class DemoClassWithCustomInterfaceName : ISpecialInterface
+                {
+                    /// <summary>
+                    /// This is a test method
+                    /// </summary>
+                    public void Test() { }
+                }
+            }
+
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
     public async Task CustomNameSpace()
     {
         const string code = """

@@ -9,10 +9,10 @@
 namespace AutomaticInterfaceExample
 {
     [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
-    public partial interface IDemoClass
+    public partial interface ISpecialInterface
     {
-        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.MethodWithDefaultParameter(AutomaticInterfaceExample.EnumWithByteType)" />
-        void MethodWithDefaultParameter(global::AutomaticInterfaceExample.EnumWithByteType a = global::AutomaticInterfaceExample.EnumWithByteType.B);
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClassWithCustomInterfaceName.Test()" />
+        void Test();
         
     }
 }
