@@ -178,6 +178,7 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - avtc for PR
 - crwsolutions for PRs
 - FinnAngelo for PR
+- mtren for PR
 
 ## Run tests
 
@@ -185,6 +186,10 @@ Should be simply a build and run Tests
 Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It's recommended that you use te Verify plugin for your UI.
 
 ## Changelog
+
+### 5.2.0
+
+- Allow internal interfaces. Thanks mtren!
 
 ### 5.1.4
 
