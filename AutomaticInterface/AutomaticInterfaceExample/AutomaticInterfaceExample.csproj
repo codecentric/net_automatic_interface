@@ -18,10 +18,4 @@
 	<ItemGroup>
 	  <Folder Include="logs" />
 	</ItemGroup>
-
-	<ItemGroup>
-
-	  <None Remove="logs\AutomaticInterfaceGenerator_log.txt" />
-	</ItemGroup>
-
 </Project>
