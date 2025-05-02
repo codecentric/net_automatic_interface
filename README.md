@@ -179,6 +179,7 @@ Please make sure that you run [CSharpier](https://csharpier.com/) on the code fo
 - crwsolutions for PRs
 - FinnAngelo for PR
 - mtren for PR
+- ChaseFlorell for PR
 
 ## Run tests
 
@@ -190,6 +191,7 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 ### 5.2.0
 
 - Allow internal interfaces. Thanks mtren!
+- Add support for custom interface names. Thanks ChaseFlorell!
 
 ### 5.1.4
 
