@@ -27,6 +27,8 @@ internal static class RegisterAttributesExtensions
                         /// <param name="namespaceName">Namespace name for the generated interface. Defaults to the same namespace as the class.</param>
                         /// <param name="interfaceName">Interface name for the generated interface. Defaults to an interface version of the class name.</param>
                         [AttributeUsage(AttributeTargets.Class)]
+                        [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
+                        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                         internal sealed class {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute : Attribute
                         {
                             internal {{{AutomaticInterfaceGenerator.DefaultAttributeName}}}Attribute(string {{{AutomaticInterfaceGenerator.NamespaceParameterName}}} = "", string {{{AutomaticInterfaceGenerator.InterfaceParameterName}}} = "", bool asInternal = false) { }
@@ -59,6 +61,8 @@ internal static class RegisterAttributesExtensions
                         /// Ignore this member in a generated Interface from this class
                         /// </summary>
                         [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Event)]
+                        [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
+                        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                         internal sealed class {{{AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName}}}Attribute : Attribute
                         {
                             internal {{{AutomaticInterfaceGenerator.IgnoreAutomaticInterfaceAttributeName}}}Attribute() { }
