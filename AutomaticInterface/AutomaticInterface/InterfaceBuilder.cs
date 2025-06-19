@@ -104,7 +104,9 @@ namespace AutomaticInterface
             cb.AppendLine(
                 "[global::System.CodeDom.Compiler.GeneratedCode(\"AutomaticInterface\", \"\")]"
             );
-            cb.AppendLine($"{(asInternal ? "internal" : "public")} partial interface {interfaceName}{genericType}");
+            cb.AppendLine(
+                $"{(asInternal ? "internal" : "public")} partial interface {interfaceName}{genericType}"
+            );
             cb.AppendLine("{");
 
             cb.Indent();
