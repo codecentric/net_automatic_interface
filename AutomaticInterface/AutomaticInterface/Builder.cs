@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -155,7 +156,7 @@ public static class Builder
 
         var paramResult = new HashSet<string>();
         method
-            .Parameters.Select(x => x.ToDisplayString(FullyQualifiedDisplayFormat))
+            .Parameters.Select(p => GetParameterDisplayString(p, codeGenerator))
             .ToList()
             .ForEach(x => paramResult.Add(x));
 
@@ -224,6 +225,45 @@ public static class Builder
         }
 
         return false;
+    }
+
+    private static string GetParameterDisplayString(
+        IParameterSymbol param,
+        InterfaceBuilder codeGenerator
+    )
+    {
+        var paramParts = param.ToDisplayParts(FullyQualifiedDisplayFormat);
+        var typeSb = new StringBuilder();
+        var restSb = new StringBuilder();
+        var isInsideType = true;
+        // The part before the first space is the parameter type
+        foreach (var part in paramParts)
+        {
+            if (isInsideType && part.Kind == SymbolDisplayPartKind.Space)
+            {
+                isInsideType = false;
+            }
+            if (isInsideType)
+            {
+                typeSb.Append(part.ToString());
+            }
+            else
+            {
+                restSb.Append(part.ToString());
+            }
+        }
+        // If this parameter has default value null and we're enabling the nullable context, we need to force the nullable annotation if there isn't one already
+        if (
+            param.HasExplicitDefaultValue
+            && param.ExplicitDefaultValue is null
+            && param.NullableAnnotation != NullableAnnotation.Annotated
+            && param.Type.IsReferenceType
+            && codeGenerator.HasNullable
+        )
+        {
+            typeSb.Append('?');
+        }
+        return typeSb.Append(restSb).ToString();
     }
 
     private static void AddEventsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
