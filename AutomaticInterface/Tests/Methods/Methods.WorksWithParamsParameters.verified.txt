@@ -11,7 +11,7 @@ namespace AutomaticInterfaceExample
     [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
     public partial interface IDemoClass
     {
-        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(params int[])" />
+        /// <inheritdoc cref="AutomaticInterfaceExample.DemoClass.AMethod(int[])" />
         void AMethod(params int[] numbers);
         
     }
