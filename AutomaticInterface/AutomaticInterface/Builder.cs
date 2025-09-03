@@ -41,7 +41,28 @@ public static class Builder
         miscellaneousOptions: FullyQualifiedDisplayFormat.MiscellaneousOptions
     );
 
-    public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
+    public static string? GetInterfaceNameFor(ITypeSymbol typeSymbol)
+    {
+        if (
+            typeSymbol.DeclaringSyntaxReferences.First().GetSyntax()
+                is not ClassDeclarationSyntax classSyntax
+            || typeSymbol is not INamedTypeSymbol
+        )
+        {
+            return null;
+        }
+        var symbolDetails = GetSymbolDetails(typeSymbol, classSyntax);
+
+        return $"global::{symbolDetails.NamespaceName}.{symbolDetails.InterfaceName}";
+    }
+
+    /// <param name="typeSymbol">The symbol from which the interface will be built</param>
+    /// <param name="generatedInterfaceNames">A list of interface names that will be generated in this session. Used to resolve type references to interfaces that haven't yet been generated</param>
+    /// <returns></returns>
+    public static string BuildInterfaceFor(
+        ITypeSymbol typeSymbol,
+        List<string> generatedInterfaceNames
+    )
     {
         if (
             typeSymbol.DeclaringSyntaxReferences.First().GetSyntax()
@@ -60,7 +81,9 @@ public static class Builder
         );
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
-        interfaceGenerator.AddGeneric(GetGeneric(classSyntax, namedTypeSymbol));
+        interfaceGenerator.AddGeneric(
+            GetGeneric(classSyntax, namedTypeSymbol, generatedInterfaceNames)
+        );
 
         var members = typeSymbol
             .GetAllMembers()
@@ -69,9 +92,9 @@ public static class Builder
             .Where(x => !HasIgnoreAttribute(x))
             .ToList();
 
-        AddPropertiesToInterface(members, interfaceGenerator);
-        AddMethodsToInterface(members, interfaceGenerator);
-        AddEventsToInterface(members, interfaceGenerator);
+        AddPropertiesToInterface(members, interfaceGenerator, generatedInterfaceNames);
+        AddMethodsToInterface(members, interfaceGenerator, generatedInterfaceNames);
+        AddEventsToInterface(members, interfaceGenerator, generatedInterfaceNames);
 
         var generatedCode = interfaceGenerator.Build();
 
@@ -93,7 +116,11 @@ public static class Builder
         return new GeneratedSymbolDetails(generationAttribute, typeSymbol, classSyntax);
     }
 
-    private static void AddMethodsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
+    private static void AddMethodsToInterface(
+        List<ISymbol> members,
+        InterfaceBuilder codeGenerator,
+        List<string> generatedInterfaceNames
+    )
     {
         members
             .Where(x => x.Kind == SymbolKind.Method)
@@ -104,10 +131,14 @@ public static class Builder
             .GroupBy(x => x.ToDisplayString(FullyQualifiedDisplayFormatForGrouping))
             .Select(g => g.First())
             .ToList()
-            .ForEach(method => AddMethod(codeGenerator, method));
+            .ForEach(method => AddMethod(codeGenerator, method, generatedInterfaceNames));
     }
 
-    private static void AddMethod(InterfaceBuilder codeGenerator, IMethodSymbol method)
+    private static void AddMethod(
+        InterfaceBuilder codeGenerator,
+        IMethodSymbol method,
+        List<string> generatedInterfaceNames
+    )
     {
         var returnType = method.ReturnType;
         var name = method.Name;
@@ -124,14 +155,14 @@ public static class Builder
             .TypeParameters.Select(arg =>
                 (
                     arg.ToDisplayString(FullyQualifiedDisplayFormat),
-                    arg.GetWhereStatement(FullyQualifiedDisplayFormat)
+                    arg.GetWhereStatement(FullyQualifiedDisplayFormat, generatedInterfaceNames)
                 )
             )
             .ToList();
 
         codeGenerator.AddMethodToInterface(
             name,
-            returnType.ToDisplayString(FullyQualifiedDisplayFormat),
+            returnType.ToDisplayString(FullyQualifiedDisplayFormat, generatedInterfaceNames),
             InheritDoc(method),
             paramResult,
             typedArgs
@@ -226,7 +257,11 @@ public static class Builder
         return typeSb.Append(restSb).ToString();
     }
 
-    private static void AddEventsToInterface(List<ISymbol> members, InterfaceBuilder codeGenerator)
+    private static void AddEventsToInterface(
+        List<ISymbol> members,
+        InterfaceBuilder codeGenerator,
+        List<string> generatedInterfaceNames
+    )
     {
         members
             .Where(x => x.Kind == SymbolKind.Event)
@@ -243,7 +278,7 @@ public static class Builder
 
                 codeGenerator.AddEventToInterface(
                     name,
-                    type.ToDisplayString(FullyQualifiedDisplayFormat),
+                    type.ToDisplayString(FullyQualifiedDisplayFormat, generatedInterfaceNames),
                     InheritDoc(evt)
                 );
             });
@@ -251,7 +286,8 @@ public static class Builder
 
     private static void AddPropertiesToInterface(
         List<ISymbol> members,
-        InterfaceBuilder interfaceGenerator
+        InterfaceBuilder interfaceGenerator,
+        List<string> generatedInterfaceNames
     )
     {
         members
@@ -274,7 +310,7 @@ public static class Builder
 
                 interfaceGenerator.AddPropertyToInterface(
                     name,
-                    type.ToDisplayString(FullyQualifiedDisplayFormat),
+                    type.ToDisplayString(FullyQualifiedDisplayFormat, generatedInterfaceNames),
                     hasGet,
                     hasSet,
                     isRef,
@@ -331,11 +367,18 @@ public static class Builder
         return trivia.ToFullString().Trim();
     }
 
-    private static string GetGeneric(TypeDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol)
+    private static string GetGeneric(
+        TypeDeclarationSyntax classSyntax,
+        INamedTypeSymbol typeSymbol,
+        List<string> generatedInterfaceNames
+    )
     {
         var whereStatements = typeSymbol
             .TypeParameters.Select(typeParameter =>
-                typeParameter.GetWhereStatement(FullyQualifiedDisplayFormat)
+                typeParameter.GetWhereStatement(
+                    FullyQualifiedDisplayFormat,
+                    generatedInterfaceNames
+                )
             )
             .Where(constraint => !string.IsNullOrEmpty(constraint));
 

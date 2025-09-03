@@ -170,4 +170,69 @@ public class TypeResolutions
 
         await Verify(Infrastructure.GenerateCode(code));
     }
+
+    [Fact]
+    public async Task WorksWithGeneratedInterfaceReferences()
+    {
+        const string code = """
+            using AutomaticInterface;
+
+            namespace Processor
+            {
+                using Models;
+
+                [GenerateAutomaticInterface]
+                public class ModelProcessor : IModelProcessor
+                {
+                    public IModel Process(IModel model) => null;
+                    
+                    public event EventHandler<IModel> ModelChanged;
+
+                    public IModel Template => null;
+                }
+            }
+
+            namespace Models
+            {
+
+                [GenerateAutomaticInterface]
+                public class Model : IModel;
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task WorksWithGeneratedGenericInterfaceReferences()
+    {
+        const string code = """
+            using AutomaticInterface;
+            using System.Collections.Generic;
+
+            namespace Processor
+            {
+                using Models;
+
+                [GenerateAutomaticInterface]
+                public class ModelProcessor : IModelProcessor
+                {
+                    public IModel<List<T2>> Process<T1, T2>(IModel<T1> model) where T1: IModel<List<T2>> => null;
+
+                    public event EventHandler<IModel<T>> ModelChanged;
+
+                    public IModel<T> Template => null;
+                }
+            }
+
+            namespace Models
+            {
+
+                [GenerateAutomaticInterface]
+                public class Model<T>;
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
 }
