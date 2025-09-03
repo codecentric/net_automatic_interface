@@ -46,6 +46,9 @@ public static class Infrastructure
         Assert.Empty(errors);
 
         // The first syntax tree is the input code, the second two are the two generated attribute classes, and the rest is the generated code.
-        return string.Join(Environment.NewLine + Environment.NewLine, outputCompilation.SyntaxTrees.Skip(3));
+        return string.Join(
+            Environment.NewLine + Environment.NewLine,
+            outputCompilation.SyntaxTrees.Skip(3)
+        );
     }
 }
