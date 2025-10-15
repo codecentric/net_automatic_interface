@@ -26,7 +26,7 @@ public static class Infrastructure
         var sourceDiagnostics = compilation.GetDiagnostics();
         var sourceErrors = sourceDiagnostics
             .Where(d => d.Severity == DiagnosticSeverity.Error)
-            .Where(x => x.Id != "CS0246") // missing references are ok
+            .Where(x => x.Id != "CS0246" && x.Id != "CS0234") // missing references are ok
             .ToList();
 
         Assert.Empty(sourceErrors);
