@@ -235,4 +235,67 @@ public class TypeResolutions
 
         await Verify(Infrastructure.GenerateCode(code));
     }
+
+    [Fact]
+    public async Task WorksWithQualifiedGeneratedInterfaceReferences()
+    {
+        const string code = """
+            using AutomaticInterface;
+
+            namespace Processor
+            {
+                using ModelsRoot;
+
+                [GenerateAutomaticInterface]
+                public class ModelProcessor : IModelProcessor
+                {
+                    public Models.IModel Process(Models.IModel model) => null;
+                    
+                    public event EventHandler<Models.IModel> ModelChanged;
+
+                    public Models.IModel Template => null;
+                }
+            }
+
+            namespace ModelsRoot.Models
+            {
+
+                [GenerateAutomaticInterface]
+                public class Model : IModel;
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task WorksWithQualifiedGeneratedInterfaceReferencesAndOverlappingNamespaces()
+    {
+        const string code = """
+            using AutomaticInterface;
+
+            namespace Root
+            {
+                namespace Processor
+                {
+                    [GenerateAutomaticInterface]
+                    public class ModelProcessor : IModelProcessor
+                    {
+                       public Root.ModelsRoot.Models.IModel ProcessFullyQualified(Root.ModelsRoot.Models.IModel model) => null;
+                       
+                       public ModelsRoot.Models.IModel ProcessRelativeQualified(ModelsRoot.Models.IModel model) => null;
+                    }
+                }
+
+                namespace ModelsRoot.Models
+                {
+
+                    [GenerateAutomaticInterface]
+                    public class Model : IModel;
+                }
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
 }

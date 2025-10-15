@@ -86,96 +86,115 @@ namespace AutomaticInterface
             this IParameterSymbol symbol,
             SymbolDisplayFormat displayFormat,
             List<string> generatedInterfaceNames
-        )
-        {
-            var parameterDisplayString = symbol.ToDisplayString(displayFormat);
+        ) => ToDisplayString((ISymbol)symbol, displayFormat, generatedInterfaceNames);
 
-            var parameterTypeDisplayString = symbol.Type.ToDisplayString(
-                displayFormat,
-                generatedInterfaceNames
-            );
-
-            // Replace the type part of the parameter definition - we don't try to generate the whole parameter definition
-            // as it's quite complex - we leave that to Roslyn.
-            return ParameterTypeMatcher.Replace(parameterDisplayString, parameterTypeDisplayString);
-        }
-
-        /// <summary>
-        /// Matches the type part of a parameter definition (Type name[ = defaultValue])
-        /// </summary>
-        private static readonly Regex ParameterTypeMatcher =
-            new(@"[^\s=]+(?=\s\S+(\s?=\s?\S+)?$)", RegexOptions.Compiled);
-
-        /// <summary>
-        /// Wraps <see cref="ITypeSymbol.ToDisplayString(Microsoft.CodeAnalysis.SymbolDisplayFormat?)" /> with custom resolution for generated types
-        /// </summary>
-        /// <returns></returns>
         public static string ToDisplayString(
             this ITypeSymbol symbol,
             SymbolDisplayFormat displayFormat,
             List<string> generatedInterfaceNames
-        )
-        {
-            var builder = new StringBuilder();
+        ) => ToDisplayString((ISymbol)symbol, displayFormat, generatedInterfaceNames);
 
-            AppendTypeSymbolDisplayString(symbol, displayFormat, generatedInterfaceNames, builder);
-
-            return builder.ToString();
-        }
-
-        private static void AppendTypeSymbolDisplayString(
-            ITypeSymbol typeSymbol,
+        /// <summary>
+        /// Wraps <see cref="ITypeSymbol.ToDisplayString(Microsoft.CodeAnalysis.SymbolDisplayFormat?)" /> with custom resolution for generated types
+        /// </summary>
+        private static string ToDisplayString(
+            this ISymbol symbol,
             SymbolDisplayFormat displayFormat,
-            List<string> generatedInterfaceNames,
-            StringBuilder builder
+            List<string> generatedInterfaceNames
         )
         {
-            if (typeSymbol is not IErrorTypeSymbol errorTypeSymbol)
+            var displayStringBuilder = new StringBuilder();
+
+            var displayParts = GetDisplayParts(symbol, displayFormat);
+
+            foreach (var part in displayParts)
             {
-                // This symbol contains no unresolved types. Fall back to the default generation provided by Roslyn
-                builder.Append(typeSymbol.ToDisplayString(displayFormat));
-                return;
-            }
-
-            var symbolName =
-                InferGeneratedInterfaceName(errorTypeSymbol, generatedInterfaceNames)
-                ?? errorTypeSymbol.Name;
-
-            builder.Append(symbolName);
-
-            if (errorTypeSymbol.IsGenericType)
-            {
-                builder.Append('<');
-
-                bool isFirstTypeArgument = true;
-                foreach (var typeArgument in errorTypeSymbol.TypeArguments)
+                if (part.Kind == SymbolDisplayPartKind.ErrorTypeName)
                 {
-                    if (!isFirstTypeArgument)
-                    {
-                        builder.Append(", ");
-                    }
+                    var unrecognisedName = part.ToString();
 
-                    AppendTypeSymbolDisplayString(
-                        typeArgument,
-                        displayFormat,
-                        generatedInterfaceNames,
-                        builder
+                    var inferredName = ReplaceWithInferredInterfaceName(
+                        unrecognisedName,
+                        generatedInterfaceNames
                     );
 
-                    isFirstTypeArgument = false;
+                    displayStringBuilder.Append(inferredName);
                 }
-
-                builder.Append('>');
+                else
+                {
+                    displayStringBuilder.Append(part);
+                }
             }
+
+            return displayStringBuilder.ToString();
         }
 
-        private static string? InferGeneratedInterfaceName(
-            IErrorTypeSymbol unrecognisedSymbol,
+        /// <summary>
+        /// The same as <see cref="ISymbol.ToDisplayParts"/> but with adjacent SymbolDisplayParts merged into qualified type references, e.g. [Parent, ., Child] => Parent.Child
+        /// </summary>
+        private static IEnumerable<SymbolDisplayPart> GetDisplayParts(
+            ISymbol symbol,
+            SymbolDisplayFormat displayFormat
+        )
+        {
+            var cache = new List<SymbolDisplayPart>();
+
+            foreach (var part in symbol.ToDisplayParts(displayFormat))
+            {
+                if (cache.Count == 0)
+                {
+                    cache.Add(part);
+                    continue;
+                }
+
+                var previousPart = cache.Last();
+
+                if (
+                    IsPartQualificationPunctuation(previousPart)
+                    ^ IsPartQualificationPunctuation(part)
+                )
+                {
+                    cache.Add(part);
+                }
+                else
+                {
+                    yield return CombineQualifiedTypeParts(cache);
+                    cache.Clear();
+                    cache.Add(part);
+                }
+            }
+
+            if (cache.Count > 0)
+            {
+                yield return CombineQualifiedTypeParts(cache);
+            }
+
+            static SymbolDisplayPart CombineQualifiedTypeParts(
+                ICollection<SymbolDisplayPart> qualifiedTypeParts
+            )
+            {
+                var qualifiedType = qualifiedTypeParts.Last();
+
+                return qualifiedTypeParts.Count == 1
+                    ? qualifiedType
+                    : new SymbolDisplayPart(
+                        qualifiedType.Kind,
+                        qualifiedType.Symbol,
+                        string.Join("", qualifiedTypeParts)
+                    );
+            }
+
+            static bool IsPartQualificationPunctuation(SymbolDisplayPart part) =>
+                part.ToString() is "." or "::";
+        }
+
+        private static string ReplaceWithInferredInterfaceName(
+            string unrecognisedName,
             List<string> generatedInterfaceNames
         )
         {
             var matches = generatedInterfaceNames
-                .Where(name => Regex.IsMatch(name, $"[.:]{unrecognisedSymbol.Name}$"))
+                .Where(name => Regex.IsMatch(name, $"[.:]{Regex.Escape(unrecognisedName)}$"))
                 .ToList();
 
             if (matches.Count != 1)
@@ -183,7 +202,7 @@ namespace AutomaticInterface
                 // Either there's no match or an ambiguous match - we can't safely infer the interface name.
                 // This is very much a "best effort" approach - if there are two interfaces with the same name,
                 // there's no obvious way to work out which one the symbol is referring to.
-                return null;
+                return unrecognisedName;
             }
 
             return matches[0];
