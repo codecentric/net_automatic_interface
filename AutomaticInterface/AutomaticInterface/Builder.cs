@@ -10,7 +10,7 @@ namespace AutomaticInterface;
 public static class Builder
 {
     private static string InheritDoc(ISymbol source) =>
-        $"/// <inheritdoc cref=\"{source.ToDisplayString().Replace('<', '{').Replace('>', '}')}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
+        $"/// <inheritdoc cref=\"{source.ToDisplayString().Replace('<', '{').Replace('>', '}').Replace("params ", "")}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
     private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormat = new(
         genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
