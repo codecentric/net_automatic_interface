@@ -22,7 +22,7 @@ public class Enums
             {
                 public void MethodWithDefaultParameter(EnumWithByteType a = EnumWithByteType.B) { }
             }
-            
+
             """;
 
         await Verify(Infrastructure.GenerateCode(code))
