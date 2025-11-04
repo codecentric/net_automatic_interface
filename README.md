@@ -188,6 +188,10 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 
 ## Changelog
 
+### 5.2.5
+
+- Fix cref for methods with params. Thanks paramamue!
+
 ### 5.2.4
 
 - feat: Exclude generated attributes from code coverage. Thanks skarllot!
