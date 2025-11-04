@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-	  <OutputType>Exe</OutputType>
-	  <TargetFramework>net8.0</TargetFramework>
-	  <Nullable>enable</Nullable>
-	  <Configurations>Debug;Release;DebugGenerator</Configurations>
-	  <SourceGenerator_EnableLogging>True</SourceGenerator_EnableLogging>
-	  <SourceGenerator_EnableDebug>True</SourceGenerator_EnableDebug>
-	  <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
-	  <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
-    </PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\AutomaticInterface\AutomaticInterface.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="logs" />
-	</ItemGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;DebugGenerator</Configurations>
+    <SourceGenerator_EnableLogging>True</SourceGenerator_EnableLogging>
+    <SourceGenerator_EnableDebug>True</SourceGenerator_EnableDebug>
+    <SourceGenerator_DetailedLog>True</SourceGenerator_DetailedLog>
+    <SourceGenerator_IntellisenseFix>True</SourceGenerator_IntellisenseFix>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference
+      Include="..\AutomaticInterface\AutomaticInterface.csproj"
+      OutputItemType="Analyzer"
+      ReferenceOutputAssembly="false"
+    />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="logs" />
+  </ItemGroup>
 </Project>
