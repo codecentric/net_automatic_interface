@@ -50,13 +50,12 @@ public static class Builder
         {
             return string.Empty;
         }
-        var generationAttribute = GetGenerationAttribute(typeSymbol);
-        var asInternal = GetAsInternal(generationAttribute);
+
         var symbolDetails = GetSymbolDetails(typeSymbol, classSyntax);
         var interfaceGenerator = new InterfaceBuilder(
             symbolDetails.NamespaceName,
             symbolDetails.InterfaceName,
-            asInternal
+            symbolDetails.AccessLevel
         );
 
         interfaceGenerator.AddClassDocumentation(GetDocumentationForClass(classSyntax));
@@ -76,43 +75,6 @@ public static class Builder
         var generatedCode = interfaceGenerator.Build();
 
         return generatedCode;
-    }
-
-    private static AttributeData? GetGenerationAttribute(ISymbol typeSymbol)
-    {
-        return typeSymbol
-            .GetAttributes()
-            .FirstOrDefault(x =>
-                x.AttributeClass != null
-                && x.AttributeClass.Name.Contains(AutomaticInterfaceGenerator.DefaultAttributeName)
-            );
-    }
-
-    private static string GetNameSpace(ISymbol typeSymbol, AttributeData? generationAttribute)
-    {
-        if (generationAttribute == null)
-        {
-            return typeSymbol.ContainingNamespace.ToDisplayString();
-        }
-
-        var customNs = generationAttribute.ConstructorArguments.FirstOrDefault().Value?.ToString();
-
-        return string.IsNullOrWhiteSpace(customNs)
-            ? typeSymbol.ContainingNamespace.ToDisplayString()
-            : customNs!;
-    }
-
-    private static bool GetAsInternal(AttributeData? generationAttribute)
-    {
-        if (generationAttribute == null)
-        {
-            return false;
-        }
-
-        var asInternal = (bool?)
-            generationAttribute.ConstructorArguments.Skip(2).FirstOrDefault().Value;
-
-        return asInternal.GetValueOrDefault();
     }
 
     private static GeneratedSymbolDetails GetSymbolDetails(
