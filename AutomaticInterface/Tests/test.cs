@@ -1,12 +1,12 @@
 ﻿namespace Tests;
 
-public interface Itest
+public interface ITest
 {
     IQueryable<T> AddFilter<T>(IQueryable<T> qry)
         where T : notnull;
 }
 
-public class test : Itest
+public class Test : ITest
 {
     public IQueryable<T> AddFilter<T>(IQueryable<T> qry)
         where T : notnull => qry;

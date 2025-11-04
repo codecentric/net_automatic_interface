@@ -188,6 +188,10 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 
 ## Changelog
 
+### 5.2.1
+
+- Smaller fixes to the Docstrings
+
 ### 5.2.0
 
 - Allow internal interfaces. Thanks mtren!
