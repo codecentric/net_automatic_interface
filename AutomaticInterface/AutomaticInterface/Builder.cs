@@ -12,35 +12,33 @@ public static class Builder
     private static string InheritDoc(ISymbol source) =>
         $"/// <inheritdoc cref=\"{source.ToDisplayString().Replace('<', '{').Replace('>', '}')}\" />"; // we use inherit doc because that should be able to fetch documentation from base classes.
 
-    private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormat =
-        new(
-            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-            memberOptions: SymbolDisplayMemberOptions.IncludeParameters
-                | SymbolDisplayMemberOptions.IncludeContainingType,
-            parameterOptions: SymbolDisplayParameterOptions.IncludeType
-                | SymbolDisplayParameterOptions.IncludeParamsRefOut
-                | SymbolDisplayParameterOptions.IncludeDefaultValue
-                | SymbolDisplayParameterOptions.IncludeName,
-            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
-                | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
-                | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
-        );
+    private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormat = new(
+        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+        memberOptions: SymbolDisplayMemberOptions.IncludeParameters
+            | SymbolDisplayMemberOptions.IncludeContainingType,
+        parameterOptions: SymbolDisplayParameterOptions.IncludeType
+            | SymbolDisplayParameterOptions.IncludeParamsRefOut
+            | SymbolDisplayParameterOptions.IncludeDefaultValue
+            | SymbolDisplayParameterOptions.IncludeName,
+        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+        globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
+            | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+            | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers
+    );
 
     /// <summary>
     /// We do need to be able to group shadowing and new methods/events into a single entry, hence this is missing SymbolDisplayMemberOptions.IncludeContainingType
     /// </summary>
-    private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormatForGrouping =
-        new(
-            genericsOptions: FullyQualifiedDisplayFormat.GenericsOptions,
-            memberOptions: FullyQualifiedDisplayFormat.MemberOptions
-                & ~SymbolDisplayMemberOptions.IncludeContainingType,
-            parameterOptions: FullyQualifiedDisplayFormat.ParameterOptions,
-            typeQualificationStyle: FullyQualifiedDisplayFormat.TypeQualificationStyle,
-            globalNamespaceStyle: FullyQualifiedDisplayFormat.GlobalNamespaceStyle,
-            miscellaneousOptions: FullyQualifiedDisplayFormat.MiscellaneousOptions
-        );
+    private static readonly SymbolDisplayFormat FullyQualifiedDisplayFormatForGrouping = new(
+        genericsOptions: FullyQualifiedDisplayFormat.GenericsOptions,
+        memberOptions: FullyQualifiedDisplayFormat.MemberOptions
+            & ~SymbolDisplayMemberOptions.IncludeContainingType,
+        parameterOptions: FullyQualifiedDisplayFormat.ParameterOptions,
+        typeQualificationStyle: FullyQualifiedDisplayFormat.TypeQualificationStyle,
+        globalNamespaceStyle: FullyQualifiedDisplayFormat.GlobalNamespaceStyle,
+        miscellaneousOptions: FullyQualifiedDisplayFormat.MiscellaneousOptions
+    );
 
     public static string BuildInterfaceFor(ITypeSymbol typeSymbol)
     {
@@ -250,12 +248,11 @@ public static class Builder
         return setMethodSymbol switch
         {
             null => PropertySetKind.NoSet,
-            { IsInitOnly: true, DeclaredAccessibility: Accessibility.Public }
-                => PropertySetKind.Init,
-            _
-                => setMethodSymbol is { DeclaredAccessibility: Accessibility.Public }
-                    ? PropertySetKind.Always
-                    : PropertySetKind.NoSet,
+            { IsInitOnly: true, DeclaredAccessibility: Accessibility.Public } =>
+                PropertySetKind.Init,
+            _ => setMethodSymbol is { DeclaredAccessibility: Accessibility.Public }
+                ? PropertySetKind.Always
+                : PropertySetKind.NoSet,
         };
     }
 
