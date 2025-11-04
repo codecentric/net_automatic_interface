@@ -188,6 +188,10 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 
 ## Changelog
 
+### 5.2.4
+
+- feat: Exclude generated attributes from code coverage. Thanks skarllot!
+
 ### 5.2.3
 
 - Refactor 'asInternal' logic to remove duplicate attribute lookup. Thanks ChaseFlorell!
