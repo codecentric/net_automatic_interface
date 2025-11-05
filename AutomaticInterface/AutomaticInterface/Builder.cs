@@ -156,7 +156,7 @@ public static class Builder
 
         var paramResult = new HashSet<string>();
         method
-            .Parameters.Select(p => GetParameterDisplayString(p, codeGenerator))
+            .Parameters.Select(p => GetParameterDisplayString(p, codeGenerator.HasNullable))
             .ToList()
             .ForEach(x => paramResult.Add(x));
 
@@ -229,7 +229,7 @@ public static class Builder
 
     private static string GetParameterDisplayString(
         IParameterSymbol param,
-        InterfaceBuilder codeGenerator
+        bool nullableContextEnabled
     )
     {
         var paramParts = param.ToDisplayParts(FullyQualifiedDisplayFormat);
@@ -258,7 +258,7 @@ public static class Builder
             && param.ExplicitDefaultValue is null
             && param.NullableAnnotation != NullableAnnotation.Annotated
             && param.Type.IsReferenceType
-            && codeGenerator.HasNullable
+            && nullableContextEnabled
         )
         {
             typeSb.Append('?');
