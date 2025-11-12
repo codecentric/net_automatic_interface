@@ -170,4 +170,132 @@ public class TypeResolutions
 
         await Verify(Infrastructure.GenerateCode(code));
     }
+
+    [Fact]
+    public async Task WorksWithGeneratedInterfaceReferences()
+    {
+        const string code = """
+            using AutomaticInterface;
+
+            namespace Processor
+            {
+                using Models;
+
+                [GenerateAutomaticInterface]
+                public class ModelProcessor : IModelProcessor
+                {
+                    public IModel Process(IModel model) => null;
+                    
+                    public event EventHandler<IModel> ModelChanged;
+
+                    public IModel Template => null;
+                }
+            }
+
+            namespace Models
+            {
+
+                [GenerateAutomaticInterface]
+                public class Model : IModel;
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task WorksWithGeneratedGenericInterfaceReferences()
+    {
+        const string code = """
+            using AutomaticInterface;
+            using System.Collections.Generic;
+
+            namespace Processor
+            {
+                using Models;
+
+                [GenerateAutomaticInterface]
+                public class ModelProcessor : IModelProcessor
+                {
+                    public IModel<List<T2>> Process<T1, T2>(IModel<T1> model) where T1: IModel<List<T2>> => null;
+
+                    public event EventHandler<IModel<T>> ModelChanged;
+
+                    public IModel<T> Template => null;
+                }
+            }
+
+            namespace Models
+            {
+
+                [GenerateAutomaticInterface]
+                public class Model<T>;
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task WorksWithQualifiedGeneratedInterfaceReferences()
+    {
+        const string code = """
+            using AutomaticInterface;
+
+            namespace Processor
+            {
+                using ModelsRoot;
+
+                [GenerateAutomaticInterface]
+                public class ModelProcessor : IModelProcessor
+                {
+                    public Models.IModel Process(Models.IModel model) => null;
+                    
+                    public event EventHandler<Models.IModel> ModelChanged;
+
+                    public Models.IModel Template => null;
+                }
+            }
+
+            namespace ModelsRoot.Models
+            {
+
+                [GenerateAutomaticInterface]
+                public class Model : IModel;
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task WorksWithQualifiedGeneratedInterfaceReferencesAndOverlappingNamespaces()
+    {
+        const string code = """
+            using AutomaticInterface;
+
+            namespace Root
+            {
+                namespace Processor
+                {
+                    [GenerateAutomaticInterface]
+                    public class ModelProcessor : IModelProcessor
+                    {
+                       public Root.ModelsRoot.Models.IModel ProcessFullyQualified(Root.ModelsRoot.Models.IModel model) => null;
+                       
+                       public ModelsRoot.Models.IModel ProcessRelativeQualified(ModelsRoot.Models.IModel model) => null;
+                    }
+                }
+
+                namespace ModelsRoot.Models
+                {
+
+                    [GenerateAutomaticInterface]
+                    public class Model : IModel;
+                }
+            }
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
 }

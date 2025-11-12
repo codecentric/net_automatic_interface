@@ -26,7 +26,7 @@ public static class Infrastructure
         var sourceDiagnostics = compilation.GetDiagnostics();
         var sourceErrors = sourceDiagnostics
             .Where(d => d.Severity == DiagnosticSeverity.Error)
-            .Where(x => x.Id != "CS0246") // missing references are ok
+            .Where(x => x.Id != "CS0246" && x.Id != "CS0234") // missing references are ok
             .ToList();
 
         Assert.Empty(sourceErrors);
@@ -45,6 +45,10 @@ public static class Infrastructure
 
         Assert.Empty(errors);
 
-        return outputCompilation.SyntaxTrees.Skip(1).LastOrDefault()?.ToString();
+        // The first syntax tree is the input code, the second two are the two generated attribute classes, and the rest is the generated code.
+        return string.Join(
+            Environment.NewLine + Environment.NewLine,
+            outputCompilation.SyntaxTrees.Skip(3)
+        );
     }
 }
