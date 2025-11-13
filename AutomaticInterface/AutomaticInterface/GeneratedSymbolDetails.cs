@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -16,9 +17,8 @@ internal sealed class GeneratedSymbolDetails(
     /// to the containing namespace of the type symbol.
     /// </summary>
     public string NamespaceName { get; } =
-        PrepareValue(
+        PrepareNamespaceName(
             generationAttribute,
-            AutomaticInterfaceGenerator.NamespaceParameterName,
             typeSymbol.ContainingNamespace.ToDisplayString()
         );
 
@@ -77,5 +77,20 @@ internal sealed class GeneratedSymbolDetails(
         }
 
         return defaultValue;
+    }
+
+    private static string PrepareNamespaceName(AttributeData? generationAttribute, string containingNamespaceName)
+    {
+        var namespacePattern = PrepareValue(
+            generationAttribute,
+            AutomaticInterfaceGenerator.NamespaceParameterName,
+            containingNamespaceName
+        );
+
+        Debug.Assert(namespacePattern != null);
+
+        var namespaceName = namespacePattern!.Replace("*", containingNamespaceName);
+
+        return namespaceName;
     }
 }

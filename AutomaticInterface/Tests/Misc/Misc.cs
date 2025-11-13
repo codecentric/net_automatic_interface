@@ -365,6 +365,48 @@ public class Misc
         await Verify(Infrastructure.GenerateCode(code));
     }
 
+
+    [Fact]
+    public async Task CustomNameSpaceWithWildcardWithinBrackedNamespace()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+
+            namespace AutomaticInterfaceExample
+            {
+                [GenerateAutomaticInterface("*.CustomNameSpaceSuffix")]
+                class DemoClass
+                {
+                   public int DemoMethod() => 5;
+                }
+            }
+
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
+    public async Task CustomNameSpaceWithWildcardWithinFileNamespace()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+
+            namespace AutomaticInterfaceExample;
+            
+            [GenerateAutomaticInterface("*.CustomNameSpaceSuffix")]
+            class DemoClass
+            {
+                public int DemoMethod() => 5;
+            }
+
+            """;
+
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
     [Fact]
     public async Task AsInternal()
     {
