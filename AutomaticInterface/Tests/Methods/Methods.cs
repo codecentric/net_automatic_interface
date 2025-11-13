@@ -77,6 +77,29 @@ public class Methods
     }
 
     [Fact]
+    public async Task WorksWithMixedOptionalNullParameters()
+    {
+        const string code = """
+
+            using AutomaticInterface;
+
+            namespace AutomaticInterfaceExample;
+
+            [GenerateAutomaticInterface]
+            public class DemoClass
+            {
+                    public bool TryStartTransaction(int? param, int param2 = 0, string data = null)
+                    {
+            return true;
+            }
+            }
+
+
+            """;
+        await Verify(Infrastructure.GenerateCode(code));
+    }
+
+    [Fact]
     public async Task AddsPublicMethodToInterface()
     {
         const string code = """
