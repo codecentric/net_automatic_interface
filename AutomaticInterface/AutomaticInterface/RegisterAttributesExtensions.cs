@@ -24,9 +24,6 @@ internal static class RegisterAttributesExtensions
                         /// <summary>
                         /// Use source generator to automatically create a Interface from this class
                         /// </summary>
-                        /// <param name="namespaceName22">Namespace name for the generated interface. Defaults to the same namespace as the class.</param>
-                        /// <param name="interfaceName">Interface name for the generated interface. Defaults to an interface version of the class name, e.g ExampleClass -> IExampleClass.</param>
-                        /// <param name="asInternal">If true, the generated interface will be internal, otherwise public</param>
                         [AttributeUsage(AttributeTargets.Class)]
                         [global::System.CodeDom.Compiler.GeneratedCode("AutomaticInterface", "")]
                         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

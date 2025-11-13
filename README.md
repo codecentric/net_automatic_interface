@@ -188,6 +188,11 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 
 ## Changelog
 
+### 5.2.6
+
+- Fix wrong documenation on interface for this library 
+- Fix handling of parameters with default null. Thanks paramamue!
+
 ### 5.2.5
 
 - Fix cref for methods with params. Thanks paramamue!
