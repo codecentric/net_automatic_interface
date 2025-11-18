@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -85,8 +86,36 @@ namespace AutomaticInterface
         public static string ToDisplayString(
             this IParameterSymbol symbol,
             SymbolDisplayFormat displayFormat,
+            bool nullableContextEnabled,
             List<string> generatedInterfaceNames
-        ) => ToDisplayString((ISymbol)symbol, displayFormat, generatedInterfaceNames);
+        )
+        {
+            string? RenderTypeSymbolWithNullableAnnotation(SymbolDisplayPart part) =>
+                part.Symbol is ITypeSymbol typeSymbol
+                    ? typeSymbol
+                        .WithNullableAnnotation(NullableAnnotation.Annotated)
+                        .ToDisplayString(displayFormat)
+                    : null;
+
+            // Special case for reference parameters with default value null (e.g. string x = null) - the nullable
+            // context isn't applied automatically, so it must be forced explicitly
+            var forceNullableAnnotation =
+                nullableContextEnabled
+                && symbol
+                    is {
+                        Type.IsReferenceType: true,
+                        HasExplicitDefaultValue: true,
+                        ExplicitDefaultValue: null
+                    }
+                && symbol.NullableAnnotation != NullableAnnotation.Annotated;
+
+            return ToDisplayString(
+                symbol,
+                displayFormat,
+                generatedInterfaceNames,
+                forceNullableAnnotation ? RenderTypeSymbolWithNullableAnnotation : null
+            );
+        }
 
         public static string ToDisplayString(
             this ITypeSymbol symbol,
@@ -100,7 +129,8 @@ namespace AutomaticInterface
         private static string ToDisplayString(
             this ISymbol symbol,
             SymbolDisplayFormat displayFormat,
-            List<string> generatedInterfaceNames
+            List<string> generatedInterfaceNames,
+            Func<SymbolDisplayPart, string?>? customRenderDisplayPart = null
         )
         {
             var displayStringBuilder = new StringBuilder();
@@ -122,7 +152,8 @@ namespace AutomaticInterface
                 }
                 else
                 {
-                    displayStringBuilder.Append(part);
+                    var customRender = customRenderDisplayPart?.Invoke(part);
+                    displayStringBuilder.Append(customRender ?? part.ToString());
                 }
             }
 
