@@ -188,9 +188,13 @@ Note that we use [Verify](https://github.com/VerifyTests/Verify) for testing. It
 
 ## Changelog
 
+### 6.0.0
+
+- Added feature to allow generated interfaces to reference other generated interfaces
+
 ### 5.2.6
 
-- Fix wrong documenation on interface for this library 
+- Fix wrong documentation on interface for this library 
 - Fix handling of parameters with default null. Thanks paramamue!
 
 ### 5.2.5
